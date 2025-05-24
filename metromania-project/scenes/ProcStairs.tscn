@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://7jimtt82avqg"]
+
+[ext_resource type="Script" uid="uid://i61c5ry55nlq" path="res://scripts/Travis/proc_stairs.gd" id="1_48elg"]
+
+[node name="ProcStairs" type="Node3D"]
+script = ExtResource("1_48elg")
+num_step = 7

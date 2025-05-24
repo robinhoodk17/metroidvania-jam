@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnep8g8rsx0x7"]
+
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="1_xmwr0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pwfib"]
+
+[sub_resource type="Sky" id="Sky_w0n63"]
+sky_material = SubResource("ProceduralSkyMaterial_pwfib")
+
+[sub_resource type="Environment" id="Environment_3ttxr"]
+background_mode = 2
+sky = SubResource("Sky_w0n63")
+
+[sub_resource type="BoxMesh" id="BoxMesh_p8ssn"]
+size = Vector3(100, 1, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xmwr0"]
+data = PackedVector3Array(-50, 0.5, 0.5, 50, 0.5, 0.5, -50, -0.5, 0.5, 50, 0.5, 0.5, 50, -0.5, 0.5, -50, -0.5, 0.5, 50, 0.5, -0.5, -50, 0.5, -0.5, 50, -0.5, -0.5, -50, 0.5, -0.5, -50, -0.5, -0.5, 50, -0.5, -0.5, 50, 0.5, 0.5, 50, 0.5, -0.5, 50, -0.5, 0.5, 50, 0.5, -0.5, 50, -0.5, -0.5, 50, -0.5, 0.5, -50, 0.5, -0.5, -50, 0.5, 0.5, -50, -0.5, -0.5, -50, 0.5, 0.5, -50, -0.5, 0.5, -50, -0.5, -0.5, 50, 0.5, 0.5, -50, 0.5, 0.5, 50, 0.5, -0.5, -50, 0.5, 0.5, -50, 0.5, -0.5, 50, 0.5, -0.5, -50, -0.5, 0.5, 50, -0.5, 0.5, -50, -0.5, -0.5, 50, -0.5, 0.5, 50, -0.5, -0.5, -50, -0.5, -0.5)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_xmwr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.52224, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.650297, 0.75968, 0, -0.75968, 0.650297, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3ttxr")
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Ground" type="MeshInstance3D" parent="Environment"]
+mesh = SubResource("BoxMesh_p8ssn")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Environment/Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Ground/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_xmwr0")
+
+[node name="Wall" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 6.937, 0, 0)
+mesh = SubResource("BoxMesh_p8ssn")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Environment/Wall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Wall/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_xmwr0")

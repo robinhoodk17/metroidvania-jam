@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://docds2qsao4bg"]
+
+[ext_resource type="Script" uid="uid://bkvh7lggqa7uh" path="res://fade.gd" id="1_cmmhd"]
+
+[node name="main" type="Node"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_cmmhd")

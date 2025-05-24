@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://bh7uolja3nijw"]
+
+[ext_resource type="Script" uid="uid://c1kvuxvok7lqe" path="res://entities/player/grappling_hook_parent.gd" id="1_rrmpd"]
+[ext_resource type="Script" uid="uid://c7o8ih1kxjkdu" path="res://entities/player/hookshot_tip.gd" id="2_kjl1k"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rrmpd"]
+size = Vector3(0.1, 0.1, 0.5)
+
+[sub_resource type="PrismMesh" id="PrismMesh_rrmpd"]
+size = Vector3(0.2, 0.1, 0.2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0xm21"]
+
+[node name="GrapplingHookParent" type="Node3D" node_paths=PackedStringArray("hookshot_tip")]
+script = ExtResource("1_rrmpd")
+hookshot_tip = NodePath("MeshInstance3D/Marker3D/HookshotTip")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+mesh = SubResource("BoxMesh_rrmpd")
+skeleton = NodePath("../..")
+
+[node name="Marker3D" type="Marker3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.248725)
+
+[node name="HookshotTip" type="Area3D" parent="MeshInstance3D/Marker3D" node_paths=PackedStringArray("hookshot_tip", "hookshot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.248725)
+top_level = true
+script = ExtResource("2_kjl1k")
+hookshot_tip = NodePath("..")
+hookshot = NodePath("../../..")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="MeshInstance3D/Marker3D/HookshotTip"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PrismMesh_rrmpd")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/Marker3D/HookshotTip"]
+shape = SubResource("SphereShape3D_0xm21")
