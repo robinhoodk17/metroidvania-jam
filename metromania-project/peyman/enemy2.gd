@@ -37,6 +37,7 @@ var can_move := true
 var jump_velocity := 13.0
 var is_jumping: bool
 const ENEMY_TREE = preload("res://peyman/enemy_tree.tres")
+
 func _ready():
 	set_physics_process(false)
 	handle_the_nodes()
@@ -208,8 +209,10 @@ func perform_attack():
 	match chosen_attack:
 		0:
 			label_3d.text = "BASIC_ATTACK"
+			Music.play_sfx($AudioStreamPlayer3D, "cat")
 		1:
 			label_3d.text = "jump_ATTACK"
+			Music.play_sfx($AudioStreamPlayer3D, "EnemyCry")
 		#2:
 			#label_3d.text = "BASIC_ATTACK"
 
