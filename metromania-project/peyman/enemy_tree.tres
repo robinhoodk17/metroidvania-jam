@@ -1,0 +1,97 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=24 format=3 uid="uid://clvlclskefosb"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kmjeu"]
+animation = &"Robot_ThumbsUp"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_ftwnj"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1u1xl"]
+animation = &"Robot_No"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_lpckl"]
+animation = &"Robot_Punch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fowm0"]
+animation = &"Robot_Wave"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1jpkq"]
+animation = &"Robot_Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_05bod"]
+animation = &"Robot_Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_66dil"]
+animation = &"Robot_Running"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lpckl"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1u1xl"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vsfr3"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_kmjeu"]
+states/Robot_Idle/node = SubResource("AnimationNodeAnimation_05bod")
+states/Robot_Idle/position = Vector2(425, 106)
+states/Robot_Running/node = SubResource("AnimationNodeAnimation_66dil")
+states/Robot_Running/position = Vector2(682, 111)
+transitions = ["Start", "Robot_Idle", SubResource("AnimationNodeStateMachineTransition_lpckl"), "Robot_Idle", "Robot_Running", SubResource("AnimationNodeStateMachineTransition_1u1xl"), "Robot_Running", "Robot_Idle", SubResource("AnimationNodeStateMachineTransition_vsfr3")]
+graph_offset = Vector2(64, -30)
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ftwnj"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_05bod"]
+xfade_time = 0.3
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_66dil"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fowm0"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hv4gf"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b005u"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o1rvb"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hvy0c"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_igwd3"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ur8kk"]
+states/Robot_No/node = SubResource("AnimationNodeAnimation_1u1xl")
+states/Robot_No/position = Vector2(665, 270)
+states/Robot_Punch/node = SubResource("AnimationNodeAnimation_lpckl")
+states/Robot_Punch/position = Vector2(713, 30)
+states/Robot_Wave/node = SubResource("AnimationNodeAnimation_fowm0")
+states/Robot_Wave/position = Vector2(760, 139)
+states/Start/position = Vector2(176, 111.333)
+states/jump/node = SubResource("AnimationNodeAnimation_1jpkq")
+states/jump/position = Vector2(427, -55)
+states/locomotion/node = SubResource("AnimationNodeStateMachine_kmjeu")
+states/locomotion/position = Vector2(427, 111.333)
+transitions = ["Start", "locomotion", SubResource("AnimationNodeStateMachineTransition_ftwnj"), "jump", "locomotion", SubResource("AnimationNodeStateMachineTransition_05bod"), "locomotion", "jump", SubResource("AnimationNodeStateMachineTransition_66dil"), "locomotion", "Robot_Punch", SubResource("AnimationNodeStateMachineTransition_fowm0"), "Robot_Punch", "locomotion", SubResource("AnimationNodeStateMachineTransition_hv4gf"), "locomotion", "Robot_Wave", SubResource("AnimationNodeStateMachineTransition_b005u"), "Robot_Wave", "locomotion", SubResource("AnimationNodeStateMachineTransition_o1rvb"), "locomotion", "Robot_No", SubResource("AnimationNodeStateMachineTransition_hvy0c"), "Robot_No", "locomotion", SubResource("AnimationNodeStateMachineTransition_igwd3")]
+graph_offset = Vector2(92, -1)
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
+
+[resource]
+graph_offset = Vector2(-467.3, 121.4)
+nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
+nodes/OneShotAnimation/position = Vector2(-400, 300)
+nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_ftwnj")
+nodes/OneShotBlend/position = Vector2(-80, 106.667)
+nodes/StateMachine_upper/node = SubResource("AnimationNodeStateMachine_ur8kk")
+nodes/StateMachine_upper/position = Vector2(-440, 40)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_2dkur")
+nodes/TimeScale/position = Vector2(133.333, 160)
+nodes/output/position = Vector2(340, 160)
+node_connections = [&"OneShotBlend", 0, &"StateMachine_upper", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]
