@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 SaveLoad="*res://scripts/AutoLoads/Save_Load.gd"
 Music="*res://scripts/AutoLoads/Music.gd"
 Signal_manager="*res://scripts/AutoLoads/Signal_manager.gd"
+GlobalsPlayer="*res://scripts/AutoLoads/globals_player.gd"
+SignalbusPlayer="*res://scripts/AutoLoads/signalbus_player.gd"
 
 [dotnet]
 
