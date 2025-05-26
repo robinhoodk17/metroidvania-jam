@@ -3,9 +3,9 @@ class_name PlayerController
 
 enum run_state {IDLE, WALKING, RUNNING, BRAKING, STAGGERING}
 enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING}
-enum inputs{JUMP, ATTACK, THROW_GRAPPLE, NONE}
+enum inputs{JUMP, ATTACK, THROW_CHILD, NONE}
 
-@export_category("Player Movement")
+@export_group("Player Movement")
 @export var speed : float = 10.0
 @export var jump_velocity : float = 13.0
 @export var jump_floatiness : float = 0.15
@@ -13,31 +13,39 @@ enum inputs{JUMP, ATTACK, THROW_GRAPPLE, NONE}
 @export var acceleration_curve : Curve
 @export var deceleration_curve : Curve
 ##the number of seconds required to accelerate from 0 to max speed
-@export var acceleration : float = .7
+@export var acceleration : float = 0.7
 ##the number of seconds required to brake from max to 0
-@export var deceleration : float = .1
-@export var coyote_time : float = 0.05
-@export_category("Combat")
+@export var deceleration : float = .15
+@export var coyote_time : float = 0.1
+@export var queue_time : float = 0.35
+@export_group("Combat")
 @export var combo_reset : float = 1.5
 @export var max_combo : int = 3
-@export_category("Hookshot")
+@export_group("Hookshot")
 @export var hookshot_range : float = 25.0
 @export var movement_to_grapple_speed : float = 40.0
-@export_category("Camera")
+@export var gravity_damp_while_hooking : float = 0.25
+@export_group("Camera")
 @export var dampen_frames : int = 20
-@export_category("Nodes")
+@export_group("Nodes")
 @export var mesh : Marker3D
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var combo_reset_timer: Timer = $ComboResetTimer
+@onready var queue_timer: Timer = $QueueTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var grappling_hook : Node3D = $GrapplingHookParent
+
+"""child interaction"""
+@onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
+@onready var pick_child: Area3D = $MeshParent/PickChild
 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
 var current_action_state : action_state = action_state.IDLE_ACTION
 
+var carrying_child : bool = true
 var direction_x : float = 0.0
 var running_time : float = 0.0
 var braking_time : float = 0.0
@@ -47,6 +55,7 @@ var combo_number : int = 0
 var input_queued : inputs = inputs.NONE
 var hookshot_position : Vector3
 var animating : bool = false
+var current_gravity_force : float = 1.0
 
 """camera"""
 var dampened_y_array : Array[float]
@@ -57,21 +66,26 @@ var screen_middle : Vector2
 """animation"""
 var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
-var locomotion : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
 
 
 func _ready() -> void:
+	pick_child.connect("body_entered",pick_up_child)
 	screen_middle = DisplayServer.screen_get_size()/2
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
-	locomotion = animation_tree.get("parameters/StateMachine_running/locomotion/playback")
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+
+func pick_up_child(_body : Node3D):
+	if _body.is_in_group("Player"):
+		_body.turn_off()
+		carrying_child = true
+		print_debug("entered")
 
 func _physics_process(delta: float) -> void:
 	position_camera(delta)
@@ -99,12 +113,15 @@ func run_state_machine(delta: float) -> void:
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
 		run_animation.travel("idle")
-		print_debug("still flying")
+	if current_action_state == action_state.HOOKED:
+		velocity = Vector3.ZERO
+		run_animation.travel("idle")
+		return
 	var run_direction = Input.get_axis("move_left", "move_right")
 	match current_run_state:
 		run_state.IDLE:
 			if is_on_floor():
-				running_time = 0.0
+				running_time = move_toward(running_time, 0.0, delta * 2.0)
 			if !animating:
 				run_animation.travel("idle")
 			if run_direction != 0.0:
@@ -117,7 +134,8 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, 0.0 , delta * 100)
 
 		run_state.WALKING:
-			running_time += delta
+			if running_time < acceleration:
+				running_time += delta
 			velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
 			if !animating:
 				run_animation.travel("walk")
@@ -140,7 +158,6 @@ func run_state_machine(delta: float) -> void:
 
 		run_state.BRAKING:
 			run_animation.travel("walk")
-			animation_tree.set("parameters/StateMachine_running/locomotion/BlendSpace1D/blend_position", 1)
 			velocity.x = sign(velocity.x) * speed * deceleration_curve.sample(braking_time/deceleration)
 			braking_time += delta
 			if braking_time >= deceleration:
@@ -150,7 +167,6 @@ func run_state_machine(delta: float) -> void:
 		run_state.STAGGERING:
 			pass
 	direction_x = run_direction
-	animation_tree.set("parameters/StateMachine_running/locomotion/BlendSpace1D/blend_position", (abs(velocity.x)/speed))
 
 func action_state_machine(_delta: float) -> void:
 	var horizontal_direction : float = Input.get_axis("move_left", "move_right")
@@ -173,10 +189,15 @@ func action_state_machine(_delta: float) -> void:
 					attack(horizontal_direction, vertical_direction)
 					input_queued = inputs.NONE
 					return
-				inputs.THROW_GRAPPLE:
+				inputs.THROW_CHILD:
 					throw_grappling(horizontal_direction, vertical_direction)
 					input_queued = inputs.NONE
 					return
+				inputs.JUMP:
+					if !second_jump:
+						input_queued = inputs.NONE
+						jump()
+						return
 
 		action_state.JUMPING:
 			match input_queued:
@@ -184,18 +205,36 @@ func action_state_machine(_delta: float) -> void:
 					attack(horizontal_direction, vertical_direction)
 					input_queued = inputs.NONE
 					return
-				inputs.THROW_GRAPPLE:
+				inputs.THROW_CHILD:
 					throw_grappling(horizontal_direction, vertical_direction)
 					input_queued = inputs.NONE
 					return
+				inputs.JUMP:
+					if !second_jump:
+						input_queued = inputs.NONE
+						jump()
+						return
+		
+		action_state.ATTACKING:
+			match input_queued:
+				inputs.JUMP:
+					if !second_jump:
+						input_queued = inputs.NONE
+						jump()
+						return
 
 func manage_action_inputs():
 	if Input.is_action_just_pressed("Space"):
 		input_queued = inputs.JUMP
+		queue_timer.start(queue_time)
 	if Input.is_action_just_pressed("LMB"):
 		input_queued = inputs.ATTACK
+		queue_timer.start(queue_time)
 	if Input.is_action_just_pressed("RMB"):
-		input_queued = inputs.THROW_GRAPPLE
+		input_queued = inputs.THROW_CHILD
+		queue_timer.start(queue_time)
+	if queue_timer.is_stopped():
+		input_queued = inputs.NONE
 
 func attack(_x : float, _y : float): 
 	var _attack_string : String = str("attack", combo_number)
@@ -204,7 +243,10 @@ func attack(_x : float, _y : float):
 	#set_oneshot_animation("Robot_Punch")
 	combo_number = (combo_number + 1) % max_combo
 
-func throw_grappling(x : float, y : float): 
+func throw_grappling(x : float, y : float):
+	if !carrying_child:
+		return
+	current_gravity_force = gravity_damp_while_hooking
 	var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
 	var space_state = get_world_3d().direct_space_state
@@ -221,12 +263,29 @@ func throw_grappling(x : float, y : float):
 	else:
 		target_position = result["position"]
 		target_collider = result["collider"]
-		
-	current_action_state = action_state.GRAPPLING
-	grappling_hook.hookshot_range = hookshot_range
-	grappling_hook.start_hooking(global_position, target_position, target_collider)
+	if global_position.distance_to(target_position) < 1.5:
+		return
+	alice.position = (target_position - global_position).normalized() * 2.0 * mesh.basis
+	alice.throw(target_position)
+	carrying_child = false
+	#current_action_state = action_state.GRAPPLING
+	#grappling_hook.hookshot_range = hookshot_range
+	#grappling_hook.start_hooking(global_position, target_position, target_collider)
+
+func end_retracting(_hooked : bool) -> void:
+	if _hooked:
+		change_action_state(PlayerController.action_state.HOOKED)
+		running_time = acceleration
+		current_run_state = run_state.WALKING
+		velocity/= 2.0
+		current_gravity_force = 0.0
+		return
+	current_action_state = action_state.IDLE_ACTION
 
 func handle_gravity(delta: float) -> void:
+	current_gravity_force = 1.0
+	if current_action_state == action_state.HOOKED:
+		current_gravity_force = 0.0
 	if jumping_time < jump_floatiness:
 		jumping_time += delta
 		if Input.is_action_pressed("Space"):
@@ -236,19 +295,19 @@ func handle_gravity(delta: float) -> void:
 			pass
 	else:
 		if velocity.y < 0:
-			velocity += get_gravity() * going_down_speed * 1.15 * delta
+			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
 		else:
-			velocity += get_gravity() * going_down_speed * 3.0 * delta
+			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
 
 	if velocity.x < 0:
-		mesh.basis = Basis.FLIP_X
+		mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
 	if  velocity.x > 0:
 		mesh.basis = Basis.IDENTITY
 
 func jump() -> void:
 	current_action_state = action_state.JUMPING
 	#action_animation.travel("jump")
-	animating = true
+	#animating = true
 	action_animation.travel("Robot_Jump")
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0

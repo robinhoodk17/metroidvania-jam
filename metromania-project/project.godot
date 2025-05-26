@@ -27,6 +27,10 @@ SignalbusPlayer="*res://scripts/AutoLoads/signalbus_player.gd"
 
 project/assembly_name="Git Repo"
 
+[global_group]
+
+Player=""
+
 [input]
 
 move_left={
@@ -131,6 +135,7 @@ RMB={
 3d_physics/layer_1="World"
 3d_physics/layer_2="Enemy"
 3d_physics/layer_3="Player"
+3d_physics/layer_4="Player_child"
 3d_physics/layer_5="Player_hurt"
 3d_physics/layer_6="Enemy_hurt"
 

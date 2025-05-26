@@ -1,4 +1,4 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=32 format=3 uid="uid://xrph22dtmo0l"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=32 format=3 uid="uid://b43qvah30h5eg"]
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_05bod"]
 
@@ -103,7 +103,7 @@ graph_offset = Vector2(-155, -38)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
 
 [resource]
-graph_offset = Vector2(-728.604, 26.7382)
+graph_offset = Vector2(-766.282, -7.65513)
 nodes/Add2/node = SubResource("AnimationNodeAdd2_05bod")
 nodes/Add2/position = Vector2(-613.333, 133.333)
 nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
@@ -113,7 +113,8 @@ nodes/OneShotBlend/position = Vector2(-80, 106.667)
 nodes/StateMachine_action/node = SubResource("AnimationNodeStateMachine_xtfgc")
 nodes/StateMachine_action/position = Vector2(-1013.33, 320)
 nodes/StateMachine_running/node = SubResource("AnimationNodeStateMachine_ur8kk")
-nodes/StateMachine_running/position = Vector2(-933.333, 80)
+nodes/StateMachine_running/position = Vector2(-933.333, -53.3333)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_2dkur")
-nodes/TimeScale/position = Vector2(133.333, 160)
+nodes/TimeScale/position = Vector2(186.667, 133.333)
+nodes/output/position = Vector2(426.667, 106.667)
 node_connections = [&"Add2", 0, &"StateMachine_running", &"Add2", 1, &"StateMachine_action", &"OneShotBlend", 0, &"Add2", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]

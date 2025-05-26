@@ -51,7 +51,5 @@ func start_retracting() -> void:
 
 func end_retracting() -> void:
 	hide()
-	player.change_action_state(PlayerController.action_state.IDLE_ACTION)
-	player.velocity/= 2.0
+	player.end_retracting(hooked)
 	retracting = false
-	print_debug("finished retracting")
