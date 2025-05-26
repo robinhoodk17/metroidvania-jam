@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=4 uid="uid://cia5g3lqw3opr"]
+[gd_scene load_steps=11 format=4 uid="uid://cia5g3lqw3opr"]
 
 [ext_resource type="PackedScene" uid="uid://7jimtt82avqg" path="res://scenes/ProcStairs.tscn" id="1_ekqcl"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="2_vr4tg"]
+[ext_resource type="Script" uid="uid://b3m83dg3s10vp" path="res://peyman/enemy2.gd" id="3_3nxao"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tqh3n"]
 size = Vector3(10, 1, 1)
@@ -84,8 +85,20 @@ mesh = SubResource("ArrayMesh_loe1w")
 [node name="@CollisionShape3D@27042" type="CollisionShape3D" parent="Map/ProcStairs/@StaticBody3D@27041"]
 shape = SubResource("ConcavePolygonShape3D_bfkrt")
 
-[node name="CharacterBody3D" parent="Map" instance=ExtResource("2_vr4tg")]
+[node name="player" parent="Map" groups=["player"] instance=ExtResource("2_vr4tg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51464, 0)
+
+[node name="enemy" parent="Map" instance=ExtResource("2_vr4tg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.31278, 1.51464, 0)
+script = ExtResource("3_3nxao")
+detection_radius = 15.0
+attack_range = 2.5
+speed_walk = 4.0
+speed_run = 9.0
+attack_cooldown = 1.5
+hit_recovery_time = 0.7
+max_health = 100
+attack_distance = 2.5
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hchdp")
