@@ -20,10 +20,16 @@ config/icon="res://icon.svg"
 SaveLoad="*res://scripts/AutoLoads/Save_Load.gd"
 Music="*res://scripts/AutoLoads/Music.gd"
 Signal_manager="*res://scripts/AutoLoads/Signal_manager.gd"
+GlobalsPlayer="*res://scripts/AutoLoads/globals_player.gd"
+SignalbusPlayer="*res://scripts/AutoLoads/signalbus_player.gd"
 
 [dotnet]
 
 project/assembly_name="Git Repo"
+
+[global_group]
+
+Player=""
 
 [input]
 
@@ -129,6 +135,7 @@ RMB={
 3d_physics/layer_1="World"
 3d_physics/layer_2="Enemy"
 3d_physics/layer_3="Player"
+3d_physics/layer_4="Player_child"
 3d_physics/layer_5="Player_hurt"
 3d_physics/layer_6="Enemy_hurt"
 
