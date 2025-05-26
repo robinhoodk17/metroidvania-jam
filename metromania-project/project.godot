@@ -138,6 +138,7 @@ RMB={
 3d_physics/layer_4="Player_child"
 3d_physics/layer_5="Player_hurt"
 3d_physics/layer_6="Enemy_hurt"
+3d_physics/layer_7="AutoAimTarget"
 
 [rendering]
 

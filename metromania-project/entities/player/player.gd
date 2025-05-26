@@ -1,23 +1,38 @@
 extends CharacterBody3D
 class_name PlayerController
 
-enum run_state {IDLE, WALKING, RUNNING, BRAKING, STAGGERING}
-enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING}
-enum inputs{JUMP, ATTACK, THROW_CHILD, NONE}
+enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING}
+enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING, BLOCKED}
+enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
 @export_group("Player Movement")
-@export var speed : float = 10.0
-@export var jump_velocity : float = 13.0
-@export var jump_floatiness : float = 0.15
-@export var going_down_speed : float = 3.0
+##how long an action remains queued before it gets deleted
+##for example, when a player jumps before reaching the ground
+@export var queue_time : float = 0.35
+@export_subgroup("running")
+##player max speed
+@export var speed : float = 0.5
+##how accelerating from 0 to max speed looks like
 @export var acceleration_curve : Curve
 @export var deceleration_curve : Curve
 ##the number of seconds required to accelerate from 0 to max speed
 @export var acceleration : float = 0.7
 ##the number of seconds required to brake from max to 0
 @export var deceleration : float = .15
+@export_subgroup("jump")
+@export var jump_velocity : float = 15.0
+@export var jump_floatiness : float = 0.15
+##how big is gravity
+@export var going_down_speed : float = 3.0
+@export_subgroup("wall jump")
+##the velocity in x repulsing the player from the wall
+@export var wall_jump_repulsion : float = 10.0
+@export var wall_jump_time : float = 10.0
+##when the player is pressing against a wall, how much it stops falling
+@export var wall_slide_gravity : float = 0.2
+@export var dash_velocity : float = 30.0
+@export var dash_duration : float = 1.0
 @export var coyote_time : float = 0.1
-@export var queue_time : float = 0.35
 @export_group("Combat")
 @export var combo_reset : float = 1.5
 @export var max_combo : int = 3
@@ -33,13 +48,16 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, NONE}
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var combo_reset_timer: Timer = $ComboResetTimer
+@onready var dash_reset_timer: Timer = $DashResetTimer
 @onready var queue_timer: Timer = $QueueTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var grappling_hook : Node3D = $GrapplingHookParent
+@onready var wall_jump: Area3D = $MeshParent/WallJump
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
 @onready var pick_child: Area3D = $MeshParent/PickChild
+@onready var auto_aim: Area3D = $MeshParent/AutoAim
 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
@@ -51,6 +69,7 @@ var running_time : float = 0.0
 var braking_time : float = 0.0
 var jumping_time : float = 0.0
 var second_jump : bool = false
+var dash_spent : bool = false
 var combo_number : int = 0
 var input_queued : inputs = inputs.NONE
 var hookshot_position : Vector3
@@ -73,6 +92,7 @@ var oneshot_animation : AnimationNode
 func _ready() -> void:
 	pick_child.connect("body_entered",pick_up_child)
 	screen_middle = DisplayServer.screen_get_size()/2
+	dash_reset_timer.timeout.connect(change_action_state)
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
@@ -85,7 +105,6 @@ func pick_up_child(_body : Node3D):
 	if _body.is_in_group("Player"):
 		_body.turn_off()
 		carrying_child = true
-		print_debug("entered")
 
 func _physics_process(delta: float) -> void:
 	position_camera(delta)
@@ -102,8 +121,6 @@ func position_camera(delta: float) -> void:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
 	if is_on_floor():
-		second_jump = false
-		coyote_timer.start(coyote_time)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, global_position, 5.0 * delta)
 	else:
 		var target_position = Vector3(global_position.x, averaged_y, global_position.z)
@@ -113,11 +130,25 @@ func run_state_machine(delta: float) -> void:
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
 		run_animation.travel("idle")
+		
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
 		run_animation.travel("idle")
 		return
+		
 	var run_direction = Input.get_axis("move_left", "move_right")
+	
+	if wall_jump.has_overlapping_bodies():
+		if run_direction * mesh.global_basis.z.z > 0 and !is_on_floor():
+			if current_run_state != run_state.WALL_SLIDING:
+				if velocity.y < 0:
+					velocity.y = 0
+			current_run_state = run_state.WALL_SLIDING
+	
+	
+	if current_action_state == action_state.BLOCKED:
+		return
+	
 	match current_run_state:
 		run_state.IDLE:
 			if is_on_floor():
@@ -166,6 +197,9 @@ func run_state_machine(delta: float) -> void:
 		
 		run_state.STAGGERING:
 			pass
+		run_state.WALL_SLIDING:
+			if !wall_jump.has_overlapping_bodies():
+				current_run_state = run_state.WALKING
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
@@ -175,9 +209,12 @@ func action_state_machine(_delta: float) -> void:
 	manage_action_inputs()
 	match input_queued:
 		inputs.JUMP:
-			if !second_jump:
+			jump()
+			return
+		inputs.DASH:
+			if !is_on_floor() and !dash_spent:
 				input_queued = inputs.NONE
-				jump()
+				dash(horizontal_direction, vertical_direction)
 				return
 
 	match current_action_state:
@@ -194,10 +231,8 @@ func action_state_machine(_delta: float) -> void:
 					input_queued = inputs.NONE
 					return
 				inputs.JUMP:
-					if !second_jump:
-						input_queued = inputs.NONE
-						jump()
-						return
+					jump()
+					return
 
 		action_state.JUMPING:
 			match input_queued:
@@ -210,16 +245,12 @@ func action_state_machine(_delta: float) -> void:
 					input_queued = inputs.NONE
 					return
 				inputs.JUMP:
-					if !second_jump:
-						input_queued = inputs.NONE
-						jump()
-						return
+					jump()
+					return
 		
 		action_state.ATTACKING:
 			match input_queued:
 				inputs.JUMP:
-					if !second_jump:
-						input_queued = inputs.NONE
 						jump()
 						return
 
@@ -233,6 +264,9 @@ func manage_action_inputs():
 	if Input.is_action_just_pressed("RMB"):
 		input_queued = inputs.THROW_CHILD
 		queue_timer.start(queue_time)
+	if Input.is_action_just_pressed("Shift"):
+		input_queued = inputs.DASH
+		queue_timer.start(queue_time)
 	if queue_timer.is_stopped():
 		input_queued = inputs.NONE
 
@@ -245,32 +279,51 @@ func attack(_x : float, _y : float):
 
 func throw_grappling(x : float, y : float):
 	if !carrying_child:
+		alice.turn_off()
+		carrying_child = true
 		return
 	current_gravity_force = gravity_damp_while_hooking
-	var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
-	var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
-	var space_state = get_world_3d().direct_space_state
-	var origin : Vector3 = global_position
-	var end : Vector3 = hookshot_range * Vector3(mouse_position.x, -mouse_position.y, 0) + global_position
-	var query = PhysicsRayQueryParameters3D.create(origin, end)
-	query.exclude = [self]
-	var result = space_state.intersect_ray(query)
-	var target_position : Vector3
-	var target_collider : Node3D = null
-	action_animation.travel("Robot_Wave")
-	if result.is_empty():
-		target_position = end
+	var target : Node3D = null
+	
+	if auto_aim.has_overlapping_bodies():
+		var target_distance : float = 1000
+		for i : Node3D in auto_aim.get_overlapping_bodies():
+			var candidate_position : Vector3 = i.global_position
+			var candidate_distance : float = candidate_position.distance_squared_to(global_position)
+			if candidate_distance < target_distance:
+				target = i
+				target_distance = candidate_distance
+	alice.global_position = 2.0 * mesh.global_basis.x + global_position
+	if target != null:
+		alice.throw(target.global_position)
 	else:
-		target_position = result["position"]
-		target_collider = result["collider"]
-	if global_position.distance_to(target_position) < 1.5:
-		return
-	alice.position = (target_position - global_position).normalized() * 2.0 * mesh.basis
-	alice.throw(target_position)
+		var target_position : Vector3 = global_position + (hookshot_range * mesh.global_basis.x.normalized())
+		alice.throw(target_position)
+
 	carrying_child = false
-	#current_action_state = action_state.GRAPPLING
-	#grappling_hook.hookshot_range = hookshot_range
-	#grappling_hook.start_hooking(global_position, target_position, target_collider)
+	set_oneshot_animation("Robot_Wave")
+	
+	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
+	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
+	#var space_state = get_world_3d().direct_space_state
+	#var origin : Vector3 = global_position
+	#var end : Vector3 = hookshot_range * Vector3(mouse_position.x, -mouse_position.y, 0) + global_position
+	#var query = PhysicsRayQueryParameters3D.create(origin, end)
+	#query.exclude = [self]
+	#var result = space_state.intersect_ray(query)
+	#var target_position : Vector3
+	#var target_collider : Node3D = null
+	#action_animation.travel("Robot_Wave")
+	#if result.is_empty():
+		#target_position = end
+	#else:
+		#target_position = result["position"]
+		#target_collider = result["collider"]
+	#if global_position.distance_to(target_position) < 1.5:
+		#return
+	#alice.position = (target_position - global_position).normalized() * 2.0 * mesh.basis
+	#alice.throw(target_position)
+	#carrying_child = false
 
 func end_retracting(_hooked : bool) -> void:
 	if _hooked:
@@ -284,6 +337,9 @@ func end_retracting(_hooked : bool) -> void:
 
 func handle_gravity(delta: float) -> void:
 	current_gravity_force = 1.0
+	if current_run_state == run_state.WALL_SLIDING:
+		if velocity.y <= 0.0:
+			current_gravity_force = wall_slide_gravity
 	if current_action_state == action_state.HOOKED:
 		current_gravity_force = 0.0
 	if jumping_time < jump_floatiness:
@@ -291,8 +347,9 @@ func handle_gravity(delta: float) -> void:
 		if Input.is_action_pressed("Space"):
 			velocity.y = jump_velocity
 	if is_on_floor():
-		if coyote_timer.is_stopped():
-			pass
+		second_jump = false
+		dash_spent = false
+		coyote_timer.start(coyote_time)
 	else:
 		if velocity.y < 0:
 			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
@@ -305,15 +362,35 @@ func handle_gravity(delta: float) -> void:
 		mesh.basis = Basis.IDENTITY
 
 func jump() -> void:
+	if !second_jump or current_run_state == run_state.WALL_SLIDING:
+		input_queued = inputs.NONE
+	else:
+		return
 	current_action_state = action_state.JUMPING
+	set_oneshot_animation("Robot_Jump")
 	#action_animation.travel("jump")
 	#animating = true
-	action_animation.travel("Robot_Jump")
+	#action_animation.travel("Robot_Jump")
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	if coyote_timer.is_stopped():
+		if current_run_state == run_state.WALL_SLIDING:
+			current_action_state = action_state.BLOCKED
+			current_run_state = run_state.WALKING
+			var sign = 1
+			if mesh.basis == Basis.IDENTITY:
+				sign = -1
+			velocity.x = wall_jump_repulsion * sign
+			dash_reset_timer.start(wall_jump_time)
+			return
 		second_jump = true
+
+func dash(horizontal_direction : float, vertical_direction : float) -> void:
+	dash_spent = true
+	velocity = Vector3(horizontal_direction, vertical_direction, 0).normalized() * dash_velocity
+	current_action_state = action_state.BLOCKED
+	dash_reset_timer.start(dash_duration)
 
 func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
 	animation_tree.set("parameters/TimeScale/scale", time_scale)
@@ -326,7 +403,7 @@ func finish_animation():
 func change_run_state(new_state : run_state): 
 	current_run_state = new_state
 
-func change_action_state(new_state : action_state):
+func change_action_state(new_state : action_state = action_state.IDLE_ACTION):
 	animation_tree.set("parameters/TimeScale/scale", 1.0)
 	current_action_state = new_state
 	if new_state == action_state.IDLE_ACTION:
