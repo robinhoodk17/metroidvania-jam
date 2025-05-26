@@ -85,7 +85,6 @@ func pick_up_child(_body : Node3D):
 	if _body.is_in_group("Player"):
 		_body.turn_off()
 		carrying_child = true
-		print_debug("entered")
 
 func _physics_process(delta: float) -> void:
 	position_camera(delta)
@@ -245,6 +244,8 @@ func attack(_x : float, _y : float):
 
 func throw_grappling(x : float, y : float):
 	if !carrying_child:
+		alice.turn_off()
+		carrying_child = true
 		return
 	current_gravity_force = gravity_damp_while_hooking
 	var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)

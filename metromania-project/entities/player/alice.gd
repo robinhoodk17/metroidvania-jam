@@ -3,6 +3,7 @@ class_name alice_controller
 
 enum run_state {IDLE, WALKING, RUNNING, BRAKING, STAGGERING}
 enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING}
+enum inputs{JUMP, ATTACK, THROW_CHILD, NONE}
 
 @export_category("Player Movement")
 @export var speed : float = 10.0
@@ -12,16 +13,18 @@ enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, S
 @export var acceleration_curve : Curve
 @export var deceleration_curve : Curve
 ##the number of seconds required to accelerate from 0 to max speed
-@export var acceleration : float = .7
+@export var acceleration : float = 0.7
 ##the number of seconds required to brake from max to 0
-@export var deceleration : float = .1
-@export var coyote_time : float = 0.05
+@export var deceleration : float = .15
+@export var coyote_time : float = 0.1
+@export var queue_time : float = 0.35
 @export var movement_to_grapple_speed : float = 20.0
-@export var throw_range : float = 10.0
+@export var throw_range : float = 5.0
 
 @export_category("Nodes")
 @export var mesh : Marker3D
 @onready var coyote_timer: Timer = $CoyoteTimer
+@onready var queue_timer: Timer = $QueueTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 
 """state machine"""
@@ -47,6 +50,9 @@ var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
+"""state machine"""
+var input_queued : inputs = inputs.NONE
+
 func turn_off() -> void:
 	top_level = false
 	set_collision_mask_value(1, false)
@@ -55,7 +61,9 @@ func turn_off() -> void:
 	off = true
 	position = Vector3.ZERO
 	basis = Basis.IDENTITY
+	mesh.basis = Basis.IDENTITY
 	set_physics_process(false)
+	second_jump = false
 
 func turn_on() -> void:
 	current_run_state = run_state.IDLE
@@ -78,7 +86,7 @@ func _physics_process(delta: float) -> void:
 	if off:
 		return
 	run_state_machine(delta)
-	#action_state_machine(delta)
+	action_state_machine(delta)
 	handle_gravity(delta)
 	move_and_slide()
 
@@ -146,6 +154,46 @@ func run_state_machine(delta: float) -> void:
 			pass
 	direction_x = run_direction
 
+func action_state_machine(_delta: float) -> void:
+	var horizontal_direction : float = Input.get_axis("move_left", "move_right")
+	var vertical_direction = Input.get_axis("move_backward", "move_forward")
+
+	manage_action_inputs()
+	match input_queued:
+		inputs.JUMP:
+			if !second_jump:
+				input_queued = inputs.NONE
+				jump()
+				return
+
+	match current_action_state:
+		action_state.IDLE_ACTION:
+			match input_queued:
+				inputs.JUMP:
+					if !second_jump:
+						input_queued = inputs.NONE
+						jump()
+						return
+
+func manage_action_inputs():
+	if Input.is_action_just_pressed("look_up"):
+		input_queued = inputs.JUMP
+		queue_timer.start(queue_time)
+	if queue_timer.is_stopped():
+		input_queued = inputs.NONE
+
+func jump() -> void:
+	#current_action_state = action_state.JUMPING
+	#action_animation.travel("jump")
+	#animating = true
+	set_oneshot_animation("Robot_Jump")
+	#action_animation.travel("Robot_Jump")
+	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
+	jumping_time = 0.0
+	velocity.y = jump_velocity
+	if coyote_timer.is_stopped():
+		second_jump = true
+
 func throw(target_position : Vector3) -> void:
 	hookshot_position = target_position
 	flown_distance = 0.0
@@ -153,9 +201,13 @@ func throw(target_position : Vector3) -> void:
 	current_action_state = action_state.FLYINGTOGRAPPLE
 
 func handle_gravity(delta: float) -> void:
+	if is_on_floor():
+		second_jump = false
+		coyote_timer.start(coyote_time)
+
 	if jumping_time < jump_floatiness:
 		jumping_time += delta
-		if Input.is_action_pressed("Space"):
+		if Input.is_action_pressed("look_up"):
 			velocity.y = jump_velocity
 	if is_on_floor():
 		if coyote_timer.is_stopped():
@@ -170,3 +222,8 @@ func handle_gravity(delta: float) -> void:
 		mesh.global_basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
 	if  velocity.x > 0:
 		mesh.global_basis = Basis.IDENTITY
+
+func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
+	animation_tree.set("parameters/TimeScale/scale", time_scale)
+	oneshot_animation.animation = animation_name
+	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
