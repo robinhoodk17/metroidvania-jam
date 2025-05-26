@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://cia5g3lqw3opr"]
+[gd_scene load_steps=13 format=4 uid="uid://cia5g3lqw3opr"]
 
 [ext_resource type="PackedScene" uid="uid://7jimtt82avqg" path="res://scenes/ProcStairs.tscn" id="1_ekqcl"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="2_vr4tg"]
@@ -9,6 +9,10 @@ size = Vector3(10, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_i4vfv"]
 size = Vector3(10, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3nxao"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ekqcl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2kfs"]
 vertex_color_use_as_albedo = true
@@ -70,6 +74,17 @@ shape = SubResource("BoxShape3D_tqh3n")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor4"]
 mesh = SubResource("BoxMesh_i4vfv")
+
+[node name="AutoAim" type="StaticBody3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7552, 8.07516, 0)
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/AutoAim"]
+shape = SubResource("BoxShape3D_3nxao")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Map/AutoAim"]
+mesh = SubResource("BoxMesh_ekqcl")
 
 [node name="ProcStairs" parent="Map" instance=ExtResource("1_ekqcl")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5, 0, 0.5)

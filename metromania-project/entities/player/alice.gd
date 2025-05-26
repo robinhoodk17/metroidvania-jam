@@ -195,6 +195,7 @@ func jump() -> void:
 		second_jump = true
 
 func throw(target_position : Vector3) -> void:
+	throw_range = global_position.distance_to(target_position)
 	hookshot_position = target_position
 	flown_distance = 0.0
 	turn_on()
