@@ -51,5 +51,5 @@ func start_retracting() -> void:
 
 func end_retracting() -> void:
 	hide()
-	player.end_retracting(hooked)
+	player.end_retracting()
 	retracting = false

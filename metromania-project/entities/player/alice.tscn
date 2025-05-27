@@ -1,8 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://batbj1n45877r"]
+[gd_scene load_steps=9 format=3 uid="uid://batbj1n45877r"]
 
 [ext_resource type="Script" uid="uid://dx7imsfyrvyya" path="res://entities/player/alice.gd" id="1_n5soy"]
 [ext_resource type="PackedScene" uid="uid://cpmp45bvptfux" path="res://entities/Animated-3D-Robot/Blend/Robot.blend" id="2_68r1g"]
-[ext_resource type="AnimationNodeBlendTree" uid="uid://b43qvah30h5eg" path="res://entities/player/child_animation_tree.tres" id="3_68r1g"]
+[ext_resource type="AnimationNodeBlendTree" uid="uid://xrph22dtmo0l" path="res://entities/player/animation_tree.tres" id="3_68r1g"]
 
 [sub_resource type="Curve" id="Curve_68r1g"]
 _data = [Vector2(0, 0), 0.0, 2.94163, 0, 0, Vector2(1, 1), 0.7204, 0.0, 0, 0]
@@ -19,7 +19,10 @@ height = 1.0
 [sub_resource type="BoxShape3D" id="BoxShape3D_symyc"]
 size = Vector3(0.290527, 1.52271, 1)
 
-[node name="Alice" type="CharacterBody3D" node_paths=PackedStringArray("mesh") groups=["Player"]]
+[sub_resource type="BoxShape3D" id="BoxShape3D_68r1g"]
+size = Vector3(0.863281, 1.24164, 1)
+
+[node name="Alice" type="CharacterBody3D" node_paths=PackedStringArray("mesh") groups=["player"]]
 collision_layer = 8
 collision_mask = 3
 script = ExtResource("1_n5soy")
@@ -41,11 +44,21 @@ one_shot = true
 [node name="MeshChild" type="Marker3D" parent="MeshParent"]
 transform = Transform3D(0.49, 0, 0, 0, 0.49, 0, 0, 0, 0.49, 0, 0, 0)
 
-[node name="Area3D" type="Area3D" parent="MeshParent/MeshChild"]
+[node name="WallJump" type="Area3D" parent="MeshParent/MeshChild"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/MeshChild/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/MeshChild/WallJump"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.592257, -0.0557861, 0)
 shape = SubResource("BoxShape3D_symyc")
+
+[node name="HurtBox" type="Area3D" parent="MeshParent/MeshChild"]
+collision_layer = 0
+collision_mask = 68
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/MeshChild/HurtBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00390625, 0.0499573, 0)
+shape = SubResource("BoxShape3D_68r1g")
+debug_color = Color(1, 0.6, 0.701961, 1)
+debug_fill = false
 
 [node name="Robot" parent="MeshParent/MeshChild" instance=ExtResource("2_68r1g")]
 transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-08, 0, -0.984005, 0)
@@ -53,7 +66,7 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/MeshChild/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.41329, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.37039, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
 bones/7/rotation = Quaternion(-0.0309211, -0.00285618, -0.00128305, 0.999517)
@@ -82,16 +95,24 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.788506, 0.117161, -0.592098, 0.118118)
+bones/36/rotation = Quaternion(0.780357, 0.150595, -0.585095, 0.161332)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.278428, 1.23403e-07, -6.32046e-08, 0.960457)
-bones/38/rotation = Quaternion(0.784598, -0.116507, 0.597771, 0.116198)
+bones/37/rotation = Quaternion(0.364449, 1.34676e-07, -8.06008e-08, 0.931223)
+bones/38/rotation = Quaternion(0.776648, -0.150185, 0.590698, 0.159176)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.278428, -3.18263e-07, 4.09103e-08, 0.960457)
+bones/39/rotation = Quaternion(0.364449, -3.04634e-07, 6.98544e-08, 0.931223)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
 bones/42/position = Vector3(-3.23068, 2.42529, 0.859867)
+
+[node name="LedgeGrab" type="RayCast3D" parent="MeshParent/MeshChild"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.759068, 0.787161, 0)
+target_position = Vector3(0, -0.8, 0)
+
+[node name="CheckCollisions" type="RayCast3D" parent="MeshParent/MeshChild/LedgeGrab"]
+target_position = Vector3(0, 1, 0)
+debug_shape_custom_color = Color(1, 0, 0, 1)
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 root_node = NodePath("../MeshParent/MeshChild/Robot")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=4 uid="uid://cia5g3lqw3opr"]
+[gd_scene load_steps=17 format=4 uid="uid://cia5g3lqw3opr"]
 
 [ext_resource type="PackedScene" uid="uid://7jimtt82avqg" path="res://scenes/ProcStairs.tscn" id="1_ekqcl"]
+[ext_resource type="Script" uid="uid://72xopjge5xd1" path="res://scenes/world/moving_platform.gd" id="1_g44xj"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="2_vr4tg"]
 [ext_resource type="Script" uid="uid://b3m83dg3s10vp" path="res://peyman/enemy2.gd" id="3_3nxao"]
 
@@ -9,6 +10,44 @@ size = Vector3(10, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_i4vfv"]
 size = Vector3(10, 1, 1)
+
+[sub_resource type="Animation" id="Animation_ekqcl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-17, 5, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_3nxao"]
+resource_name = "new_animation"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-21.8827, 4.96854, 0), Vector3(-10.5714, 4.96854, 0), Vector3(-21.8827, 4.96854, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_g44xj"]
+_data = {
+&"RESET": SubResource("Animation_ekqcl"),
+&"new_animation": SubResource("Animation_3nxao")
+}
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3nxao"]
 
@@ -57,14 +96,20 @@ shape = SubResource("BoxShape3D_tqh3n")
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor2"]
 mesh = SubResource("BoxMesh_i4vfv")
 
-[node name="Floor3" type="StaticBody3D" parent="Map"]
+[node name="Floor3" type="CharacterBody3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 5, 0)
+script = ExtResource("1_g44xj")
 
 [node name="FloorShape" type="CollisionShape3D" parent="Map/Floor3"]
 shape = SubResource("BoxShape3D_tqh3n")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor3"]
 mesh = SubResource("BoxMesh_i4vfv")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Map/Floor3"]
+libraries = {
+&"": SubResource("AnimationLibrary_g44xj")
+}
 
 [node name="Floor4" type="StaticBody3D" parent="Map"]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -36.5801, 8.01233, 0)
@@ -75,7 +120,7 @@ shape = SubResource("BoxShape3D_tqh3n")
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor4"]
 mesh = SubResource("BoxMesh_i4vfv")
 
-[node name="AutoAim" type="StaticBody3D" parent="Map"]
+[node name="AutoAim" type="StaticBody3D" parent="Map" groups=["hook"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7552, 8.07516, 0)
 collision_layer = 64
 collision_mask = 0
@@ -100,7 +145,7 @@ mesh = SubResource("ArrayMesh_loe1w")
 [node name="@CollisionShape3D@27042" type="CollisionShape3D" parent="Map/ProcStairs/@StaticBody3D@27041"]
 shape = SubResource("ConcavePolygonShape3D_bfkrt")
 
-[node name="player" parent="Map" groups=["player"] instance=ExtResource("2_vr4tg")]
+[node name="player" parent="Map" instance=ExtResource("2_vr4tg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51464, 0)
 
 [node name="enemy" parent="Map" instance=ExtResource("2_vr4tg")]
