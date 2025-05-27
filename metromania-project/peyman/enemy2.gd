@@ -254,7 +254,7 @@ func handle_the_nodes() -> void:
 	
 	###create_hurt_box
 	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 1
+	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
 	var collision_shape = CollisionShape3D.new()
 	var capsule_shape = CapsuleShape3D.new()

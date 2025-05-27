@@ -497,14 +497,14 @@ func create_hit_box():
 	bone_attachment.add_child(hit_box)
 	hit_box.area_entered.connect(on_hit_box_entered)
  
-func on_hit_box_entered(body: Node3D) -> void:
-	var parent: Node3D = body.get_parent()
+func on_hit_box_entered(area: Area3D) -> void:
+	var parent: Node3D = area.get_parent()
 	if parent && parent.has_method("take_damage"):
 		parent.take_damage(_damage)
 
 func create_hurt_box() -> void:
 	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 2
+	hurt_box.collision_layer = 1 << 4
 	hurt_box.collision_mask = 0
 	var collision_shape := CollisionShape3D.new()
 	var capsule_shape := CapsuleShape3D.new()
