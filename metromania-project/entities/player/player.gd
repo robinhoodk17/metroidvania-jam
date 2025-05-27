@@ -2,7 +2,7 @@ extends CharacterBody3D
 class_name PlayerController
 
 enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING, LEDGE_GRABBING}
-enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING, BLOCKED}
+enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING, BLOCKED, DASHING}
 enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
 @export var slow_time : bool = false
@@ -161,7 +161,7 @@ func run_state_machine(delta: float) -> void:
 		return
 		
 	var run_direction = Input.get_axis("move_left", "move_right")
-	
+	var aiming_for_wall : bool = false
 	if ledge_grab.is_colliding() and !check_collisions.is_colliding():
 		if velocity.y < 0:
 			if !is_on_floor():
@@ -176,8 +176,9 @@ func run_state_machine(delta: float) -> void:
 					return
 	
 	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
+		aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
 		#print_debug("overlapping bodies and not ledge grab ", current_action_state)
-		if run_direction * mesh.global_basis.z.z > 0 and !is_on_floor():
+		if aiming_for_wall and !is_on_floor():
 			#print_debug("facing and pressing button")
 			if current_run_state != run_state.WALL_SLIDING:
 				if velocity.y < 0:
@@ -187,7 +188,8 @@ func run_state_machine(delta: float) -> void:
 	
 	if current_action_state == action_state.BLOCKED:
 		return
-	
+	if current_action_state == action_state.DASHING:
+		return
 	match current_run_state:
 		run_state.IDLE:
 			if is_on_floor():
@@ -244,7 +246,7 @@ func run_state_machine(delta: float) -> void:
 			pass
 		
 		run_state.WALL_SLIDING:
-			if !wall_jump.is_colliding() or is_on_floor():
+			if !wall_jump.is_colliding() or is_on_floor() or !aiming_for_wall:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
@@ -305,6 +307,10 @@ func action_state_machine(_delta: float) -> void:
 				inputs.JUMP:
 						jump()
 						return
+		
+		action_state.DASHING:
+			if is_on_floor():
+				current_action_state = action_state.IDLE_ACTION
 
 func manage_action_inputs():
 	if Input.is_action_just_pressed("Space"):
@@ -452,9 +458,11 @@ func jump() -> void:
 		second_jump = true
 
 func dash(horizontal_direction : float, vertical_direction : float) -> void:
+	if horizontal_direction == 0.0 and vertical_direction == 0.0:
+		horizontal_direction = mesh.global_basis.z.z
 	dash_spent = true
 	velocity = Vector3(horizontal_direction, vertical_direction, 0).normalized() * dash_velocity
-	current_action_state = action_state.BLOCKED
+	current_action_state = action_state.DASHING
 	dash_reset_timer.start(dash_duration)
 
 func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
