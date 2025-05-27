@@ -34,7 +34,7 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @export var dash_velocity : float = 30.0
 @export var dash_duration : float = 0.5
 @export var coyote_time : float = 0.1
-@export var ledge_grab_offset : float = -.5
+@export var ledge_grab_offset : float = -.35
 @export_group("Combat")
 @export var combo_reset : float = 1.5
 @export var max_combo : int = 3
@@ -439,7 +439,7 @@ func jump() -> void:
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0
 	velocity.y = jump_velocity
-	velocity += get_platform_velocity()/2
+	velocity += get_platform_velocity()/4.0
 	if abs(velocity.x) > speed:
 		running_time = acceleration
 	else:

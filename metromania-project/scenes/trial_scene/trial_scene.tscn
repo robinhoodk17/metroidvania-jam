@@ -1,14 +1,116 @@
-[gd_scene load_steps=5 format=3 uid="uid://dxprpl0eyv2xm"]
+[gd_scene load_steps=13 format=4 uid="uid://dxprpl0eyv2xm"]
 
 [ext_resource type="PackedScene" uid="uid://dkhjtbwvdf2ss" path="res://scenes/trial_scene/trial_scene.blend" id="1_pwfib"]
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_w0n63"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="2_w0n63"]
+[ext_resource type="Script" uid="uid://72xopjge5xd1" path="res://scenes/world/moving_platform.gd" id="3_3ttxr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8s0f8"]
+resource_name = "Material"
+cull_mode = 2
+albedo_color = Color(0.906332, 0.906332, 0.906332, 1)
+roughness = 0.5
+metadata/extras = {
+"yp": {
+"active_ypaint_node": ""
+}
+}
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_c5pi5"]
+_surfaces = [{
+"aabb": AABB(-1, -0.288191, -1, 5, 0.288191, 2),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEAAwAFAAIABQAAAAIABgAEAAAABQAGAAAABwABAAQABwADAAEABgAHAAQABQADAAcABQAHAAYA"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("/////wAAAAAAAP////8AAAAA//8AAAAAAAAAAP//AAD///////8AAAAAAAAAAAAA//8AAAAAAAD//wAA//8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_w0u8d"]
+resource_name = "trial_scene_Cube_004"
+_surfaces = [{
+"aabb": AABB(-1, -0.288191, -1, 5, 0.288191, 2),
+"attribute_data": PackedByteArray("/5//f//f/z//3/9//5//P/9f/z//nwAA/5//P/9fAAD/X////5//v/+f////X/+//x//f/9f/z//X/9//x//P/9f/3//n/8//5//f/9f/z//X/+//5//f/+f/7//X/9/"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_8s0f8"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("/////wAA//8AAP///////wAA//8AAP///////////////wAA////vwAA//////+//////////78AAAAA////vwAAAAD//1TVAAD//wAAVNUAAP////9U1QAAAAAAAFTVAAAAAAAA/7///wAA////v///AAAAAP+/AAAAAP///7///wAAAABU1f///////1TV/////wAAVNX//wAA//9U1QAAAAAAAP///////wAA//8AAP//AAD/////AAAAAP///3//v/9//7//f/+//3//v/////////////////////9U1VTVVNVU1VTVVNVU1VTVAAD/fwAA/38AAP9/AAD/f6oqqiqqKqoqqiqqKqoqqir/v/+//7//v/+//7//v/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_c5pi5")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3ttxr"]
+size = Vector3(4.9942, 0.289551, 1)
+
+[sub_resource type="Animation" id="Animation_yrmet"]
+resource_name = "new_animation"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-14.392, 3, 0), Vector3(26.936, 3, 0), Vector3(-14.392, 3, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_0jync"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-14.3923, 5, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lqtkm"]
+_data = {
+&"RESET": SubResource("Animation_0jync"),
+&"new_animation": SubResource("Animation_yrmet")
+}
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w0n63"]
 
 [node name="Node" instance=ExtResource("1_w0n63")]
 
 [node name="trial_scene" parent="Map" index="0" instance=ExtResource("1_pwfib")]
+
+[node name="Cube-col_002" type="MeshInstance3D" parent="Map/trial_scene" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3923, 5, 0)
+mesh = SubResource("ArrayMesh_w0u8d")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="CharacterBody3D" parent="Map/trial_scene/Cube-col_002" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/trial_scene/Cube-col_002/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.49442, -0.144775, 0)
+shape = SubResource("BoxShape3D_3ttxr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Map/trial_scene/Cube-col_002" index="1"]
+libraries = {
+&"": SubResource("AnimationLibrary_lqtkm")
+}
+script = ExtResource("3_3ttxr")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Map/trial_scene/Torus" index="0" groups=["hook"]]
 collision_layer = 64
