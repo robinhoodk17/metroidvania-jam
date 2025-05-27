@@ -1,4 +1,4 @@
-extends CharacterBody3D
+extends AnimationPlayer
 
 func _ready() -> void:
-	$AnimationPlayer.play("new_animation")
+	play("new_animation")

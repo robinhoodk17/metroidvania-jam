@@ -5,6 +5,7 @@ enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING, LEDGE
 enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING, BLOCKED}
 enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
+@export var slow_time : bool = false
 @export_group("Player Movement")
 ##how long an action remains queued before it gets deleted
 ##for example, when a player jumps before reaching the ground
@@ -27,7 +28,7 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
 @export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 0.75
+@export var wall_jump_time : float = 0.25
 ##when the player is pressing against a wall, how much it stops falling
 @export var wall_slide_gravity : float = 0.2
 @export var dash_velocity : float = 30.0
@@ -53,7 +54,7 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @onready var queue_timer: Timer = $QueueTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var grappling_hook : Node3D = $GrapplingHookParent
-@onready var wall_jump: Area3D = $MeshParent/WallJump
+@onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
 
@@ -119,6 +120,8 @@ func pick_up_child(_body : Node3D = null):
 		carrying_child = true
 
 func _physics_process(delta: float) -> void:
+	if slow_time:
+		Engine.time_scale = 0.25
 	position_camera(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
@@ -165,12 +168,15 @@ func run_state_machine(delta: float) -> void:
 					dash_spent = false
 					return
 	
-	if wall_jump.has_overlapping_bodies() and !current_run_state == run_state.LEDGE_GRABBING:
+	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
+		#print_debug("overlapping bodies and not ledge grab ", current_action_state)
 		if run_direction * mesh.global_basis.z.z > 0 and !is_on_floor():
+			#print_debug("facing and pressing button")
 			if current_run_state != run_state.WALL_SLIDING:
 				if velocity.y < 0:
 					velocity.y = 0
 			current_run_state = run_state.WALL_SLIDING
+			#print_debug("wall sliding")
 	
 	if current_action_state == action_state.BLOCKED:
 		return
@@ -211,7 +217,8 @@ func run_state_machine(delta: float) -> void:
 					braking_time = 0.0
 					current_run_state = run_state.BRAKING
 					return
-			velocity.x = run_direction * speed
+			if abs(velocity.x) < speed:
+				velocity.x = run_direction * speed
 
 		run_state.BRAKING:
 			run_animation.travel("walk")
@@ -225,7 +232,7 @@ func run_state_machine(delta: float) -> void:
 			pass
 		
 		run_state.WALL_SLIDING:
-			if !wall_jump.has_overlapping_bodies():
+			if !wall_jump.is_colliding():
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
@@ -374,9 +381,11 @@ func handle_gravity(delta: float) -> void:
 	match current_run_state:
 		run_state.LEDGE_GRABBING:
 			current_gravity_force = 0.0
+			jumping_time = jump_floatiness
 		run_state.WALL_SLIDING:
 			if velocity.y <= 0.0:
 				current_gravity_force = wall_slide_gravity
+				jumping_time = jump_floatiness
 
 	if current_action_state == action_state.HOOKED:
 		current_gravity_force = 0.0
@@ -412,7 +421,12 @@ func jump() -> void:
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0
 	velocity.y = jump_velocity
-
+	velocity += get_platform_velocity()
+	if abs(velocity.x) > speed:
+		current_run_state = run_state.RUNNING
+		running_time = acceleration
+	else:
+		running_time = abs(velocity.x)/speed
 	if coyote_timer.is_stopped():
 		if current_run_state == run_state.WALL_SLIDING:
 			current_action_state = action_state.BLOCKED
