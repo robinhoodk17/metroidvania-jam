@@ -1,8 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://docds2qsao4bg"]
+[gd_scene load_steps=2 format=3 uid="uid://docds2qsao4bg"]
 
-[ext_resource type="Script" uid="uid://ekpe2krthkgv" path="res://main.gd" id="1_o5qli"]
-[ext_resource type="AudioStream" uid="uid://beeopqx1phmuh" path="res://music/[Idea 1] Main Theme V2.mp3" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://bkvh7lggqa7uh" path="res://fade.gd" id="1_cmmhd"]
 
 [node name="main" type="Node"]
-script = ExtResource("1_o5qli")
-musics = Array[AudioStream]([ExtResource("2_0wfyh")])
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_cmmhd")

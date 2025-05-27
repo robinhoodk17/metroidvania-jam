@@ -1,15 +1,17 @@
-[gd_scene load_steps=29 format=4 uid="uid://cyexyx54gft8m"]
+[gd_scene load_steps=36 format=4 uid="uid://cyexyx54gft8m"]
 
-[ext_resource type="Script" uid="uid://beh25rj36rw8o" path="res://scripts/Johann/Johann_PlayerManager.gd" id="1_df6yh"]
+[ext_resource type="Script" path="res://scripts/Johann/Johann_PlayerManager.gd" id="1_df6yh"]
 [ext_resource type="PackedScene" uid="uid://7jimtt82avqg" path="res://scenes/ProcStairs.tscn" id="1_e2kfs"]
 [ext_resource type="Shader" uid="uid://4np5wvmrrk8g" path="res://materials/shaders/grid_shader.gdshader" id="1_hfevb"]
 [ext_resource type="Texture2D" uid="uid://b8iw8gfyw4eay" path="res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg" id="2_i7e33"]
-[ext_resource type="Script" uid="uid://b1f6aeoym8ati" path="res://scripts/Johann/Johann_PlayerCharacter.gd" id="2_qpf51"]
-[ext_resource type="Script" uid="uid://ccnnuegeop34m" path="res://scripts/Johann/Johann_PlayerCamera.gd" id="3_3xcbl"]
+[ext_resource type="Script" path="res://scripts/Johann/Johann_PlayerCharacter.gd" id="2_qpf51"]
+[ext_resource type="Script" path="res://scripts/Johann/Johann_PlayerCamera.gd" id="3_3xcbl"]
 [ext_resource type="Texture2D" uid="uid://cxmpe27vltujf" path="res://icon.svg" id="5_bfkrt"]
 [ext_resource type="Shader" uid="uid://c6sdcoaf2ojf6" path="res://materials/shaders/outline_shader.gdshader" id="6_i7e33"]
 [ext_resource type="Shader" uid="uid://cy6ukkmtolj1t" path="res://materials/shaders/toon_shader_no_depth.gdshader" id="7_x8qgb"]
+[ext_resource type="ArrayMesh" path="res://meshes/vfx/slash_mesh_mesh.res" id="9_xr6jn"]
 [ext_resource type="Shader" uid="uid://dmus6t2fhh1n7" path="res://materials/shaders/depth_outline_shader.gdshader" id="10_x8qgb"]
+[ext_resource type="Shader" path="res://materials/shaders/slash_vfx_test.tres" id="11_boon8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tqh3n"]
 size = Vector3(10, 1, 1)
@@ -55,6 +57,8 @@ _surfaces = [{
 data = PackedVector3Array(1, 0, 0, 1, 0.75, 0, 0, 0.75, 0, 0, 0.75, 0, 0, 0, 0, 1, 0, 0, 1, 0.75, 0, 1, 0.75, 0.75, 0, 0.75, 0.75, 0, 0.75, 0.75, 0, 0.75, 0, 1, 0.75, 0, 0, 0.75, 0, 0, 0.75, 0.75, 0, 0, 0.75, 0, 0, 0.75, 0, 0, 0, 0, 0.75, 0, 1, 0, 0, 1, 0, 0.75, 1, 0.75, 0.75, 1, 0.75, 0.75, 1, 0.75, 0, 1, 0, 0, 1, 0.75, 0.75, 1, 1.5, 0.75, 0, 1.5, 0.75, 0, 1.5, 0.75, 0, 0.75, 0.75, 1, 0.75, 0.75, 1, 1.5, 0.75, 1, 1.5, 1.5, 0, 1.5, 1.5, 0, 1.5, 1.5, 0, 1.5, 0.75, 1, 1.5, 0.75, 0, 1.5, 0.75, 0, 1.5, 1.5, 0, 0, 1.5, 0, 0, 1.5, 0, 0, 0.75, 0, 1.5, 0.75, 1, 0, 0.75, 1, 0, 1.5, 1, 1.5, 1.5, 1, 1.5, 1.5, 1, 1.5, 0.75, 1, 0, 0.75, 1, 1.5, 1.5, 1, 2.25, 1.5, 0, 2.25, 1.5, 0, 2.25, 1.5, 0, 1.5, 1.5, 1, 1.5, 1.5, 1, 2.25, 1.5, 1, 2.25, 2.25, 0, 2.25, 2.25, 0, 2.25, 2.25, 0, 2.25, 1.5, 1, 2.25, 1.5, 0, 2.25, 1.5, 0, 2.25, 2.25, 0, 0, 2.25, 0, 0, 2.25, 0, 0, 1.5, 0, 2.25, 1.5, 1, 0, 1.5, 1, 0, 2.25, 1, 2.25, 2.25, 1, 2.25, 2.25, 1, 2.25, 1.5, 1, 0, 1.5, 1, 2.25, 2.25, 1, 3, 2.25, 0, 3, 2.25, 0, 3, 2.25, 0, 2.25, 2.25, 1, 2.25, 2.25, 1, 3, 2.25, 1, 3, 3, 0, 3, 3, 0, 3, 3, 0, 3, 2.25, 1, 3, 2.25, 0, 3, 2.25, 0, 3, 3, 0, 0, 3, 0, 0, 3, 0, 0, 2.25, 0, 3, 2.25, 1, 0, 2.25, 1, 0, 3, 1, 3, 3, 1, 3, 3, 1, 3, 2.25, 1, 0, 2.25, 1, 3, 3, 1, 3.75, 3, 0, 3.75, 3, 0, 3.75, 3, 0, 3, 3, 1, 3, 3, 1, 3.75, 3, 1, 3.75, 3.75, 0, 3.75, 3.75, 0, 3.75, 3.75, 0, 3.75, 3, 1, 3.75, 3, 0, 3.75, 3, 0, 3.75, 3.75, 0, 0, 3.75, 0, 0, 3.75, 0, 0, 3, 0, 3.75, 3, 1, 0, 3, 1, 0, 3.75, 1, 3.75, 3.75, 1, 3.75, 3.75, 1, 3.75, 3, 1, 0, 3, 1, 3.75, 3.75, 1, 4.5, 3.75, 0, 4.5, 3.75, 0, 4.5, 3.75, 0, 3.75, 3.75, 1, 3.75, 3.75, 1, 4.5, 3.75, 1, 4.5, 4.5, 0, 4.5, 4.5, 0, 4.5, 4.5, 0, 4.5, 3.75, 1, 4.5, 3.75, 0, 4.5, 3.75, 0, 4.5, 4.5, 0, 0, 4.5, 0, 0, 4.5, 0, 0, 3.75, 0, 4.5, 3.75, 1, 0, 3.75, 1, 0, 4.5, 1, 4.5, 4.5, 1, 4.5, 4.5, 1, 4.5, 3.75, 1, 0, 3.75, 1, 4.5, 4.5, 1, 5.25, 4.5, 0, 5.25, 4.5, 0, 5.25, 4.5, 0, 4.5, 4.5, 1, 4.5, 4.5, 1, 5.25, 4.5, 1, 5.25, 5.25, 0, 5.25, 5.25, 0, 5.25, 5.25, 0, 5.25, 4.5, 1, 5.25, 4.5, 0, 5.25, 4.5, 0, 5.25, 5.25, 0, 0, 5.25, 0, 0, 5.25, 0, 0, 4.5, 0, 5.25, 4.5, 1, 0, 4.5, 1, 0, 5.25, 1, 5.25, 5.25, 1, 5.25, 5.25, 1, 5.25, 4.5, 1, 0, 4.5, 1, 5.25, 5.25, 1, 6, 5.25, 0, 6, 5.25, 0, 6, 5.25, 0, 5.25, 5.25, 1, 5.25, 5.25, 1, 6, 5.25, 1, 6, 6, 0, 6, 6, 0, 6, 6, 0, 6, 5.25, 1, 6, 5.25, 0, 6, 5.25, 0, 6, 6, 0, 0, 6, 0, 0, 6, 0, 0, 5.25, 0, 6, 5.25, 1, 0, 5.25, 1, 0, 6, 1, 6, 6, 1, 6, 6, 1, 6, 5.25, 1, 0, 5.25, 1, 6, 6, 1, 6.75, 6, 0, 6.75, 6, 0, 6.75, 6, 0, 6, 6, 1, 6, 6, 1, 6.75, 6, 1, 6.75, 6.75, 0, 6.75, 6.75, 0, 6.75, 6.75, 0, 6.75, 6, 1, 6.75, 6, 0, 6.75, 6, 0, 6.75, 6.75, 0, 0, 6.75, 0, 0, 6.75, 0, 0, 6, 0, 6.75, 6, 1, 0, 6, 1, 0, 6.75, 1, 6.75, 6.75, 1, 6.75, 6.75, 1, 6.75, 6, 1, 0, 6, 0, 0, 6.75, 0, 6.75, 6.75, 1, 6.75, 6.75, 1, 6.75, 6.75, 1, 0, 6.75, 0, 0, 6.75)
 
 [sub_resource type="Environment" id="Environment_hchdp"]
+glow_enabled = true
+glow_bloom = 0.1
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_gtlbc"]
 
@@ -85,6 +89,155 @@ shader_parameter/lit_color = Color(1, 1, 1, 1)
 shader_parameter/unlit_color = Color(0, 0, 0, 1)
 shader_parameter/cel_threshold = 0.5
 shader_parameter/cel_sharpness = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_76ijo"]
+render_priority = 1
+shader = ExtResource("11_boon8")
+shader_parameter/Vertex_Offset = 0.01
+shader_parameter/ColorParameter = Color(0, 2, 4, 0.144)
+shader_parameter/Step_Threshold = 1.0
+shader_parameter/Step_Sharpness = 0.0
+shader_parameter/Texture_Scale = 5.614
+shader_parameter/Texture_Randomness = 1.0
+shader_parameter/Base_X_Offset = 0.5
+shader_parameter/Base_Scale_X = 0.386
+shader_parameter/Base_Width = -0.02
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2k153"]
+render_priority = 1
+next_pass = SubResource("ShaderMaterial_76ijo")
+shader = ExtResource("11_boon8")
+shader_parameter/Vertex_Offset = 0.0
+shader_parameter/ColorParameter = Color(1, 1, 100, 1)
+shader_parameter/Step_Threshold = 0.33
+shader_parameter/Step_Sharpness = 0.0
+shader_parameter/Texture_Scale = 10.0
+shader_parameter/Texture_Randomness = 1.0
+shader_parameter/Base_X_Offset = 0.5
+shader_parameter/Base_Scale_X = 0.0
+shader_parameter/Base_Width = 0.0630001
+
+[sub_resource type="Animation" id="Animation_xr6jn"]
+resource_name = "Slash_Anim"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Slash_VFX1/Slash_VFX:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Slash_VFX1/Slash_VFX:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1.5708, -0.25, 0, 0.25, 0, -1.5708, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Slash_VFX1/Slash_VFX:rotation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../Slash_VFX1/Slash_VFX:surface_material_override/0:next_pass:shader_parameter/Step_Threshold")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../Slash_VFX1/Slash_VFX:surface_material_override/0:shader_parameter/Step_Threshold")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 0.33, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="Animation" id="Animation_2k153"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Slash_VFX1/Slash_VFX:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Slash_VFX1/Slash_VFX:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Slash_VFX1/Slash_VFX:rotation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../Slash_VFX1/Slash_VFX:surface_material_override/0:next_pass:shader_parameter/Step_Threshold")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../Slash_VFX1/Slash_VFX:surface_material_override/0:shader_parameter/Step_Threshold")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0.33, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jo5l8"]
+_data = {
+&"RESET": SubResource("Animation_2k153"),
+&"Slash_Anim": SubResource("Animation_xr6jn")
+}
 
 [sub_resource type="Curve" id="Curve_r3i7w"]
 _data = [Vector2(0, 0.001), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -196,6 +349,20 @@ one_shot = true
 wait_time = 0.1
 one_shot = true
 
+[node name="Slash_VFX1" type="Node3D" parent="Player/PlayerCharacter"]
+transform = Transform3D(1.54, 0, 0, 0, -6.73155e-08, -1.54, 0, 1.54, -6.73155e-08, 0, 0, 0)
+
+[node name="Slash_VFX" type="MeshInstance3D" parent="Player/PlayerCharacter/Slash_VFX1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = ExtResource("9_xr6jn")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_2k153")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player/PlayerCharacter/Slash_VFX1"]
+libraries = {
+&"": SubResource("AnimationLibrary_jo5l8")
+}
+
 [node name="PlayerCamera" type="Camera3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 8)
 script = ExtResource("3_3xcbl")
@@ -206,3 +373,5 @@ horizontalInputMultiplier = 0.25
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.41272, 0, -8.28839)
 mesh = SubResource("QuadMesh_2k153")
 surface_material_override/0 = SubResource("ShaderMaterial_jo5l8")
+
+[node name="VFX" type="Node" parent="."]
