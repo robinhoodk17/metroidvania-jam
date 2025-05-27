@@ -1,15 +1,40 @@
-[gd_scene load_steps=17 format=4 uid="uid://cyexyx54gft8m"]
+[gd_scene load_steps=29 format=4 uid="uid://cyexyx54gft8m"]
 
 [ext_resource type="Script" uid="uid://beh25rj36rw8o" path="res://scripts/Johann/Johann_PlayerManager.gd" id="1_df6yh"]
 [ext_resource type="PackedScene" uid="uid://7jimtt82avqg" path="res://scenes/ProcStairs.tscn" id="1_e2kfs"]
+[ext_resource type="Shader" uid="uid://4np5wvmrrk8g" path="res://materials/shaders/grid_shader.gdshader" id="1_hfevb"]
+[ext_resource type="Texture2D" uid="uid://b8iw8gfyw4eay" path="res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg" id="2_i7e33"]
 [ext_resource type="Script" uid="uid://b1f6aeoym8ati" path="res://scripts/Johann/Johann_PlayerCharacter.gd" id="2_qpf51"]
 [ext_resource type="Script" uid="uid://ccnnuegeop34m" path="res://scripts/Johann/Johann_PlayerCamera.gd" id="3_3xcbl"]
+[ext_resource type="Texture2D" uid="uid://cxmpe27vltujf" path="res://icon.svg" id="5_bfkrt"]
+[ext_resource type="Shader" uid="uid://c6sdcoaf2ojf6" path="res://materials/shaders/outline_shader.gdshader" id="6_i7e33"]
+[ext_resource type="Shader" uid="uid://cy6ukkmtolj1t" path="res://materials/shaders/toon_shader_no_depth.gdshader" id="7_x8qgb"]
+[ext_resource type="Shader" uid="uid://dmus6t2fhh1n7" path="res://materials/shaders/depth_outline_shader.gdshader" id="10_x8qgb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tqh3n"]
 size = Vector3(10, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_i4vfv"]
 size = Vector3(10, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xr6jn"]
+render_priority = 0
+shader = ExtResource("6_i7e33")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x8qgb"]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_xr6jn")
+shader = ExtResource("1_hfevb")
+shader_parameter/grid_texture = ExtResource("2_i7e33")
+shader_parameter/grid_scale = 1.0
+shader_parameter/gridBase_color = Color(1, 0.439216, 0.541176, 1)
+shader_parameter/gridLine_color = Color(1, 1, 1, 1)
+shader_parameter/lit_color = Color(1, 1, 1, 1)
+shader_parameter/unlit_color = Color(0, 0, 0, 1)
+shader_parameter/cel_threshold = 0.5
+shader_parameter/cel_sharpness = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2kfs"]
 vertex_color_use_as_albedo = true
@@ -45,9 +70,38 @@ height = 1.5
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_1mybw"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_boon8"]
+render_priority = 0
+shader = ExtResource("6_i7e33")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 0.02
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bfkrt"]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_boon8")
+shader = ExtResource("7_x8qgb")
+shader_parameter/base_texture = ExtResource("5_bfkrt")
+shader_parameter/lit_color = Color(1, 1, 1, 1)
+shader_parameter/unlit_color = Color(0, 0, 0, 1)
+shader_parameter/cel_threshold = 0.5
+shader_parameter/cel_sharpness = 0.0
+
 [sub_resource type="Curve" id="Curve_r3i7w"]
 _data = [Vector2(0, 0.001), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_2k153"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jo5l8"]
+render_priority = 0
+shader = ExtResource("10_x8qgb")
+shader_parameter/maxDistance = 25.0
+shader_parameter/magnification = 1.0
+shader_parameter/radius = 0.002
+shader_parameter/threshold = 0.025
+shader_parameter/outlineColor = Vector4(0, 0, 0, 1)
 
 [node name="Johann_Scene" type="Node"]
 
@@ -60,6 +114,7 @@ shape = SubResource("BoxShape3D_tqh3n")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor"]
 mesh = SubResource("BoxMesh_i4vfv")
+surface_material_override/0 = SubResource("ShaderMaterial_x8qgb")
 
 [node name="Floor2" type="StaticBody3D" parent="Map"]
 transform = Transform3D(2.98023e-08, 1, 0, -1, 2.98023e-08, 0, 0, 0, 1, -5, 0, 0)
@@ -69,6 +124,7 @@ shape = SubResource("BoxShape3D_tqh3n")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor2"]
 mesh = SubResource("BoxMesh_i4vfv")
+surface_material_override/0 = SubResource("ShaderMaterial_x8qgb")
 
 [node name="Floor3" type="StaticBody3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 5, 0)
@@ -78,6 +134,7 @@ shape = SubResource("BoxShape3D_tqh3n")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Map/Floor3"]
 mesh = SubResource("BoxMesh_i4vfv")
+surface_material_override/0 = SubResource("ShaderMaterial_x8qgb")
 
 [node name="ProcStairs" parent="Map" instance=ExtResource("1_e2kfs")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5, 0, 0.5)
@@ -87,6 +144,7 @@ step_depth = 0.75
 
 [node name="@MeshInstance3D@27040" type="MeshInstance3D" parent="Map/ProcStairs"]
 mesh = SubResource("ArrayMesh_loe1w")
+surface_material_override/0 = SubResource("ShaderMaterial_x8qgb")
 
 [node name="@StaticBody3D@27041" type="StaticBody3D" parent="Map/ProcStairs"]
 
@@ -98,6 +156,7 @@ environment = SubResource("Environment_hchdp")
 camera_attributes = SubResource("CameraAttributesPractical_gtlbc")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+shadow_enabled = true
 
 [node name="Player" type="Node3D" parent="."]
 script = ExtResource("1_df6yh")
@@ -119,7 +178,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 shape = SubResource("CapsuleShape3D_wfuue")
 
 [node name="PlayerMesh" type="MeshInstance3D" parent="Player/PlayerCharacter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0104516, 0, 0.00214553)
 mesh = SubResource("CapsuleMesh_1mybw")
+surface_material_override/0 = SubResource("ShaderMaterial_bfkrt")
 
 [node name="PlayerGroundCast" type="RayCast3D" parent="Player/PlayerCharacter"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
@@ -140,3 +201,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 8)
 script = ExtResource("3_3xcbl")
 cameraAccelerationCurve = SubResource("Curve_r3i7w")
 horizontalInputMultiplier = 0.25
+
+[node name="Depth_Outline" type="MeshInstance3D" parent="Player/PlayerCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.41272, 0, -8.28839)
+mesh = SubResource("QuadMesh_2k153")
+surface_material_override/0 = SubResource("ShaderMaterial_jo5l8")
