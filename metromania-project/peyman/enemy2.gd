@@ -27,7 +27,6 @@ var hit_timer = 0.0
 var distance : float 
 var label_3d: Label3D 
 var raycast: RayCast3D 
-var hurt_box: Area3D 
 var navigation_agent: NavigationAgent3D  
 var upper_animation : AnimationNodeStateMachinePlayback
 var locomotion : AnimationNodeStateMachinePlayback
@@ -36,6 +35,10 @@ var provoked: bool
 var can_move := true
 var jump_velocity := 13.0
 var is_jumping: bool
+var skeleton : Skeleton3D
+var hurt_box: Area3D 
+var hit_box : Area3D
+var bone_attachment : BoneAttachment3D
 const ENEMY_TREE = preload("res://peyman/enemy_tree.tres")
 
 func _ready():
@@ -251,16 +254,37 @@ func handle_the_nodes() -> void:
 	
 	###create_hurt_box
 	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 5
+	hurt_box.collision_layer = 1 << 1
+	hurt_box.collision_mask = 0
 	var collision_shape = CollisionShape3D.new()
 	var capsule_shape = CapsuleShape3D.new()
-	capsule_shape.radius = 0.5
-	capsule_shape.height = 2.0
+	capsule_shape.radius = 0.5 - 0.1
+	capsule_shape.height = 2.0 - 0.4
 	collision_shape.shape = capsule_shape
 	hurt_box.add_child(collision_shape)
 	hurt_box.monitoring = false
-	hurt_box.collision_mask = 0
 	add_child(hurt_box)
+ 
+	##add_hitbox
+	skeleton = find_child("Skeleton3D")  
+	if not skeleton:
+		push_error("Enemy Skeleton3D node not found!")
+		return
+	bone_attachment = BoneAttachment3D.new()
+	skeleton.add_child(bone_attachment)
+	hit_box = Area3D.new()
+	hit_box.name = "hit_box"
+	hit_box.collision_layer = 0
+	hit_box.collision_mask = 1 << 4
+	var collision_shape_hit := CollisionShape3D.new()
+	var sphere_shape := SphereShape3D.new()
+	sphere_shape.radius = 0.5  
+	hit_box.monitorable = false
+	hit_box.monitoring = false
+	collision_shape_hit.shape = sphere_shape
+	hit_box.add_child(collision_shape_hit)
+	bone_attachment.add_child(hit_box)
+	bone_attachment.bone_name = "Palm1.R"
 	
 	###create_label_3d
 	label_3d = Label3D.new()
@@ -284,6 +308,7 @@ func handle_the_nodes() -> void:
 	nav_region.navmesh = nav_mesh
 	add_child(nav_region)
 #endregion 
+
 func handle_adustments() -> void:
 	set_state(State.IDLE)
 	###initial_adustments
