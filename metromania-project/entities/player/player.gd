@@ -60,9 +60,15 @@ var action_animation : AnimationNodeStateMachinePlayback
 var locomotion : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
-
+"""new_variables"""
+var skeleton : Skeleton3D
+var hit_box : Area3D
+var hurt_box : Area3D
+var bone_attachment = BoneAttachment3D
+var _damage := 10
 
 func _ready() -> void:
+	handle_the_node()
 	screen_middle = DisplayServer.screen_get_size()/2
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
@@ -272,3 +278,62 @@ func change_action_state(new_state : action_state):
 	current_action_state = new_state
 	if new_state == action_state.IDLE_ACTION:
 		combo_reset_timer.start(combo_reset)
+
+#region create_nodes
+func handle_the_node() -> void:
+	create_bone_attachment()
+	create_hit_box()
+	create_hurt_box()
+	
+func create_bone_attachment() -> void:
+	skeleton = find_child("Skeleton3D") 
+	if not skeleton:
+		push_error("Skeleton3D node not found!")
+		return
+	bone_attachment = BoneAttachment3D.new()
+	skeleton.add_child(bone_attachment)
+
+func create_hit_box():
+	hit_box = Area3D.new()
+	hit_box.name = "hit_box"
+	hit_box.collision_layer = 0
+	hit_box.collision_mask = 1 << 5
+	hit_box.monitorable = false
+	hit_box.monitoring = false
+	var collision_shape := CollisionShape3D.new()
+	var sphere_shape := SphereShape3D.new()
+	sphere_shape.radius = 0.5  
+	collision_shape.shape = sphere_shape
+	hit_box.add_child(collision_shape)
+	bone_attachment.add_child(hit_box)
+	hit_box.area_entered.connect(on_hit_box_entered)
+ 
+func on_hit_box_entered(body: Node3D) -> void:
+	var parent: Node3D = body.get_parent()
+	if parent && parent.has_method("take_damage"):
+		parent.take_damage(_damage)
+
+func create_hurt_box() -> void:
+	hurt_box = Area3D.new()
+	hurt_box.collision_layer = 1 << 2
+	hurt_box.collision_mask = 0
+	var collision_shape := CollisionShape3D.new()
+	var capsule_shape := CapsuleShape3D.new()
+	capsule_shape.radius = 0.5 - 0.1
+	capsule_shape.height = 2.0 - 0.4
+	collision_shape.shape = capsule_shape
+	hurt_box.add_child(collision_shape)
+	hurt_box.monitoring = false
+	add_child(hurt_box)
+ 
+func enable_hit_box(bone_name: String = "Palm1.R", time_sec: float = 2) -> void:
+	var bone_node := skeleton.get_node_or_null(bone_name)
+	if not bone_node:
+		push_error("Bone node '%s' not found!" % bone_name)
+		return
+	bone_attachment.bone_name = "Palm1.R"
+	hit_box.monitoring = true
+	await get_tree().create_timer(time_sec).timeout
+	hit_box.monitoring = false
+
+#endregion 
