@@ -15,14 +15,14 @@ point_count = 3
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pwfib"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_symyc"]
-size = Vector3(0.290527, 1.37708, 1)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_fkugw"]
 size = Vector3(15, 10, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bls4j"]
 size = Vector3(0.996185, 1.54065, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8fjmc"]
+size = Vector3(0.1, 1.75, 1)
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_05bod"]
 
@@ -172,13 +172,6 @@ shape = SubResource("CapsuleShape3D_pwfib")
 
 [node name="MeshParent" type="Marker3D" parent="."]
 
-[node name="WallJump" type="Area3D" parent="MeshParent"]
-collision_layer = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/WallJump"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.592257, 0.0170301, 0)
-shape = SubResource("BoxShape3D_symyc")
-
 [node name="AutoAim" type="Area3D" parent="MeshParent"]
 collision_layer = 0
 collision_mask = 64
@@ -200,10 +193,10 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.36678, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.3383, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
-bones/7/rotation = Quaternion(-0.0309211, -0.00285618, -0.00128305, 0.999517)
+bones/7/rotation = Quaternion(-0.0370747, -0.122519, -0.00220058, 0.991771)
 bones/8/position = Vector3(0.582738, 0.29672, 0.0324413)
 bones/8/rotation = Quaternion(-0.0114497, -0.0532471, -0.9762, 0.209923)
 bones/9/rotation = Quaternion(-0.0545858, -0.689887, 0.0692138, 0.718531)
@@ -229,12 +222,12 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.779656, 0.15306, -0.584508, 0.164499)
+bones/36/rotation = Quaternion(0.774042, 0.171283, -0.579858, 0.187844)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.370659, 1.25657e-07, -8.25484e-08, 0.928769)
-bones/38/rotation = Quaternion(0.775964, -0.152666, 0.590104, 0.162327)
+bones/37/rotation = Quaternion(0.415965, 1.2027e-07, -8.468e-08, 0.909381)
+bones/38/rotation = Quaternion(0.77048, -0.171007, 0.585397, 0.185547)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.370659, -3.01807e-07, 7.14632e-08, 0.928769)
+bones/39/rotation = Quaternion(0.415965, -3.07399e-07, 8.28116e-08, 0.909381)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
@@ -252,6 +245,10 @@ target_position = Vector3(0, -0.8, 0)
 [node name="CheckCollisions" type="RayCast3D" parent="MeshParent/LedgeGrab"]
 target_position = Vector3(0, 1, 0)
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="WallJump" type="ShapeCast3D" parent="MeshParent"]
+shape = SubResource("BoxShape3D_8fjmc")
+target_position = Vector3(0.555, 0, 0)
 
 [node name="CameraPivot" type="Node3D" parent="."]
 top_level = true

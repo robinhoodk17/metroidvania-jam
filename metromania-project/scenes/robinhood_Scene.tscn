@@ -98,7 +98,6 @@ mesh = SubResource("BoxMesh_i4vfv")
 
 [node name="Floor3" type="CharacterBody3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 5, 0)
-script = ExtResource("1_g44xj")
 
 [node name="FloorShape" type="CollisionShape3D" parent="Map/Floor3"]
 shape = SubResource("BoxShape3D_tqh3n")
@@ -110,6 +109,7 @@ mesh = SubResource("BoxMesh_i4vfv")
 libraries = {
 &"": SubResource("AnimationLibrary_g44xj")
 }
+script = ExtResource("1_g44xj")
 
 [node name="Floor4" type="StaticBody3D" parent="Map"]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -36.5801, 8.01233, 0)
