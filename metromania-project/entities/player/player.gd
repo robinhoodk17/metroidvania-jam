@@ -1,7 +1,7 @@
 extends CharacterBody3D
 class_name PlayerController
 
-enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING}
+enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING, LEDGE_GRABBING}
 enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING, BLOCKED}
 enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
@@ -27,17 +27,18 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
 @export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 10.0
+@export var wall_jump_time : float = 0.75
 ##when the player is pressing against a wall, how much it stops falling
 @export var wall_slide_gravity : float = 0.2
 @export var dash_velocity : float = 30.0
-@export var dash_duration : float = 1.0
+@export var dash_duration : float = 0.5
 @export var coyote_time : float = 0.1
+@export var ledge_grab_offset : float = -.5
 @export_group("Combat")
 @export var combo_reset : float = 1.5
 @export var max_combo : int = 3
 @export_group("Hookshot")
-@export var hookshot_range : float = 25.0
+@export var hookshot_range : float = 10.0
 @export var movement_to_grapple_speed : float = 40.0
 @export var gravity_damp_while_hooking : float = 0.25
 @export_group("Camera")
@@ -53,6 +54,8 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var grappling_hook : Node3D = $GrapplingHookParent
 @onready var wall_jump: Area3D = $MeshParent/WallJump
+@onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
+@onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -90,6 +93,9 @@ var oneshot_animation : AnimationNode
 
 
 func _ready() -> void:
+	SignalbusPlayer.child_picked_up.connect(pick_up_child)
+	SignalbusPlayer.start_grapple.connect(start_grapple)
+	SignalbusPlayer.end_retracting.connect(end_retracting)
 	pick_child.connect("body_entered",pick_up_child)
 	screen_middle = DisplayServer.screen_get_size()/2
 	dash_reset_timer.timeout.connect(change_action_state)
@@ -101,8 +107,14 @@ func _ready() -> void:
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
 
-func pick_up_child(_body : Node3D):
-	if _body.is_in_group("Player"):
+func pick_up_child(_body : Node3D = null):
+	if carrying_child:
+		return
+	if _body == null:
+		carrying_child = true
+		return
+		
+	if _body.is_in_group("player"):
 		_body.turn_off()
 		carrying_child = true
 
@@ -111,6 +123,7 @@ func _physics_process(delta: float) -> void:
 	run_state_machine(delta)
 	action_state_machine(delta)
 	handle_gravity(delta)
+
 	move_and_slide()
 
 func position_camera(delta: float) -> void:
@@ -130,6 +143,7 @@ func run_state_machine(delta: float) -> void:
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
 		run_animation.travel("idle")
+		return
 		
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
@@ -138,13 +152,25 @@ func run_state_machine(delta: float) -> void:
 		
 	var run_direction = Input.get_axis("move_left", "move_right")
 	
-	if wall_jump.has_overlapping_bodies():
+	if ledge_grab.is_colliding() and !check_collisions.is_colliding():
+		if velocity.y < 0:
+			if !is_on_floor():
+				var collision_point : Vector3 = ledge_grab.get_collision_point()
+				if (collision_point - global_position).x * run_direction > 0:
+					current_action_state = action_state.IDLE_ACTION
+					current_run_state = run_state.LEDGE_GRABBING
+					velocity = Vector3.ZERO
+					global_position.y = collision_point.y + ledge_grab_offset
+					second_jump = false
+					dash_spent = false
+					return
+	
+	if wall_jump.has_overlapping_bodies() and !current_run_state == run_state.LEDGE_GRABBING:
 		if run_direction * mesh.global_basis.z.z > 0 and !is_on_floor():
 			if current_run_state != run_state.WALL_SLIDING:
 				if velocity.y < 0:
 					velocity.y = 0
 			current_run_state = run_state.WALL_SLIDING
-	
 	
 	if current_action_state == action_state.BLOCKED:
 		return
@@ -197,9 +223,16 @@ func run_state_machine(delta: float) -> void:
 		
 		run_state.STAGGERING:
 			pass
+		
 		run_state.WALL_SLIDING:
 			if !wall_jump.has_overlapping_bodies():
 				current_run_state = run_state.WALKING
+		
+		run_state.LEDGE_GRABBING:
+			run_animation.travel("Ledge_Grab")
+			coyote_timer.start(coyote_time)
+			if current_action_state != action_state.IDLE_ACTION:
+				current_run_state = run_state.IDLE
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
@@ -279,8 +312,7 @@ func attack(_x : float, _y : float):
 
 func throw_grappling(x : float, y : float):
 	if !carrying_child:
-		alice.turn_off()
-		carrying_child = true
+		alice.retract()
 		return
 	current_gravity_force = gravity_damp_while_hooking
 	var target : Node3D = null
@@ -325,21 +357,27 @@ func throw_grappling(x : float, y : float):
 	#alice.throw(target_position)
 	#carrying_child = false
 
-func end_retracting(_hooked : bool) -> void:
-	if _hooked:
-		change_action_state(PlayerController.action_state.HOOKED)
-		running_time = acceleration
-		current_run_state = run_state.WALKING
-		velocity/= 2.0
-		current_gravity_force = 0.0
-		return
+func start_grapple(_target_position : Vector3):
+	current_action_state = PlayerController.action_state.FLYINGTOGRAPPLE
+	hookshot_position = _target_position
+	second_jump = false
+	current_run_state = PlayerController.run_state.IDLE
+
+func end_retracting() -> void:
+	running_time = acceleration
+	current_run_state = run_state.WALKING
 	current_action_state = action_state.IDLE_ACTION
+	return
 
 func handle_gravity(delta: float) -> void:
 	current_gravity_force = 1.0
-	if current_run_state == run_state.WALL_SLIDING:
-		if velocity.y <= 0.0:
-			current_gravity_force = wall_slide_gravity
+	match current_run_state:
+		run_state.LEDGE_GRABBING:
+			current_gravity_force = 0.0
+		run_state.WALL_SLIDING:
+			if velocity.y <= 0.0:
+				current_gravity_force = wall_slide_gravity
+
 	if current_action_state == action_state.HOOKED:
 		current_gravity_force = 0.0
 	if jumping_time < jump_floatiness:
@@ -374,6 +412,7 @@ func jump() -> void:
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0
 	velocity.y = jump_velocity
+
 	if coyote_timer.is_stopped():
 		if current_run_state == run_state.WALL_SLIDING:
 			current_action_state = action_state.BLOCKED

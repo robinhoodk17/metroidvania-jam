@@ -1,7 +1,7 @@
 extends CharacterBody3D
 class_name alice_controller
 
-enum run_state {IDLE, WALKING, RUNNING, BRAKING, STAGGERING}
+enum run_state {IDLE, WALKING, RUNNING, BRAKING, STAGGERING, LEDGE_GRABBING, HOOKED}
 enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING}
 enum inputs{JUMP, ATTACK, THROW_CHILD, NONE}
 
@@ -20,12 +20,16 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, NONE}
 @export var queue_time : float = 0.35
 @export var movement_to_grapple_speed : float = 20.0
 @export var throw_range : float = 5.0
+@export var ledge_grab_offset : float = -.25
 
 @export_category("Nodes")
 @export var mesh : Marker3D
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var queue_timer: Timer = $QueueTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
+@onready var ledge_grab: RayCast3D = $MeshParent/MeshChild/LedgeGrab
+@onready var check_collisions: RayCast3D = $MeshParent/MeshChild/LedgeGrab/CheckCollisions
+@onready var hurt_box: Area3D = $MeshParent/MeshChild/HurtBox
 
 """state machine"""
 #var current_run_state : run_state = run_state.IDLE
@@ -39,6 +43,7 @@ var braking_time : float = 0.0
 var jumping_time : float = 0.0
 var second_jump : bool = false
 var combo_number : int = 0
+var retracting : bool = false
 #var input_queued : inputs = inputs.NONE
 var hookshot_position : Vector3
 var animating : bool = false
@@ -54,6 +59,9 @@ var oneshot_animation : AnimationNode
 var input_queued : inputs = inputs.NONE
 
 func turn_off() -> void:
+	SignalbusPlayer.child_picked_up.emit()
+	if retracting:
+		SignalbusPlayer.end_retracting.emit()
 	top_level = false
 	set_collision_mask_value(1, false)
 	set_collision_mask_value(2, false)
@@ -64,6 +72,14 @@ func turn_off() -> void:
 	mesh.basis = Basis.IDENTITY
 	set_physics_process(false)
 	second_jump = false
+	retracting = false
+
+func retract() -> void:
+	if current_run_state == run_state.HOOKED:
+		SignalbusPlayer.start_grapple.emit(global_position)
+		retracting = true
+		return
+	turn_off()
 
 func turn_on() -> void:
 	current_run_state = run_state.IDLE
@@ -76,7 +92,7 @@ func turn_on() -> void:
 	top_level = true
 
 func _ready() -> void:
-	#return
+	hurt_box.body_entered.connect(check_body)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
@@ -104,6 +120,19 @@ func run_state_machine(delta: float) -> void:
 		run_animation.travel("idle")
 		return
 	var run_direction = Input.get_axis("look_left", "look_right")
+	
+	if ledge_grab.is_colliding() and !check_collisions.is_colliding():
+		if velocity.y < 0:
+			if !is_on_floor():
+				var collision_point : Vector3 = ledge_grab.get_collision_point()
+				if (collision_point - global_position).x * run_direction > 0:
+					current_action_state = action_state.IDLE_ACTION
+					current_run_state = run_state.LEDGE_GRABBING
+					velocity = Vector3.ZERO
+					global_position.y = collision_point.y + ledge_grab_offset
+					second_jump = false
+					return
+	
 	match current_run_state:
 		run_state.IDLE:
 			if is_on_floor():
@@ -152,6 +181,21 @@ func run_state_machine(delta: float) -> void:
 		
 		run_state.STAGGERING:
 			pass
+		
+		run_state.LEDGE_GRABBING:
+			run_animation.travel("Ledge_Grab")
+			coyote_timer.start(coyote_time)
+			if current_action_state != action_state.IDLE_ACTION:
+				current_run_state = run_state.IDLE
+		
+		run_state.HOOKED:
+			run_animation.travel("Ledge_Grab")
+			velocity = Vector3.ZERO
+			if current_action_state != action_state.IDLE_ACTION:
+				current_run_state = run_state.IDLE
+				if retracting:
+					SignalbusPlayer.end_retracting.emit()
+
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
@@ -187,10 +231,13 @@ func jump() -> void:
 	#action_animation.travel("jump")
 	#animating = true
 	set_oneshot_animation("Robot_Jump")
+	current_action_state = action_state.JUMPING
 	#action_animation.travel("Robot_Jump")
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0
 	velocity.y = jump_velocity
+	if is_on_floor():
+		velocity.x = get_platform_velocity().x
 	if coyote_timer.is_stopped():
 		second_jump = true
 
@@ -202,6 +249,13 @@ func throw(target_position : Vector3) -> void:
 	current_action_state = action_state.FLYINGTOGRAPPLE
 
 func handle_gravity(delta: float) -> void:
+	var current_gravity_force = 1.0
+	match current_run_state:
+		run_state.LEDGE_GRABBING:
+			current_gravity_force = 0.0
+		run_state.HOOKED:
+			current_gravity_force = 0.0
+			
 	if is_on_floor():
 		second_jump = false
 		coyote_timer.start(coyote_time)
@@ -215,9 +269,9 @@ func handle_gravity(delta: float) -> void:
 			pass
 	else:
 		if velocity.y < 0:
-			velocity += get_gravity() * going_down_speed * 1.15 * delta
+			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
 		else:
-			velocity += get_gravity() * going_down_speed * 3.0 * delta
+			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
 
 	if velocity.x < 0:
 		mesh.global_basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
@@ -228,3 +282,16 @@ func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _b
 	animation_tree.set("parameters/TimeScale/scale", time_scale)
 	oneshot_animation.animation = animation_name
 	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+
+func change_action_state(new_state : action_state = action_state.IDLE_ACTION):
+	animation_tree.set("parameters/TimeScale/scale", 1.0)
+	current_action_state = new_state
+
+func check_body(body : Node3D):
+	if off:
+		return
+	if body.is_in_group("hook"):
+		current_run_state = run_state.HOOKED
+		current_action_state = action_state.IDLE_ACTION
+	if body.is_in_group("player") and body != self:
+		turn_off()

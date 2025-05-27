@@ -29,7 +29,8 @@ project/assembly_name="Git Repo"
 
 [global_group]
 
-Player=""
+hook=""
+player=""
 
 [input]
 
