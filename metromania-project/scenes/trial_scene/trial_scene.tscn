@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://bw8qtuo3c51h7"]
+[gd_scene load_steps=15 format=4 uid="uid://bw8qtuo3c51h7"]
 
 [ext_resource type="PackedScene" uid="uid://b3eb61rp0n5xg" path="res://scenes/trial_scene/trial_scene.blend" id="1_pwfib"]
 [ext_resource type="Script" uid="uid://72xopjge5xd1" path="res://scenes/world/moving_platform.gd" id="2_3ttxr"]
@@ -88,6 +88,10 @@ _data = {
 &"new_animation": SubResource("Animation_w0n63")
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_w0n63"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3ttxr"]
+
 [sub_resource type="Environment" id="Environment_3ttxr"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_yrmet"]
@@ -112,6 +116,17 @@ libraries = {
 &"": SubResource("AnimationLibrary_yrmet")
 }
 script = ExtResource("2_3ttxr")
+
+[node name="AutoAim" type="StaticBody3D" parent="trial_scene" groups=["hook"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8621, 26.89, 0)
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="trial_scene/AutoAim"]
+shape = SubResource("BoxShape3D_w0n63")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="trial_scene/AutoAim"]
+mesh = SubResource("BoxMesh_3ttxr")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3ttxr")
