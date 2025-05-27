@@ -1,7 +1,7 @@
 extends CharacterBody3D
 class_name Enemy
  
-@export var detection_radius: float = 15.0
+@export var detection_radius: float = 25.0
 @export var attack_range: float = 2.5
 @export var speed_walk: float = 3.0 + 1.0
 @export var speed_run: float = 6.0 + 3.0
@@ -78,10 +78,10 @@ func handle_the_rest(delta: float) -> void:
 		if health < (max_health/3.0):
 			teleport()
 		else:
-			provoked = false
 			set_state(State.IDLE)
 
 func _physics_process(delta):
+	if_stuck_on_player()
 	match current_state:
 		State.IDLE:
 			handle_idle(delta)
@@ -119,6 +119,7 @@ func set_state(new_state):
 func can_see_player() -> bool:
 	var to_player := player.global_position - global_position
 	if to_player.length() > detection_radius:
+		provoked = false
 		return false
 	if raycast.is_colliding():
 		if raycast.get_collider() == player:
@@ -231,7 +232,16 @@ func _on_off_timer_timeout() -> void:
 
 #region nodes
 func handle_the_nodes() -> void:
-	###create_off_timer
+	create_navmesh()
+	create_navigation_agent()
+	create_detect_raycast()
+	create_hurt_box()
+	create_hitbox()
+	create_off_timer()
+	create_label_3d()
+	create_partrol_points()
+
+func create_off_timer():
 	var off_timer = Timer.new()
 	off_timer.name = "OffTimer"
 	off_timer.one_shot = true
@@ -240,11 +250,11 @@ func handle_the_nodes() -> void:
 	add_child(off_timer)
 	off_timer.timeout.connect(_on_off_timer_timeout)
 	
-	###create_navigation_agent
+func create_navigation_agent():
 	navigation_agent = NavigationAgent3D.new()
 	add_child(navigation_agent)
 	
-	###create_player_detect_raycast
+func create_detect_raycast():
 	raycast = RayCast3D.new()
 	raycast.enabled = true 
 	raycast.target_position = Vector3(3, 0, 0)  
@@ -252,7 +262,7 @@ func handle_the_nodes() -> void:
 	$MeshParent.add_child(raycast)
 	raycast.collision_mask = (1 << 0) | (1 << 2)
 	
-	###create_hurt_box
+func create_hurt_box():
 	hurt_box = Area3D.new()
 	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
@@ -265,7 +275,7 @@ func handle_the_nodes() -> void:
 	hurt_box.monitoring = false
 	add_child(hurt_box)
  
-	##add_hitbox
+func create_hitbox():
 	skeleton = find_child("Skeleton3D")  
 	if not skeleton:
 		push_error("Enemy Skeleton3D node not found!")
@@ -286,13 +296,13 @@ func handle_the_nodes() -> void:
 	bone_attachment.add_child(hit_box)
 	bone_attachment.bone_name = "Palm1.R"
 	
-	###create_label_3d
+func create_label_3d():
 	label_3d = Label3D.new()
 	add_child(label_3d)
 	label_3d.global_position = global_position + Vector3(0, 1.5, 0)
 	label_3d.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	
-	###create_navmesh
+func create_navmesh():
 	var nav_region = NavigationRegion3D.new()
 	var nav_mesh = NavigationMesh.new()
 	var half_size = 2.0
@@ -307,6 +317,14 @@ func handle_the_nodes() -> void:
 	nav_mesh.add_polygon(polygons)
 	nav_region.navmesh = nav_mesh
 	add_child(nav_region)
+ 
+func create_partrol_points():
+	var left_dir = -global_transform.basis.x.normalized()
+	var right_dir = global_transform.basis.x.normalized()
+	var left_point = global_position + left_dir * patrol_distance
+	var right_point = global_position + right_dir * patrol_distance
+	patrol_points.append(left_point)
+	patrol_points.append(right_point)
 #endregion 
 
 func handle_adustments() -> void:
@@ -316,14 +334,6 @@ func handle_adustments() -> void:
 	collision_layer = 1 << 1
 	collision_mask = (1 << 0) | (1 << 2)
 	axis_lock_linear_z = true
-	
-	###create_partrol_points_around_character
-	var left_dir = -global_transform.basis.x.normalized()
-	var right_dir = global_transform.basis.x.normalized()
-	var left_point = global_position + left_dir * patrol_distance
-	var right_point = global_position + right_dir * patrol_distance
-	patrol_points.append(left_point)
-	patrol_points.append(right_point)
 
 #func get_player_action() -> int:
 	#pass 
@@ -339,4 +349,15 @@ func teleport() -> void:
 	var player_forward = -player.global_transform.basis.x.normalized()
 	global_position = player.global_position + player_forward * TELEPORT_OFFSET
 	$MeshParent.look_at(player.global_position, Vector3.UP)
+ 
+func if_stuck_on_player():
+	var enemy_pos := global_transform.origin
+	var player_pos := player.global_transform.origin
+	var horizontal_distance := Vector2(enemy_pos.x, enemy_pos.z).distance_to(Vector2(player_pos.x, player_pos.z))
+	var vertical_distance := enemy_pos.y - player_pos.y
+	var slide_down_speed := 5.0
+	var max_horizontal_overlap := 1.0
+	var max_vertical_overlap := 2.0
+	if horizontal_distance < max_horizontal_overlap && vertical_distance > 0 && vertical_distance < max_vertical_overlap:
+		perform_jump()
  
