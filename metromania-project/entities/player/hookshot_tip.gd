@@ -7,7 +7,7 @@ var flying : bool = false
 var hooked : bool = false
 
 func _ready() -> void:
-	pass
+	top_level = true
 	#add exception player here
 
 func _physics_process(_delta: float) -> void:

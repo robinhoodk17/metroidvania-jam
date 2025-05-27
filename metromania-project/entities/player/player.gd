@@ -99,6 +99,7 @@ var bone_attachment = BoneAttachment3D
 var _damage := 10
 
 func _ready() -> void:
+	camera_pivot.top_level = true
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
 	SignalbusPlayer.end_retracting.connect(end_retracting)
@@ -205,7 +206,10 @@ func run_state_machine(delta: float) -> void:
 		run_state.WALKING:
 			if running_time < acceleration:
 				running_time += delta
-			velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
+			if abs(velocity.x) < speed:
+				velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
+			else:
+				velocity.x = abs(velocity.x) * run_direction
 			if !animating:
 				run_animation.travel("walk")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
@@ -215,6 +219,8 @@ func run_state_machine(delta: float) -> void:
 				current_run_state = run_state.RUNNING
 
 		run_state.RUNNING:
+			if !is_on_floor():
+				current_run_state = run_state.WALKING
 			if !animating:
 				run_animation.travel("run")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
@@ -238,7 +244,7 @@ func run_state_machine(delta: float) -> void:
 			pass
 		
 		run_state.WALL_SLIDING:
-			if !wall_jump.is_colliding():
+			if !wall_jump.is_colliding() or is_on_floor():
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
@@ -427,12 +433,12 @@ func jump() -> void:
 	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
 	jumping_time = 0.0
 	velocity.y = jump_velocity
-	velocity += get_platform_velocity()
+	velocity += get_platform_velocity()/2
 	if abs(velocity.x) > speed:
-		current_run_state = run_state.RUNNING
 		running_time = acceleration
 	else:
 		running_time = abs(velocity.x)/speed
+	
 	if coyote_timer.is_stopped():
 		if current_run_state == run_state.WALL_SLIDING:
 			current_action_state = action_state.BLOCKED

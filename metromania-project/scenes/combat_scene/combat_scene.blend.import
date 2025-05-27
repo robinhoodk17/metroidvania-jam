@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dkhjtbwvdf2ss"
-path="res://.godot/imported/trial_scene.blend-9fb7db46ecc2a372a5f5d0856651e3e1.scn"
+uid="uid://mwee8d8oejbe"
+path="res://.godot/imported/combat_scene.blend-46513b24f42b92ad13b4de05c339bf17.scn"
 
 [deps]
 
-source_file="res://scenes/trial_scene/trial_scene.blend"
-dest_files=["res://.godot/imported/trial_scene.blend-9fb7db46ecc2a372a5f5d0856651e3e1.scn"]
+source_file="res://scenes/combat_scene/combat_scene.blend"
+dest_files=["res://.godot/imported/combat_scene.blend-46513b24f42b92ad13b4de05c339bf17.scn"]
 
 [params]
 

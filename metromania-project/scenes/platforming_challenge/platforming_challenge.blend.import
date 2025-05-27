@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dkhjtbwvdf2ss"
-path="res://.godot/imported/trial_scene.blend-9fb7db46ecc2a372a5f5d0856651e3e1.scn"
+uid="uid://du2mq2c44cwpq"
+path="res://.godot/imported/platforming_challenge.blend-6511f56f617cf668db5ec1899b91e08e.scn"
 
 [deps]
 
-source_file="res://scenes/trial_scene/trial_scene.blend"
-dest_files=["res://.godot/imported/trial_scene.blend-9fb7db46ecc2a372a5f5d0856651e3e1.scn"]
+source_file="res://scenes/platforming_challenge/platforming_challenge.blend"
+dest_files=["res://.godot/imported/platforming_challenge.blend-6511f56f617cf668db5ec1899b91e08e.scn"]
 
 [params]
 
