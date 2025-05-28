@@ -2,8 +2,6 @@ shader_type spatial;
 // Prevent the quad from being affected by lighting and fog. This also improves performance.
 render_mode unshaded, fog_disabled, shadows_disabled;
 
-#define USE_CIRCLE_SHAPE 1
-
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, repeat_disable, filter_nearest;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, repeat_disable, filter_nearest;
 
