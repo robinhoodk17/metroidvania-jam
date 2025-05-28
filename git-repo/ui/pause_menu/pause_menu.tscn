@@ -1,0 +1,123 @@
+[gd_scene load_steps=5 format=3 uid="uid://3s7lo7jd53un"]
+
+[ext_resource type="Script" uid="uid://p060qdoqdgi7" path="res://ui/pause_menu/pause_menu.gd" id="1_fpgrf"]
+[ext_resource type="Resource" uid="uid://diop7pt8pl55a" path="res://input/pause.tres" id="2_b4b0p"]
+[ext_resource type="PackedScene" uid="uid://doodjmci2iujk" path="res://ui/UI_animator.tscn" id="2_le02u"]
+[ext_resource type="PackedScene" uid="uid://dgxrcxbe8s24d" path="res://ui/build_info/build_info.tscn" id="2_q2yd3"]
+
+[node name="PauseMenu" type="Control" node_paths=PackedStringArray("default_focus_control")]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fpgrf")
+pause_action = ExtResource("2_b4b0p")
+default_focus_control = NodePath("MarginContainer/Buttons/Resume")
+
+[node name="BuildInfo" parent="." instance=ExtResource("2_q2yd3")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -25.0
+offset_top = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+
+[node name="Buttons" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Resume" type="Button" parent="MarginContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Resume"
+
+[node name="Node" parent="MarginContainer/Buttons/Resume" instance=ExtResource("2_le02u")]
+connect_as_button = true
+hover_rotation = 0.4
+hover_transition = 11
+random_entrance = true
+entrance_time = 0.4
+entrance_transition = 11
+hover_easing = 1
+
+[node name="Settings" type="Button" parent="MarginContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
+[node name="Node" parent="MarginContainer/Buttons/Settings" instance=ExtResource("2_le02u")]
+connect_as_button = true
+entrance_animation = true
+hover_rotation = 0.4
+hover_transition = 11
+random_entrance = true
+entrance_position = Vector2(0, 50)
+entrance_time = 0.4
+entrance_transition = 11
+hover_easing = 1
+
+[node name="Controls" type="Button" parent="MarginContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Controls"
+
+[node name="Node" parent="MarginContainer/Buttons/Controls" instance=ExtResource("2_le02u")]
+connect_as_button = true
+entrance_animation = true
+hover_rotation = 0.4
+hover_transition = 11
+random_entrance = true
+entrance_position = Vector2(0, 50)
+entrance_time = 0.4
+entrance_transition = 11
+hover_easing = 1
+
+[node name="MainMenu" type="Button" parent="MarginContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Main menu
+"
+
+[node name="Node" parent="MarginContainer/Buttons/MainMenu" instance=ExtResource("2_le02u")]
+connect_as_button = true
+entrance_animation = true
+hover_rotation = 0.4
+hover_transition = 11
+random_entrance = true
+entrance_position = Vector2(0, 50)
+entrance_time = 0.4
+entrance_transition = 11
+hover_easing = 1
+
+[node name="Quit" type="Button" parent="MarginContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"
+
+[node name="Node" parent="MarginContainer/Buttons/Quit" instance=ExtResource("2_le02u")]
+connect_as_button = true
+entrance_animation = true
+hover_rotation = 0.4
+hover_transition = 11
+random_entrance = true
+entrance_position = Vector2(0, 50)
+entrance_time = 0.4
+entrance_transition = 11
+hover_easing = 1
