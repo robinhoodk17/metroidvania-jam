@@ -199,8 +199,8 @@ func run_state_machine(delta: float) -> void:
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
-	var horizontal_direction : float = Input.get_axis("move_left", "move_right")
-	var vertical_direction = Input.get_axis("move_backward", "move_forward")
+	var _horizontal_direction : float = Input.get_axis("move_left", "move_right")
+	var _vertical_direction = Input.get_axis("move_backward", "move_forward")
 
 	manage_action_inputs()
 	match input_queued:

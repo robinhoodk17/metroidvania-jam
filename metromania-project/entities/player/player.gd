@@ -2,7 +2,7 @@ extends CharacterBody3D
 class_name PlayerController
 
 enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING, LEDGE_GRABBING}
-enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, STAGGERING, HOOKED, JUMPING, BLOCKED, DASHING}
+enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, HOOKED, JUMPING, BLOCKED, DASHING}
 enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
 @export var slow_time : bool = false
@@ -10,6 +10,7 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 ##how long an action remains queued before it gets deleted
 ##for example, when a player jumps before reaching the ground
 @export var queue_time : float = 0.35
+@export var queue_time_for_attacks : float = 1.0
 @export_subgroup("running")
 ##player max speed
 @export var speed : float = 0.5
@@ -38,6 +39,7 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @export_group("Combat")
 @export var combo_reset : float = 1.5
 @export var max_combo : int = 3
+@export var stagger_speed : float = 20.0
 @export_group("Hookshot")
 @export var hookshot_range : float = 10.0
 @export var movement_to_grapple_speed : float = 40.0
@@ -46,6 +48,7 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @export var dampen_frames : int = 20
 @export_group("Nodes")
 @export var mesh : Marker3D
+@export var animation_player : AnimationPlayer
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var coyote_timer: Timer = $CoyoteTimer
@@ -74,11 +77,15 @@ var braking_time : float = 0.0
 var jumping_time : float = 0.0
 var second_jump : bool = false
 var dash_spent : bool = false
-var combo_number : int = 0
 var input_queued : inputs = inputs.NONE
 var hookshot_position : Vector3
 var animating : bool = false
 var current_gravity_force : float = 1.0
+
+var combo_number : int = 0
+var staggering_towards : Vector3
+var staggering_distance : float
+var traveled_stagger_distance : float
 
 """camera"""
 var dampened_y_array : Array[float]
@@ -99,12 +106,19 @@ var bone_attachment = BoneAttachment3D
 var _damage := 10
 
 func _ready() -> void:
+#region Setting up combat
+	handle_the_node()
+	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
+	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
+	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
+	#add_call_method_to_animation()
+	
+#endregion
 	camera_pivot.top_level = true
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
 	SignalbusPlayer.end_retracting.connect(end_retracting)
 	pick_child.connect("body_entered",pick_up_child)
-	handle_the_node()
 	screen_middle = DisplayServer.screen_get_size()/2
 	dash_reset_timer.timeout.connect(change_action_state)
 	"""setting up animations"""
@@ -149,7 +163,160 @@ func position_camera(delta: float) -> void:
 		var target_position = Vector3(global_position.x, averaged_y, global_position.z)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, 2.5 * delta)
 
+func manage_action_inputs() -> void:
+	if Input.is_action_just_pressed("Space"):
+		input_queued = inputs.JUMP
+		queue_timer.start(queue_time)
+	if Input.is_action_just_pressed("LMB"):
+		input_queued = inputs.ATTACK
+		queue_timer.start(queue_time_for_attacks)
+	if Input.is_action_just_pressed("RMB"):
+		input_queued = inputs.THROW_CHILD
+		queue_timer.start(queue_time)
+	if Input.is_action_just_pressed("Shift"):
+		input_queued = inputs.DASH
+		queue_timer.start(queue_time)
+	if queue_timer.is_stopped():
+		input_queued = inputs.NONE
+
+func throw_grappling(_x : float, _y : float) -> void:
+	if !carrying_child:
+		alice.retract()
+		return
+	current_gravity_force = gravity_damp_while_hooking
+	var target : Node3D = null
+	
+	if auto_aim.has_overlapping_bodies():
+		var target_distance : float = 1000
+		for i : Node3D in auto_aim.get_overlapping_bodies():
+			var candidate_position : Vector3 = i.global_position
+			var candidate_distance : float = candidate_position.distance_squared_to(global_position)
+			if candidate_distance < target_distance:
+				target = i
+				target_distance = candidate_distance
+	alice.global_position = 2.0 * mesh.global_basis.x + global_position
+	if target != null:
+		alice.throw(target.global_position)
+	else:
+		var target_position : Vector3 = global_position + (hookshot_range * mesh.global_basis.x.normalized())
+		alice.throw(target_position)
+
+	carrying_child = false
+	set_oneshot_animation("Robot_Wave")
+	
+	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
+	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
+	#var space_state = get_world_3d().direct_space_state
+	#var origin : Vector3 = global_position
+	#var end : Vector3 = hookshot_range * Vector3(mouse_position.x, -mouse_position.y, 0) + global_position
+	#var query = PhysicsRayQueryParameters3D.create(origin, end)
+	#query.exclude = [self]
+	#var result = space_state.intersect_ray(query)
+	#var target_position : Vector3
+	#var target_collider : Node3D = null
+	#action_animation.travel("Robot_Wave")
+	#if result.is_empty():
+		#target_position = end
+	#else:
+		#target_position = result["position"]
+		#target_collider = result["collider"]
+	#if global_position.distance_to(target_position) < 1.5:
+		#return
+	#alice.position = (target_position - global_position).normalized() * 2.0 * mesh.basis
+	#alice.throw(target_position)
+	#carrying_child = false
+
+func start_grapple(_target_position : Vector3) -> void:
+	current_action_state = PlayerController.action_state.FLYINGTOGRAPPLE
+	hookshot_position = _target_position
+	second_jump = false
+	current_run_state = PlayerController.run_state.IDLE
+
+func end_retracting() -> void:
+	running_time = acceleration
+	current_run_state = run_state.WALKING
+	current_action_state = action_state.IDLE_ACTION
+	return
+
+func handle_gravity(delta: float) -> void:
+	current_gravity_force = 1.0
+	match current_run_state:
+		run_state.LEDGE_GRABBING:
+			current_gravity_force = 0.0
+			jumping_time = jump_floatiness
+		run_state.WALL_SLIDING:
+			if velocity.y <= 0.0:
+				current_gravity_force = wall_slide_gravity
+				jumping_time = jump_floatiness
+
+	if current_action_state == action_state.HOOKED:
+		current_gravity_force = 0.0
+	if jumping_time < jump_floatiness:
+		jumping_time += delta
+		if Input.is_action_pressed("Space"):
+			velocity.y = jump_velocity
+	if is_on_floor():
+		second_jump = false
+		dash_spent = false
+		coyote_timer.start(coyote_time)
+	else:
+		if velocity.y < 0:
+			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
+		else:
+			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
+
+	if velocity.x < 0:
+		mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
+	if  velocity.x > 0:
+		mesh.basis = Basis.IDENTITY
+
+func jump() -> void:
+	if !second_jump or current_run_state == run_state.WALL_SLIDING:
+		input_queued = inputs.NONE
+	else:
+		return
+	current_action_state = action_state.JUMPING
+	set_oneshot_animation("Robot_Jump")
+	jumping_time = 0.0
+	velocity.y = jump_velocity
+	velocity += get_platform_velocity()/4.0
+	if abs(velocity.x) > speed:
+		running_time = acceleration
+	else:
+		running_time = abs(velocity.x)/speed
+	
+	if coyote_timer.is_stopped():
+		if current_run_state == run_state.WALL_SLIDING:
+			do_wall_jump()
+			return
+		second_jump = true
+
+func do_wall_jump() -> void:
+	current_action_state = action_state.BLOCKED
+	current_run_state = run_state.WALKING
+	var _sign = 1
+	if mesh.basis == Basis.IDENTITY:
+		_sign = -1
+	velocity.x = wall_jump_repulsion * _sign
+	dash_reset_timer.start(wall_jump_time)
+
+func dash(horizontal_direction : float, vertical_direction : float) -> void:
+	if horizontal_direction == 0.0 and vertical_direction == 0.0:
+		horizontal_direction = mesh.global_basis.z.z
+	dash_spent = true
+	velocity = Vector3(horizontal_direction, vertical_direction, 0).normalized() * dash_velocity
+	current_action_state = action_state.DASHING
+	dash_reset_timer.start(dash_duration)
+
+#region statemachine and animations
 func run_state_machine(delta: float) -> void:
+	if current_run_state == run_state.STAGGERING:
+		velocity = staggering_towards * stagger_speed
+		traveled_stagger_distance += stagger_speed * delta
+		if traveled_stagger_distance > staggering_distance:
+			current_run_state = run_state.IDLE
+		return
+	
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
 		run_animation.travel("idle")
@@ -233,6 +400,8 @@ func run_state_machine(delta: float) -> void:
 					return
 			if abs(velocity.x) < speed:
 				velocity.x = run_direction * speed
+			else:
+				velocity.x = move_toward(velocity.x, sign(velocity.x) * speed, delta * 5.0)
 
 		run_state.BRAKING:
 			run_animation.travel("walk")
@@ -241,10 +410,7 @@ func run_state_machine(delta: float) -> void:
 			if braking_time >= deceleration:
 				current_run_state = run_state.WALKING
 				running_time = deceleration
-		
-		run_state.STAGGERING:
-			pass
-		
+
 		run_state.WALL_SLIDING:
 			if !wall_jump.is_colliding() or is_on_floor() or !aiming_for_wall:
 				current_run_state = run_state.WALKING
@@ -261,6 +427,9 @@ func action_state_machine(_delta: float) -> void:
 	var vertical_direction = Input.get_axis("move_backward", "move_forward")
 
 	manage_action_inputs()
+	if current_run_state == run_state.STAGGERING:
+		return
+
 	match input_queued:
 		inputs.JUMP:
 			jump()
@@ -312,175 +481,38 @@ func action_state_machine(_delta: float) -> void:
 			if is_on_floor():
 				current_action_state = action_state.IDLE_ACTION
 
-func manage_action_inputs():
-	if Input.is_action_just_pressed("Space"):
-		input_queued = inputs.JUMP
-		queue_timer.start(queue_time)
-	if Input.is_action_just_pressed("LMB"):
-		input_queued = inputs.ATTACK
-		queue_timer.start(queue_time)
-	if Input.is_action_just_pressed("RMB"):
-		input_queued = inputs.THROW_CHILD
-		queue_timer.start(queue_time)
-	if Input.is_action_just_pressed("Shift"):
-		input_queued = inputs.DASH
-		queue_timer.start(queue_time)
-	if queue_timer.is_stopped():
-		input_queued = inputs.NONE
-
-func attack(_x : float, _y : float): 
-	var _attack_string : String = str("attack", combo_number)
-	action_animation.travel("Robot_Punch")
-	current_action_state = action_state.ATTACKING
-	#set_oneshot_animation("Robot_Punch")
-	combo_number = (combo_number + 1) % max_combo
-
-func throw_grappling(x : float, y : float):
-	if !carrying_child:
-		alice.retract()
-		return
-	current_gravity_force = gravity_damp_while_hooking
-	var target : Node3D = null
-	
-	if auto_aim.has_overlapping_bodies():
-		var target_distance : float = 1000
-		for i : Node3D in auto_aim.get_overlapping_bodies():
-			var candidate_position : Vector3 = i.global_position
-			var candidate_distance : float = candidate_position.distance_squared_to(global_position)
-			if candidate_distance < target_distance:
-				target = i
-				target_distance = candidate_distance
-	alice.global_position = 2.0 * mesh.global_basis.x + global_position
-	if target != null:
-		alice.throw(target.global_position)
-	else:
-		var target_position : Vector3 = global_position + (hookshot_range * mesh.global_basis.x.normalized())
-		alice.throw(target_position)
-
-	carrying_child = false
-	set_oneshot_animation("Robot_Wave")
-	
-	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
-	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
-	#var space_state = get_world_3d().direct_space_state
-	#var origin : Vector3 = global_position
-	#var end : Vector3 = hookshot_range * Vector3(mouse_position.x, -mouse_position.y, 0) + global_position
-	#var query = PhysicsRayQueryParameters3D.create(origin, end)
-	#query.exclude = [self]
-	#var result = space_state.intersect_ray(query)
-	#var target_position : Vector3
-	#var target_collider : Node3D = null
-	#action_animation.travel("Robot_Wave")
-	#if result.is_empty():
-		#target_position = end
-	#else:
-		#target_position = result["position"]
-		#target_collider = result["collider"]
-	#if global_position.distance_to(target_position) < 1.5:
-		#return
-	#alice.position = (target_position - global_position).normalized() * 2.0 * mesh.basis
-	#alice.throw(target_position)
-	#carrying_child = false
-
-func start_grapple(_target_position : Vector3):
-	current_action_state = PlayerController.action_state.FLYINGTOGRAPPLE
-	hookshot_position = _target_position
-	second_jump = false
-	current_run_state = PlayerController.run_state.IDLE
-
-func end_retracting() -> void:
-	running_time = acceleration
-	current_run_state = run_state.WALKING
-	current_action_state = action_state.IDLE_ACTION
-	return
-
-func handle_gravity(delta: float) -> void:
-	current_gravity_force = 1.0
-	match current_run_state:
-		run_state.LEDGE_GRABBING:
-			current_gravity_force = 0.0
-			jumping_time = jump_floatiness
-		run_state.WALL_SLIDING:
-			if velocity.y <= 0.0:
-				current_gravity_force = wall_slide_gravity
-				jumping_time = jump_floatiness
-
-	if current_action_state == action_state.HOOKED:
-		current_gravity_force = 0.0
-	if jumping_time < jump_floatiness:
-		jumping_time += delta
-		if Input.is_action_pressed("Space"):
-			velocity.y = jump_velocity
-	if is_on_floor():
-		second_jump = false
-		dash_spent = false
-		coyote_timer.start(coyote_time)
-	else:
-		if velocity.y < 0:
-			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
-		else:
-			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
-
-	if velocity.x < 0:
-		mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
-	if  velocity.x > 0:
-		mesh.basis = Basis.IDENTITY
-
-func jump() -> void:
-	if !second_jump or current_run_state == run_state.WALL_SLIDING:
-		input_queued = inputs.NONE
-	else:
-		return
-	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Robot_Jump")
-	#action_animation.travel("jump")
-	#animating = true
-	#action_animation.travel("Robot_Jump")
-	#set_oneshot_animation("Robot_Jump", 2.0, 1.0)
-	jumping_time = 0.0
-	velocity.y = jump_velocity
-	velocity += get_platform_velocity()/4.0
-	if abs(velocity.x) > speed:
-		running_time = acceleration
-	else:
-		running_time = abs(velocity.x)/speed
-	
-	if coyote_timer.is_stopped():
-		if current_run_state == run_state.WALL_SLIDING:
-			current_action_state = action_state.BLOCKED
-			current_run_state = run_state.WALKING
-			var sign = 1
-			if mesh.basis == Basis.IDENTITY:
-				sign = -1
-			velocity.x = wall_jump_repulsion * sign
-			dash_reset_timer.start(wall_jump_time)
-			return
-		second_jump = true
-
-func dash(horizontal_direction : float, vertical_direction : float) -> void:
-	if horizontal_direction == 0.0 and vertical_direction == 0.0:
-		horizontal_direction = mesh.global_basis.z.z
-	dash_spent = true
-	velocity = Vector3(horizontal_direction, vertical_direction, 0).normalized() * dash_velocity
-	current_action_state = action_state.DASHING
-	dash_reset_timer.start(dash_duration)
-
 func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
 	animation_tree.set("parameters/TimeScale/scale", time_scale)
 	oneshot_animation.animation = animation_name
 	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 
-func finish_animation():
+func finish_animation() -> void:
 	animating = false
 
-func change_run_state(new_state : run_state): 
+func change_run_state(new_state : run_state) -> void: 
 	current_run_state = new_state
 
-func change_action_state(new_state : action_state = action_state.IDLE_ACTION):
+func change_action_state(new_state : action_state = action_state.IDLE_ACTION) -> void:
 	animation_tree.set("parameters/TimeScale/scale", 1.0)
 	current_action_state = new_state
 	if new_state == action_state.IDLE_ACTION:
 		combo_reset_timer.start(combo_reset)
+#endregion
+
+#region handle combat
+func attack(_x : float, _y : float) -> void: 
+	var _attack_string : String = str("attack", combo_number)
+	set_oneshot_animation("Robot_Punch")
+	#set_oneshot_animation("Robot_Punch")
+	combo_number = (combo_number + 1) % max_combo
+
+func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	if knockback > 0.0:
+		current_run_state = run_state.STAGGERING
+		staggering_towards = global_position - _position
+		GlobalsPlayer.current_hp -= amount
+		SignalbusPlayer.took_damage.emit(amount, knockback)
+#endregion
 
 #region create_nodes
 func handle_the_node() -> void:
@@ -510,7 +542,7 @@ func create_hit_box():
 	hit_box.add_child(collision_shape)
 	bone_attachment.add_child(hit_box)
 	hit_box.area_entered.connect(on_hit_box_entered)
- 
+
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.get_parent()
 	if parent && parent.has_method("take_damage"):
@@ -528,7 +560,7 @@ func create_hurt_box() -> void:
 	hurt_box.add_child(collision_shape)
 	hurt_box.monitoring = false
 	add_child(hurt_box)
- 
+
 func enable_hit_box(bone_name: String = "Palm1.R", time_sec: float = 2) -> void:
 	var bone_node := skeleton.get_node_or_null(bone_name)
 	if not bone_node:
@@ -538,5 +570,17 @@ func enable_hit_box(bone_name: String = "Palm1.R", time_sec: float = 2) -> void:
 	hit_box.monitoring = true
 	await get_tree().create_timer(time_sec).timeout
 	hit_box.monitoring = false
+
+func add_call_method_to_animation(animation_name : String = "attack1", method_name : String = "toggle_lock", time_sec : float = 0.0, args : Array = [1.3], relative_path : String = "none") -> float:
+	var animation : Animation = animation_player.get_animation(animation_name)
+	if animation == null:
+		push_error("Animation % not found!" % animation_name)
+		return 0.0
+	var track_index = animation.add_track(Animation.TYPE_METHOD)
+	if relative_path == "none":
+		relative_path = $".".get_path()
+	animation.track_set_path(track_index, relative_path)
+	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
+	return animation.length
 
 #endregion 
