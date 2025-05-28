@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://bwv7mx7ef41bo"]
+
+[ext_resource type="Script" uid="uid://c56e4jl2mxdir" path="res://addons/guide/guide_action.gd" id="1_8c1oi"]
+
+[resource]
+script = ExtResource("1_8c1oi")
+name = &"left right Alice"
+action_value_type = 1
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "left right Alice"
+display_category = ""
+metadata/_custom_type_script = "uid://c56e4jl2mxdir"
