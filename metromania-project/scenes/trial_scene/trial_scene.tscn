@@ -51,6 +51,21 @@ shadow_mesh = SubResource("ArrayMesh_c5pi5")
 [sub_resource type="BoxShape3D" id="BoxShape3D_3ttxr"]
 size = Vector3(4.9942, 0.289551, 1)
 
+[sub_resource type="Animation" id="Animation_0jync"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-14.3923, 5, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_yrmet"]
 resource_name = "new_animation"
 length = 5.0
@@ -66,21 +81,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(-14.392, 3, 0), Vector3(26.936, 3, 0), Vector3(-14.392, 3, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_0jync"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-14.3923, 5, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lqtkm"]
