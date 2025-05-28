@@ -1,0 +1,138 @@
+[gd_scene load_steps=10 format=3 uid="uid://cj71dr3c4hx3s"]
+
+[ext_resource type="Shader" uid="uid://dmus6t2fhh1n7" path="res://materials/shaders/depth_outline_shader.gdshader" id="1_4to5p"]
+[ext_resource type="PackedScene" uid="uid://cpmp45bvptfux" path="res://entities/Animated-3D-Robot/Blend/Robot.blend" id="1_d4bi0"]
+[ext_resource type="Material" uid="uid://cpqxcpttguw2g" path="res://scenes/vfx_scene/materials/robot_blue.tres" id="3_3bc0q"]
+[ext_resource type="Material" uid="uid://br2mlx8nu6xow" path="res://scenes/vfx_scene/materials/robot_grey.tres" id="4_kk6rx"]
+[ext_resource type="Material" uid="uid://ceqe4s6sylpat" path="res://scenes/vfx_scene/materials/robot_dark_grey.tres" id="5_pvuq2"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_pvuq2"]
+lightmap_size_hint = Vector2i(12, 12)
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kk6rx"]
+render_priority = 0
+shader = ExtResource("1_4to5p")
+shader_parameter/maxDistance = 25.0
+shader_parameter/magnification = 1.0
+shader_parameter/radius = 0.002
+shader_parameter/threshold = 0.1
+shader_parameter/outlineColor = Color(0, 0, 0, 1)
+
+[sub_resource type="Environment" id="Environment_mx7gh"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_oj1qg"]
+
+[node name="vfx_scene" type="Node"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 3, 0, 0)
+current = true
+
+[node name="Depth_Outline" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_pvuq2")
+surface_material_override/0 = SubResource("ShaderMaterial_kk6rx")
+
+[node name="Robot" parent="." instance=ExtResource("1_d4bi0")]
+transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-08, 0, -0.984005, 0)
+
+[node name="Skeleton3D" parent="Robot/RobotArmature" index="0"]
+bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
+bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
+bones/2/position = Vector3(0.0052459, 1.34843, 0.30772)
+bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
+bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
+bones/7/rotation = Quaternion(-0.0308386, -0.00130898, -0.00127106, 0.999523)
+bones/8/position = Vector3(0.582738, 0.29672, 0.0324413)
+bones/8/rotation = Quaternion(-0.0114497, -0.0532471, -0.9762, 0.209923)
+bones/9/rotation = Quaternion(-0.0545858, -0.689887, 0.0692138, 0.718531)
+bones/10/rotation = Quaternion(0.309992, 0.499338, -0.36494, 0.72207)
+bones/12/rotation = Quaternion(-0.00442112, 0.0238239, -0.552072, 0.833444)
+bones/13/rotation = Quaternion(-0.0381108, 0.000934127, -0.699656, 0.713462)
+bones/14/rotation = Quaternion(0.729874, 0.635341, 0.211089, 0.13808)
+bones/15/rotation = Quaternion(-0.248974, 0.627184, 0.630886, -0.382928)
+bones/17/rotation = Quaternion(0.0467354, -0.396111, -0.589061, 0.702794)
+bones/18/rotation = Quaternion(-0.0425872, -0.0183796, -0.699962, 0.712672)
+bones/20/rotation = Quaternion(-0.0680168, 0.483185, -0.584014, 0.648717)
+bones/21/rotation = Quaternion(-0.0425873, -0.0183795, -0.699962, 0.712672)
+bones/22/position = Vector3(-0.636816, 0.296747, 0.0324391)
+bones/22/rotation = Quaternion(-0.012289, 0.0530604, 0.972768, 0.225291)
+bones/23/rotation = Quaternion(0.0435723, 0.80457, 0.0574779, 0.589462)
+bones/24/rotation = Quaternion(0.0897255, -0.705058, 0.255014, 0.6556)
+bones/26/rotation = Quaternion(-0.0436784, -0.0103278, 0.525089, 0.849863)
+bones/27/rotation = Quaternion(0.0348681, -0.0390055, 0.504719, 0.861697)
+bones/28/rotation = Quaternion(0.669465, -0.587013, -0.279996, 0.358935)
+bones/29/rotation = Quaternion(-0.135572, 0.735133, 0.594621, -0.296016)
+bones/31/rotation = Quaternion(-0.504663, -0.573821, 0.135774, 0.630564)
+bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
+bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
+bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
+bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
+bones/36/rotation = Quaternion(0.776054, 0.165029, -0.581515, 0.17985)
+bones/36/scale = Vector3(0.999995, 1, 1.00002)
+bones/37/rotation = Quaternion(0.400546, 1.16141e-07, -8.38875e-08, 0.916277)
+bones/38/rotation = Quaternion(0.772445, -0.164714, 0.587075, 0.177595)
+bones/38/scale = Vector3(0.999995, 1, 1.00002)
+bones/39/rotation = Quaternion(0.400546, -3.04434e-07, 8.20925e-08, 0.916277)
+bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
+bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
+bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
+bones/42/position = Vector3(-3.23068, 2.42529, 0.859867)
+
+[node name="Arm_L" parent="Robot/RobotArmature/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="Arm_R" parent="Robot/RobotArmature/Skeleton3D" index="1"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="Foot_L" parent="Robot/RobotArmature/Skeleton3D" index="2"]
+surface_material_override/0 = ExtResource("4_kk6rx")
+
+[node name="Foot_R" parent="Robot/RobotArmature/Skeleton3D" index="3"]
+surface_material_override/0 = ExtResource("4_kk6rx")
+
+[node name="Hand_L" parent="Robot/RobotArmature/Skeleton3D" index="4"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+surface_material_override/1 = ExtResource("4_kk6rx")
+
+[node name="Hand_R" parent="Robot/RobotArmature/Skeleton3D" index="5"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+surface_material_override/1 = ExtResource("4_kk6rx")
+
+[node name="Head" parent="Robot/RobotArmature/Skeleton3D" index="6"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+surface_material_override/1 = ExtResource("4_kk6rx")
+surface_material_override/2 = ExtResource("5_pvuq2")
+
+[node name="Leg_L" parent="Robot/RobotArmature/Skeleton3D" index="7"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="Leg_R" parent="Robot/RobotArmature/Skeleton3D" index="8"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="LowerLeg_L" parent="Robot/RobotArmature/Skeleton3D" index="9"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="LowerLeg_R" parent="Robot/RobotArmature/Skeleton3D" index="10"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="Shoulder_L" parent="Robot/RobotArmature/Skeleton3D" index="11"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="Shoulder_R" parent="Robot/RobotArmature/Skeleton3D" index="12"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+
+[node name="Torso" parent="Robot/RobotArmature/Skeleton3D" index="13"]
+surface_material_override/0 = ExtResource("3_3bc0q")
+surface_material_override/1 = ExtResource("4_kk6rx")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_mx7gh")
+camera_attributes = SubResource("CameraAttributesPractical_oj1qg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
+
+[editable path="Robot"]

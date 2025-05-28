@@ -10,10 +10,10 @@ uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, repeat_disable, filter_n
 uniform float maxDistance = 25.0;
 uniform float magnification = 1.0;
 
-uniform float radius = 1.0;
+uniform float radius = 0.005;
 uniform float threshold = 1.0;
 
-uniform vec4 outlineColor = vec4(0.0,0.0,0.0,1.0);
+uniform vec4 outlineColor: source_color = vec4(0.0, 0.0, 0.0, 1.0);
 
 float CompressionAndMagnification(float x){
 	return ((x * magnification + x))/(x * magnification + 1.0);

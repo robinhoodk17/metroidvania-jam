@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cpqxcpttguw2g"]
+
+[ext_resource type="Shader" uid="uid://1ubhfq3bbpak" path="res://materials/shaders/toon_shader.gdshader" id="1_jmn87"]
+[ext_resource type="Material" uid="uid://dhqrsaicq1dbf" path="res://scenes/vfx_scene/materials/robot_outline.tres" id="1_qbqr8"]
+
+[resource]
+render_priority = 0
+next_pass = ExtResource("1_qbqr8")
+shader = ExtResource("1_jmn87")
+shader_parameter/base_color = Color(0.419608, 0.654902, 0.87451, 1)
+shader_parameter/lit_color = Color(1, 1, 1, 1)
+shader_parameter/unlit_color = Color(0.501961, 0.501961, 0.501961, 1)
+shader_parameter/cel_threshold = 0.5
+shader_parameter/cel_sharpness = 0.01
