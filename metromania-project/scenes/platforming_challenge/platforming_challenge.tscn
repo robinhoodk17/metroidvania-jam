@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfpmy2pveufoe"]
+
+[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_vqeit"]
+[ext_resource type="PackedScene" uid="uid://du2mq2c44cwpq" path="res://scenes/platforming_challenge/platforming_challenge.blend" id="2_1jkkh"]
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="3_fnkyv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vqeit"]
+
+[node name="Node" instance=ExtResource("1_vqeit")]
+
+[node name="platforming_challenge" parent="Map" index="0" instance=ExtResource("2_1jkkh")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Map/platforming_challenge/Torus" index="0" groups=["hook"]]
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/platforming_challenge/Torus/StaticBody3D" index="0"]
+shape = SubResource("BoxShape3D_vqeit")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="Map/platforming_challenge/Torus_001" index="0" groups=["hook"]]
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/platforming_challenge/Torus_001/StaticBody3D2" index="0"]
+shape = SubResource("BoxShape3D_vqeit")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="Map/platforming_challenge/Torus_002" index="0" groups=["hook"]]
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/platforming_challenge/Torus_002/StaticBody3D3" index="0"]
+shape = SubResource("BoxShape3D_vqeit")
+
+[node name="Myck" parent="Map" index="1" instance=ExtResource("3_fnkyv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.037, 1.152, 0)
+
+[editable path="Map/platforming_challenge"]

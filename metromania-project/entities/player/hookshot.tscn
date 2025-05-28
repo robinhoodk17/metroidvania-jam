@@ -24,8 +24,7 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.248725)
 
 [node name="HookshotTip" type="Area3D" parent="MeshInstance3D/Marker3D" node_paths=PackedStringArray("hookshot_tip", "hookshot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.248725)
-top_level = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
 script = ExtResource("2_kjl1k")
 hookshot_tip = NodePath("..")
 hookshot = NodePath("../../..")
