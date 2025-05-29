@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="2_w0n63"]
 [ext_resource type="Script" uid="uid://72xopjge5xd1" path="res://scenes/world/moving_platform.gd" id="3_3ttxr"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_3ttxr"]
+size = Vector3(4.9942, 0.289551, 1)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8s0f8"]
 resource_name = "Material"
 cull_mode = 2
@@ -48,39 +51,36 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_c5pi5")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_3ttxr"]
-size = Vector3(4.9942, 0.289551, 1)
-
 [sub_resource type="Animation" id="Animation_0jync"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
+tracks/0/path = NodePath("..:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(-14.3923, 5, 0)]
+"values": [Vector3(-14.392, 3, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_yrmet"]
 resource_name = "new_animation"
 length = 5.0
-loop_mode = 1
+loop_mode = 2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
+tracks/0/path = NodePath("..:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 2.5, 5),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(-14.392, 3, 0), Vector3(26.936, 3, 0), Vector3(-14.392, 3, 0)]
+"values": [Vector3(-14.392, 3, 0), Vector3(26.4133, 3, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lqtkm"]
@@ -95,18 +95,18 @@ _data = {
 
 [node name="trial_scene" parent="Map" index="0" instance=ExtResource("1_pwfib")]
 
-[node name="Cube-col_002" type="MeshInstance3D" parent="Map/trial_scene" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3923, 5, 0)
-mesh = SubResource("ArrayMesh_w0u8d")
-skeleton = NodePath("")
+[node name="StaticBody3D" type="AnimatableBody3D" parent="Map/trial_scene" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.392, 3, 0)
 
-[node name="StaticBody3D" type="CharacterBody3D" parent="Map/trial_scene/Cube-col_002" index="0"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/trial_scene/Cube-col_002/StaticBody3D" index="0"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/trial_scene/StaticBody3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.49442, -0.144775, 0)
 shape = SubResource("BoxShape3D_3ttxr")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Map/trial_scene/Cube-col_002" index="1"]
+[node name="Cube-col_002" type="MeshInstance3D" parent="Map/trial_scene/StaticBody3D" index="1"]
+mesh = SubResource("ArrayMesh_w0u8d")
+skeleton = NodePath("")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Map/trial_scene/StaticBody3D/Cube-col_002" index="0"]
 libraries = {
 &"": SubResource("AnimationLibrary_lqtkm")
 }
