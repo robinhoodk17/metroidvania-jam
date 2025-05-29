@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhtbgoohearlq"]
+
+[sub_resource type="Environment" id="Environment_ivxrm"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_aynem"]
+
+[node name="Node" type="Node"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ivxrm")
+camera_attributes = SubResource("CameraAttributesPractical_aynem")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.947724, 0.254442, 0.192559, -0.319092, 0.75571, 0.571912, 0, -0.603459, 0.797394, 0, 0, 0)
+
+[node name="Map" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="2DWorld" type="Node2D" parent="."]

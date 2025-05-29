@@ -1,0 +1,88 @@
+[gd_scene load_steps=6 format=3 uid="uid://bojsla6nqcf03"]
+
+[ext_resource type="Script" uid="uid://bbe25uxhy3b0c" path="res://ui/game/game_ui.gd" id="1_67una"]
+[ext_resource type="Script" uid="uid://dqqj1yco70vug" path="res://ui/game/FPS_label.gd" id="2_d7okr"]
+[ext_resource type="PackedScene" uid="uid://dkr80d2pi0d41" path="res://addons/guide/debugger/guide_debugger.tscn" id="2_li4ca"]
+[ext_resource type="Script" uid="uid://m5ro8d2trpvf" path="res://ui/game/aim_prompt.gd" id="4_lkn3m"]
+[ext_resource type="Resource" uid="uid://dn7xm7551du3c" path="res://input/throw.tres" id="5_ke6fc"]
+
+[node name="Game" type="Control" node_paths=PackedStringArray("default_focus_control")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_67una")
+prevent_joypad_focus_capture = true
+default_focus_control = NodePath("VBoxContainer/ToggleGuideDebugger")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -33.5
+offset_right = 33.5
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Game UI"
+script = ExtResource("2_d7okr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 285.0
+grow_vertical = 2
+
+[node name="ToggleGuideDebugger" type="CheckButton" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "GUIDE Debugger"
+
+[node name="GuideDebugger" parent="VBoxContainer" instance=ExtResource("2_li4ca")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AimPrompt" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_lkn3m")
+interact_action = ExtResource("5_ke6fc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AimPrompt"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.5
+offset_top = -55.0
+offset_right = 20.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="AimPrompt/VBoxContainer"]
+layout_mode = 2
+text = "Hook"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="AimPrompt/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "ble"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
