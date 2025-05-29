@@ -7,12 +7,15 @@ func _ready():
 	
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("Escape"):
-		get_tree().paused = !get_tree().paused
-		if get_tree().paused:
-			show()
-		else:
-			hide()
- 
+		toggle_pause()
+		
+func toggle_pause() -> void: 
+	get_tree().paused = !get_tree().paused
+	if get_tree().paused:
+		show()
+	else:
+		hide()
+	
 func _on_button_mouse_entered(btn: Button) -> void:
 	var tween = create_tween()
 	tween.tween_property(btn, "scale", Vector2(1.1, 1.1), 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -24,7 +27,7 @@ func _on_button_mouse_exited(btn: Button) -> void:
 	tween.tween_property(btn, "modulate", Color(1, 1, 1, 1), 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 func _on_start_pressed() -> void:
-	print("Start Game pressed")
+	toggle_pause()
   
 func _on_options_pressed() -> void:
 	print("Options pressed")
