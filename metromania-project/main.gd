@@ -39,6 +39,7 @@ func create_fade() -> void:
 	fade.anchor_bottom = 1
 	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas_layer.add_child(fade)
+	
 #endregion
 
 func fade_to_clear(duration: float = fade_duration) -> Signal:
