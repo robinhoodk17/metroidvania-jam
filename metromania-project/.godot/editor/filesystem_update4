@@ -2,8 +2,15 @@ res://scenes/combat_scene/combat_scene.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
-res://entities/player/animation_tree.tres
 res://peyman/enemy_tree.tres
+res://entities/player/animation_tree.tres
 res://scenes/robinhood_Scene.tscn
 res://scenes/main.tscn
 res://scenes/master.tscn
+res://peyman/pause_menu.tscn
+res://ui/ui.tscn
+res://main.gd
+res://ui/ui.gd
+res://ui/main_menu/main_menu.tscn
+res://ui/UI_animator.tscn
+res://ui/UI_animator.gd

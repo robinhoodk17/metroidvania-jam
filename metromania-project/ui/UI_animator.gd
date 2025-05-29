@@ -103,6 +103,8 @@ func setup() -> void:
 		"self_modulate" : entrance_modulate
 	}
 	target.visibility_changed.connect(on_enter_deferred)
+	#if entrance_animation:
+		#add_tween(entrance_values, true, 0.0, IMMEDIATE_TRANSITION, hover_easing, 0.0)
 		
 func on_enter_deferred(finished_waiting : bool = false) -> void:
 	call_deferred("on_enter",finished_waiting)

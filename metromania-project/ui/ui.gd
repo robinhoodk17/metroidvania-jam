@@ -36,6 +36,7 @@ func show_ui(page: Variant) -> void:
 
 
 func go_to(page: Variant) -> void:
+	print_debug("showing ", page)
 	hide_ui()
 	show_ui(page)
 
@@ -74,7 +75,10 @@ func late_ready() -> void:
 	for child: Node in get_children():
 		if child is UiPage:
 			child.hide()
+	print_debug("showing UI")
 	show()
+	show_ui("MainMenu")
+
 func change_mappings() -> void:
 	print_debug("changed mapping")
 	GUIDE.disable_mapping_context(mapping_contexts[current_active_mapping])

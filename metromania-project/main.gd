@@ -11,6 +11,7 @@ const HEALTH_BAR_OUTLINE = preload("res://peyman/Health bar outline.png")
 var progress_bar: TextureProgressBar
 
 func _ready() -> void:
+	Ui.show_ui("MainMenu")
 	create_fade()
 	create_progress_bar()
 	if SaveLoad.progress == null:

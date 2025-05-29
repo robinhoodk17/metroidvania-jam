@@ -51,7 +51,7 @@ text = "Play"
 [node name="Node" parent="MarginContainer/Buttons/Play" instance=ExtResource("2_omy8q")]
 connect_as_button = true
 hover_rotation = 0.4
-entrance_time = 0.4
+entrance_time = 0.6
 entrance_transition = 11
 hover_easing = 1
 
@@ -60,9 +60,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "How to Play"
 
-[node name="Node" parent="MarginContainer/Buttons/HowToPlay" instance=ExtResource("2_omy8q")]
+[node name="Node" parent="MarginContainer/Buttons/HowToPlay" node_paths=PackedStringArray("wait_for") instance=ExtResource("2_omy8q")]
 connect_as_button = true
 entrance_animation = true
+wait_for = NodePath("../../Play/Node")
 hover_rotation = 0.4
 entrance_position = Vector2(0, 100)
 entrance_time = 0.5
@@ -74,9 +75,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Settings"
 
-[node name="Node" parent="MarginContainer/Buttons/Settings" instance=ExtResource("2_omy8q")]
+[node name="Node" parent="MarginContainer/Buttons/Settings" node_paths=PackedStringArray("wait_for") instance=ExtResource("2_omy8q")]
 connect_as_button = true
 entrance_animation = true
+wait_for = NodePath("../../Play/Node")
 hover_rotation = 0.4
 entrance_position = Vector2(0, 100)
 entrance_time = 0.5
@@ -88,9 +90,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Controls"
 
-[node name="Node" parent="MarginContainer/Buttons/Controls" instance=ExtResource("2_omy8q")]
+[node name="Node" parent="MarginContainer/Buttons/Controls" node_paths=PackedStringArray("wait_for") instance=ExtResource("2_omy8q")]
 connect_as_button = true
 entrance_animation = true
+wait_for = NodePath("../../Play/Node")
 hover_rotation = 0.4
 entrance_position = Vector2(0, 100)
 entrance_time = 0.5
@@ -102,9 +105,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Credits"
 
-[node name="Node" parent="MarginContainer/Buttons/Credits" instance=ExtResource("2_omy8q")]
+[node name="Node" parent="MarginContainer/Buttons/Credits" node_paths=PackedStringArray("wait_for") instance=ExtResource("2_omy8q")]
 connect_as_button = true
 entrance_animation = true
+wait_for = NodePath("../../Play/Node")
 hover_rotation = 0.4
 entrance_position = Vector2(0, 100)
 entrance_time = 0.5
@@ -116,9 +120,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Exit"
 
-[node name="Node" parent="MarginContainer/Buttons/Exit" instance=ExtResource("2_omy8q")]
+[node name="Node" parent="MarginContainer/Buttons/Exit" node_paths=PackedStringArray("wait_for") instance=ExtResource("2_omy8q")]
 connect_as_button = true
 entrance_animation = true
+wait_for = NodePath("../../Play/Node")
 hover_rotation = 0.4
 entrance_position = Vector2(0, 100)
 entrance_time = 0.5
