@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://7jimtt82avqg" path="res://scenes/ProcStairs.tscn" id="1_ekqcl"]
 [ext_resource type="Script" uid="uid://72xopjge5xd1" path="res://scenes/world/moving_platform.gd" id="1_g44xj"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="2_vr4tg"]
-[ext_resource type="Script" uid="uid://b3m83dg3s10vp" path="res://peyman/enemy2.gd" id="3_3nxao"]
+[ext_resource type="Script" uid="uid://b3m83dg3s10vp" path="res://peyman/enemy.gd" id="3_3nxao"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tqh3n"]
 size = Vector3(10, 1, 1)
