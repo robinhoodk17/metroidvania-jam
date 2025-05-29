@@ -47,6 +47,7 @@ func reload_cur_scene() -> void:
 
 func create_fade() -> void:
 	fade = ColorRect.new()
+	fade.name = "fade"
 	fade.color = Color.BLACK 
 	fade.anchor_left = 0
 	fade.anchor_top = 0
