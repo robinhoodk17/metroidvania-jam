@@ -1,11 +1,25 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.2.69",
+		"generator":"Khronos glTF Blender I/O v4.2.60",
 		"version":"2.0"
 	},
 	"scene":0,
 	"scenes":[
 		{
+			"extras":{
+				"ypui":{
+					"expand_channels":0,
+					"expand_mask_channels":0,
+					"show_bake_targets":0,
+					"show_channels":1,
+					"show_layers":1,
+					"show_materials":0,
+					"show_object":0,
+					"show_stats":0,
+					"show_support":0,
+					"tree_name":""
+				}
+			},
 			"name":"Scene",
 			"nodes":[
 				0,
@@ -77,8 +91,8 @@
 				1
 			],
 			"translation":[
-				0,
-				-3.6666665077209473,
+				10.328126907348633,
+				-15,
 				0
 			]
 		},
@@ -629,14 +643,14 @@
 			"componentType":5126,
 			"count":24,
 			"max":[
-				42.23585510253906,
-				-10.711797714233398,
-				1.0000019073486328
+				32.674560546875,
+				0.1441030502319336,
+				1.0000026226043701
 			],
 			"min":[
-				-23.11326789855957,
-				-11.000004768371582,
-				-1.0000044107437134
+				-32.674560546875,
+				-0.14410400390625,
+				-1.000003695487976
 			],
 			"type":"VEC3"
 		},
