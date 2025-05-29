@@ -13,6 +13,8 @@ func toggle_pause() -> void:
 	get_tree().paused = !get_tree().paused
 	if get_tree().paused:
 		show()
+		if get_child_count() != 0 && get_child(0) is Button:
+			get_child(0).grab_focus()
 	else:
 		hide()
 	
