@@ -1,22 +1,13 @@
 extends Node
-
-
+ 
 const CLEAR := Color(0,0,0,0)
 var _tween: Tween
-var canvas_layer : CanvasLayer
 var fade : ColorRect
 @export var fade_duration := 1.0
 @export var musics : Array[AudioStream]
+@onready var canvas_layer: CanvasLayer = $CanvasLayer
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	show_main_menu.call_deferred()
-
-
-func show_main_menu() -> void:
-	await get_tree().create_timer(0.5).timeout
-	Ui.show_ui("MainMenu")
-	create_and_add_canvas_layer()
 	create_fade()
 	if SaveLoad.progress == null:
 		SaveLoad.progress = Progress.new()
@@ -38,12 +29,7 @@ func reload_cur_scene() -> void:
 	get_tree().reload_current_scene()
  
 #region create_nodes
-func create_and_add_canvas_layer() -> void:
-	canvas_layer = CanvasLayer.new()
-	canvas_layer.name = "CanvasLayer"
-	add_child(canvas_layer)
-	canvas_layer.layer = 2
- 
+
 func create_fade() -> void:
 	fade = ColorRect.new()
 	fade.color = Color.BLACK 
