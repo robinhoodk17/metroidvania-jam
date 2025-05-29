@@ -1,10 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://docds2qsao4bg"]
+[gd_scene load_steps=2 format=3 uid="uid://docds2qsao4bg"]
 
 [ext_resource type="Script" uid="uid://ekpe2krthkgv" path="res://main.gd" id="1_o5qli"]
-[ext_resource type="AudioStream" uid="uid://beeopqx1phmuh" path="res://music/[Idea 1] Main Theme V2.mp3" id="2_0wfyh"]
 
 [node name="main" type="Node"]
 script = ExtResource("1_o5qli")
-musics = Array[AudioStream]([ExtResource("2_0wfyh")])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
