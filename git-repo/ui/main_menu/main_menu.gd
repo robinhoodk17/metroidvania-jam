@@ -21,4 +21,4 @@ func _connect_buttons() -> void:
 func _start_game() -> void:
 	# TODO: Consider adding some kind of scene transition
 	Ui.go_to("Game")
-	get_tree().change_scene_to_file("uid://cia5g3lqw3opr")
+	get_tree().change_scene_to_file("uid://dxprpl0eyv2xm")

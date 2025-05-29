@@ -2,8 +2,11 @@ extends CharacterBody3D
 class_name PlayerController
 
 enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING, LEDGE_GRABBING}
-enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, HOOKED, JUMPING, BLOCKED, DASHING}
+enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, HOOKED, JUMPING, BLOCKED, DASHING, INTERACTING}
 enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
+
+signal interacted
+signal break_interaction
 
 @export var slow_time : bool = false
 @export_group("Player Movement")
@@ -31,9 +34,9 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 @export var wall_jump_repulsion : float = 10.0
 @export var wall_jump_time : float = 0.25
 ##when the player is pressing against a wall, how much it stops falling
-@export var wall_slide_gravity : float = 0.2
+@export var wall_slide_gravity : float = 0.5
 @export var dash_velocity : float = 30.0
-@export var dash_duration : float = 0.5
+@export var dash_duration : float = 0.35
 @export var coyote_time : float = 0.1
 @export var ledge_grab_offset : float = -.35
 @export_group("Combat")
@@ -74,7 +77,13 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
-var current_action_state : action_state = action_state.IDLE_ACTION
+var current_action_state : action_state = action_state.IDLE_ACTION : 
+	set(value):
+		if current_action_state == action_state.INTERACTING:
+			break_interaction.emit()
+		current_action_state = value
+
+var last_interaction : float = -1.0
 
 var carrying_child : bool = true
 var direction_x : float = 0.0
@@ -86,6 +95,7 @@ var dash_spent : bool = false
 var input_queued : inputs = inputs.NONE
 var hookshot_position : Vector3
 var animating : bool = false
+var airborne : bool = false
 var current_gravity_force : float = 1.0
 
 var combo_number : int = 0
@@ -98,6 +108,7 @@ var dampened_y_array : Array[float]
 var averaged_y : float
 var current_y : int = 0
 var screen_middle : Vector2
+var lerp_power : float = 2.5
 
 """animation"""
 var run_animation : AnimationNodeStateMachinePlayback
@@ -142,9 +153,9 @@ func pick_up_child(_body : Node3D = null):
 		carrying_child = true
 		return
 		
-	if _body.is_in_group("player"):
-		_body.turn_off()
-		carrying_child = true
+	#if _body.is_in_group("player"):
+		#_body.turn_off()
+		#carrying_child = true
 
 func _physics_process(delta: float) -> void:
 	if slow_time:
@@ -164,10 +175,12 @@ func position_camera(delta: float) -> void:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
 	if is_on_floor():
-		camera_pivot.global_position = lerp(camera_pivot.global_position, global_position, 5.0 * delta)
+		lerp_power = lerp(lerp_power, 5.0, delta * 10)
+		camera_pivot.global_position = lerp(camera_pivot.global_position, global_position, delta * lerp_power)
 	else:
+		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
 		var target_position = Vector3(global_position.x, averaged_y, global_position.z)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, 2.5 * delta)
+		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 
 func manage_action_inputs() -> void:
 	if jump_action.is_triggered():
@@ -254,18 +267,24 @@ func handle_gravity(delta: float) -> void:
 			if velocity.y <= 0.0:
 				current_gravity_force = wall_slide_gravity
 				jumping_time = jump_floatiness
-
+	
 	if current_action_state == action_state.HOOKED:
 		current_gravity_force = 0.0
 	if jumping_time < jump_floatiness:
 		jumping_time += delta
 		if jump_action.value_bool:
 			velocity.y = jump_velocity
+	if up_down.value_axis_1d < -0.8:
+		current_gravity_force *= 2.0
 	if is_on_floor():
 		second_jump = false
 		dash_spent = false
+		if airborne:
+			velocity.x *= 0.9
+		airborne = false
 		coyote_timer.start(coyote_time)
 	else:
+		airborne = true
 		if velocity.y < 0:
 			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
 		else:
@@ -312,10 +331,14 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	dash_spent = true
 	velocity = Vector3(horizontal_direction, vertical_direction, 0).normalized() * dash_velocity
 	current_action_state = action_state.DASHING
+	current_run_state = run_state.RUNNING
+	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
 
 #region statemachine and animations
 func run_state_machine(delta: float) -> void:
+	if current_action_state == action_state.INTERACTING:
+		return
 	if current_run_state == run_state.STAGGERING:
 		velocity = staggering_towards * stagger_speed
 		traveled_stagger_distance += stagger_speed * delta
@@ -334,6 +357,7 @@ func run_state_machine(delta: float) -> void:
 		return
 		
 	var run_direction = left_right.value_axis_1d
+	var vertical_direction = up_down.value_axis_1d
 	var aiming_for_wall : bool = false
 	if ledge_grab.is_colliding() and !check_collisions.is_colliding():
 		if velocity.y < 0:
@@ -400,10 +424,9 @@ func run_state_machine(delta: float) -> void:
 				run_animation.travel("run")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
-				if current_run_state == run_state.RUNNING:
-					braking_time = 0.0
-					current_run_state = run_state.BRAKING
-					return
+				braking_time = 0.0
+				current_run_state = run_state.BRAKING
+				return
 			if abs(velocity.x) < speed:
 				velocity.x = run_direction * speed
 			else:
@@ -418,7 +441,7 @@ func run_state_machine(delta: float) -> void:
 				running_time = deceleration
 
 		run_state.WALL_SLIDING:
-			if !wall_jump.is_colliding() or is_on_floor() or !aiming_for_wall:
+			if !wall_jump.is_colliding() or is_on_floor() or vertical_direction < -0.8:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
@@ -486,6 +509,11 @@ func action_state_machine(_delta: float) -> void:
 		action_state.DASHING:
 			if is_on_floor():
 				current_action_state = action_state.IDLE_ACTION
+		
+		action_state.INTERACTING:
+			if horizontal_direction * last_interaction < 0.0:
+				last_interaction = horizontal_direction
+				interacted.emit()
 
 func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
 	animation_tree.set("parameters/TimeScale/scale", time_scale)
