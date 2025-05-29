@@ -10,6 +10,9 @@ var fade : ColorRect
 func _ready() -> void:
 	create_and_add_canvas_layer()
 	create_fade()
+	if SaveLoad.progress == null:
+		SaveLoad.progress = Progress.new()
+		print("progress resource created")
 	if musics.size() > 0:
 		Music.play_music(musics[0])
 	await fade_to_clear()
