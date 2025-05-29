@@ -1,0 +1,8 @@
+res://scenes/robinhood_Scene.tscn
+res://entities/player/animation_tree.tres
+res://peyman/enemy_tree.tres
+res://peyman/progress.gd
+res://scenes/main.tscn
+res://scenes/master.tscn
+res://scripts/AutoLoads/Save_Load.gd
+res://main.gd
