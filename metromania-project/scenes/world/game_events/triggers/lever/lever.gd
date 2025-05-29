@@ -11,7 +11,6 @@ var current_player : Node3D
 func _ready() -> void:
 	label.text = str(progression_needed)
 	body_entered.connect(check_for_player)
-	animation_player.animation_finished.connect(event_triggered.emit)
 
 func check_for_player(body : Node3D) -> void:
 	if disabled:
@@ -23,7 +22,6 @@ func check_for_player(body : Node3D) -> void:
 		body.break_interaction.connect(break_interaction)
 		body.interacted.connect(interacted)
 		current_player = body
-		event_triggered.emit()
 
 func break_interaction() -> void:
 	if current_player == null:
@@ -43,3 +41,5 @@ func interacted() -> void:
 		disabled = true
 		break_interaction()
 		animation_player.play("Cube_001Action")
+		await animation_player.animation_finished
+		event_triggered.emit()

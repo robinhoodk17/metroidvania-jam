@@ -11,7 +11,7 @@ const HEALTH_BAR_OUTLINE = preload("res://peyman/Health bar outline.png")
 var progress_bar: TextureProgressBar
 
 func _ready() -> void:
-	Ui.show_ui("MainMenu")
+	call_deferred("late_ready")
 	create_fade()
 	create_progress_bar()
 	if SaveLoad.progress == null:
@@ -22,6 +22,9 @@ func _ready() -> void:
 	await fade_to_clear()
 	set_progress_bar_value(50)
  
+func late_ready() -> void:
+	Ui.show_ui("MainMenu")
+
 func set_progress_bar_value(amount: float) -> void:
 	var max_value = progress_bar.max_value
 	var clamped_amount = clamp(amount, 0, max_value)

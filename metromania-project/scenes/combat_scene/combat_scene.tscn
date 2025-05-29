@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cskc4trs2sigm"]
+[gd_scene load_steps=6 format=3 uid="uid://cskc4trs2sigm"]
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_uw1b6"]
 [ext_resource type="PackedScene" uid="uid://mwee8d8oejbe" path="res://scenes/combat_scene/combat_scene.blend" id="2_a533q"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="3_a533q"]
+[ext_resource type="PackedScene" uid="uid://buglwrfsemxbe" path="res://scenes/world/game_events/events/self_free/self_free.tscn" id="4_hcfm3"]
 [ext_resource type="PackedScene" uid="uid://62blrovmjyqf" path="res://scenes/world/game_events/triggers/lever/lever.tscn" id="4_ry0gu"]
 
 [node name="Node" instance=ExtResource("1_uw1b6")]
@@ -12,5 +13,8 @@
 [node name="Myck" parent="Map" index="1" instance=ExtResource("3_a533q")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17, 0)
 
-[node name="Lever" parent="Map" index="2" instance=ExtResource("4_ry0gu")]
+[node name="SelfFree" parent="Map" index="2" node_paths=PackedStringArray("triggers") instance=ExtResource("4_hcfm3")]
+triggers = [NodePath("Lever")]
+
+[node name="Lever" parent="Map/SelfFree" index="0" instance=ExtResource("4_ry0gu")]
 transform = Transform3D(-1.74846e-08, 0, 0.4, 0, 0.4, 0, -0.4, 0, -1.74846e-08, 1.83899, -14.6467, 0)

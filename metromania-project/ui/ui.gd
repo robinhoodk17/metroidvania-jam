@@ -75,9 +75,8 @@ func late_ready() -> void:
 	for child: Node in get_children():
 		if child is UiPage:
 			child.hide()
-	print_debug("showing UI")
 	show()
-	show_ui("MainMenu")
+	#show_ui("MainMenu")
 
 func change_mappings() -> void:
 	print_debug("changed mapping")

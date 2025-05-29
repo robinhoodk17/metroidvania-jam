@@ -204,6 +204,7 @@ func throw_grappling(_x : float, _y : float) -> void:
 	if !carrying_child:
 		alice.retract()
 		return
+	SignalbusPlayer.yeeted_child.emit()
 	current_gravity_force = gravity_damp_while_hooking
 	var target : Node3D = null
 	
@@ -278,6 +279,7 @@ func handle_gravity(delta: float) -> void:
 		if airborne:
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
+			SignalbusPlayer.landed.emit()
 			#if abs(get_platform_velocity().length_squared()) > 1.0:
 				#current_run_state = run_state.WALKING
 				#running_time = acceleration * 0.5
@@ -316,6 +318,7 @@ func jump() -> void:
 			do_wall_jump()
 			return
 		second_jump = true
+	SignalbusPlayer.jumped.emit()
 
 func do_wall_jump() -> void:
 	current_action_state = action_state.BLOCKED
@@ -325,6 +328,7 @@ func do_wall_jump() -> void:
 		_sign = -1
 	velocity.x = wall_jump_repulsion * _sign
 	dash_reset_timer.start(wall_jump_time)
+	SignalbusPlayer.wall_jumped.emit()
 
 func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	if horizontal_direction == 0.0 and vertical_direction == 0.0:
@@ -335,6 +339,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
+	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
 func run_state_machine(delta: float) -> void:
@@ -371,6 +376,7 @@ func run_state_machine(delta: float) -> void:
 					global_position.y = collision_point.y + ledge_grab_offset
 					second_jump = false
 					dash_spent = false
+					SignalbusPlayer.grabbed_ledge.emit()
 					return
 	
 	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
@@ -413,10 +419,12 @@ func run_state_machine(delta: float) -> void:
 			if !animating:
 				run_animation.travel("walk")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
+				SignalbusPlayer.braked.emit()
 				current_run_state = run_state.IDLE
 				running_time = 0.0
 			if running_time >= acceleration and is_on_floor() and landing_timer.is_stopped():
 				current_run_state = run_state.RUNNING
+				SignalbusPlayer.accelerated_to_full_speed.emit()
 
 		run_state.RUNNING:
 			if !is_on_floor() or !landing_timer.is_stopped():
