@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cn0guvtaw8w66"]
+
+[ext_resource type="Script" uid="uid://s11aqy3dk0xw" path="res://scenes/world/game_events/events/spawn_enemies/spawn_enemies_with_delay.gd" id="1_gacp7"]
+
+[node name="SpawnEnemies" type="Node3D"]
+script = ExtResource("1_gacp7")

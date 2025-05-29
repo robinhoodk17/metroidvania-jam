@@ -1,0 +1,131 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="git-repo"
+config/description="Godot 4 template project for game jams"
+run/main_scene="uid://docds2qsao4bg"
+config/features=PackedStringArray("4.4")
+boot_splash/bg_color=Color(0.0784314, 0.133333, 0.25098, 1)
+boot_splash/show_image=false
+config/icon="res://icon.png"
+
+[autoload]
+
+ProjectUISoundController="*res://addons/maaacks_ui_sound_controller/base/scenes/Autoloads/ProjectUISoundController.tscn"
+GUIDE="*res://addons/guide/guide.gd"
+Ui="*res://ui/ui.tscn"
+Utils="*res://scripts/AutoLoads/utils.gd"
+Globals="*res://scripts/AutoLoads/globals.gd"
+Settings="*res://scripts/AutoLoads/settings.gd"
+SignalbusPlayer="*res://scripts/AutoLoads/signalbus_player.gd"
+SignalManager="*res://scripts/AutoLoads/Signal_manager.gd"
+SaveLoad="*res://scripts/AutoLoads/Save_Load.gd"
+Music="*res://scripts/AutoLoads/Music.gd"
+GlobalsPlayer="*res://scripts/AutoLoads/globals_player.gd"
+
+[debug]
+
+gdscript/warnings/unused_parameter=0
+gdscript/warnings/inferred_declaration=1
+
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+
+[dotnet]
+
+project/assembly_name="Godot-4-Jam-Template"
+
+[editor]
+
+naming/script_name_casing=2
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/maaacks_ui_sound_controller/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://addons/": "red",
+"res://autoloads/": "yellow",
+"res://game/": "green",
+"res://input/": "teal",
+"res://test/": "orange",
+"res://ui/": "blue"
+}
+
+[gdunit4]
+
+report/assert/verbose_warnings=false
+report/godot/script_error=false
+ui/toolbar/run_overall=true
+
+[godot_resource_groups]
+
+auto_rebuild=true
+
+[gui]
+
+theme/custom="res://ui/ui_theme.tres"
+
+[input]
+
+ui_accept={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194309,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194310,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":32,"physical_keycode":0,"key_label":0,"unicode":32,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":0,"pressure":0.0,"pressed":true,"script":null)
+]
+}
+ui_cancel={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":6,"pressure":0.0,"pressed":true,"script":null)
+]
+}
+ui_focus_controls={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":4,"pressure":0.0,"pressed":true,"script":null)
+]
+}
+ui_back={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":4,"pressure":0.0,"pressed":true,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+Escape={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+
+[layer_names]
+
+3d_physics/layer_1="General"
+3d_physics/layer_3="Player"
+3d_physics/layer_7="AutoAim"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.0784314, 0.133333, 0.25098, 1)
+anti_aliasing/quality/screen_space_aa=1

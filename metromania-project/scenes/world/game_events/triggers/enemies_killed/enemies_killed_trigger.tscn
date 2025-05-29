@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2n7sg3bylxkm"]
+
+[ext_resource type="Script" uid="uid://du6xght7ngljw" path="res://scenes/world/game_events/triggers/enemies_killed/enemies_killed_trigger.gd" id="1_omku4"]
+
+[node name="EnemiesKilledTrigger" type="Area3D"]
+script = ExtResource("1_omku4")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://08b8jxbryx21"]
+
+[ext_resource type="Script" uid="uid://dry6h28pj286e" path="res://scenes/world/game_events/triggers/area_entered/area_entered.gd" id="1_bptvw"]
+
+[node name="Area3D" type="Area3D"]
+script = ExtResource("1_bptvw")
