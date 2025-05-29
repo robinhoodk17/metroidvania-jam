@@ -418,6 +418,7 @@ func check_body(body : Node3D):
 	if off:
 		return
 	if body.is_in_group("hook"):
+		SignalbusPlayer.grabbed_hook.emit()
 		current_action_state = action_state.HOOKED
 		current_run_state = run_state.IDLE
 		#current_action_state = action_state.IDLE_ACTION
