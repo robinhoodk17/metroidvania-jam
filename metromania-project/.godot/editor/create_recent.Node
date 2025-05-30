@@ -1,4 +1,5 @@
+WorldEnvironment
+DirectionalLight3D
 CSGBox3D
 Camera3D
 CanvasLayer
-WorldEnvironment

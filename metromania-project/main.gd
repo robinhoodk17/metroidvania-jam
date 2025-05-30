@@ -14,11 +14,13 @@ func _ready() -> void:
 	call_deferred("late_ready")
 	create_fade()
 	create_progress_bar()
+	create_sun_envio()
 	if SaveLoad.progress == null:
 		SaveLoad.progress = Progress.new()
 		print("progress resource created")
 	if musics.size() > 0:
 		Music.play_music(musics[0])
+	progress_bar.hide()
 	await fade_to_clear()
 	set_progress_bar_value(50)
  
@@ -72,6 +74,35 @@ func create_progress_bar():
 	progress_bar.set_position(Vector2(25.0, 25.0)) 
 	canvas_layer.add_child(progress_bar)
  
+func create_sun_envio():
+	var sun := DirectionalLight3D.new()
+	sun.light_color = Color(1.0, 0.95, 0.8)  
+	sun.light_energy = 1.0 
+	sun.light_indirect_energy = 0.5 
+	sun.shadow_enabled = true
+	sun.shadow_bias = 0.05 
+	sun.shadow_normal_bias = 0.8
+	sun.shadow_blur = 2.0 
+	sun.rotation_degrees = Vector3(-45, 30, 0)
+	add_child(sun)
+	var environment := Environment.new()
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color(0.6, 0.8, 1.0)  
+	environment.ambient_light_color = Color(0.3, 0.35, 0.4)
+	environment.ambient_light_energy = 0.8
+	environment.ambient_light_sky_contribution = 0.5
+	environment.fog_enabled = true
+	environment.fog_light_color = Color(0.6, 0.8, 1.0)
+	environment.fog_depth_begin = 10.0
+	environment.fog_depth_end = 50.0
+	var world_env := WorldEnvironment.new()
+	world_env.environment = environment
+	add_child(world_env)
+	environment.tonemap_mode = Environment.TONE_MAPPER_ACES
+	environment.glow_enabled = true
+	environment.glow_intensity = 0.3
+	environment.glow_strength = 0.5
+
 #endregion
 
 func fade_to_clear(duration: float = fade_duration) -> Signal:

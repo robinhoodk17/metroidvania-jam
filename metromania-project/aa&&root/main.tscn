@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://docds2qsao4bg"]
+
+[ext_resource type="Script" uid="uid://bvr8gs45y6h57" path="res://main.gd" id="1_01t3b"]
+[ext_resource type="PackedScene" uid="uid://jftpla2ic4fw" path="res://peyman/pause_menu.tscn" id="2_h2xdl"]
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="3_ghgs2"]
+[ext_resource type="PackedScene" uid="uid://dkhjtbwvdf2ss" path="res://aa&&root/trial_scene.blend" id="4_yr5bg"]
+
+[node name="main" type="Node"]
+script = ExtResource("1_01t3b")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Pause_menu" parent="CanvasLayer" instance=ExtResource("2_h2xdl")]
+
+[node name="Myck" parent="." instance=ExtResource("3_ghgs2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.382, 1.12744, -0.891544)
+
+[node name="trial_scene" parent="." instance=ExtResource("4_yr5bg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.52585, 0, -0.540892)

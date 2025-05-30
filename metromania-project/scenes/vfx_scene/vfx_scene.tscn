@@ -5,7 +5,7 @@
 [ext_resource type="Material" uid="uid://cpqxcpttguw2g" path="res://scenes/vfx_scene/materials/robot_blue.tres" id="3_3bc0q"]
 [ext_resource type="Material" uid="uid://br2mlx8nu6xow" path="res://scenes/vfx_scene/materials/robot_grey.tres" id="4_kk6rx"]
 [ext_resource type="Material" uid="uid://ceqe4s6sylpat" path="res://scenes/vfx_scene/materials/robot_dark_grey.tres" id="5_pvuq2"]
-[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="6_mx7gh"]
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="6_mx7gh"]
 [ext_resource type="Shader" uid="uid://3h5we00urd6n" path="res://materials/shaders/slash_shader.res" id="7_25u6b"]
 [ext_resource type="Shader" uid="uid://4np5wvmrrk8g" path="res://materials/shaders/grid_shader.gdshader" id="7_oj1qg"]
 [ext_resource type="Texture2D" uid="uid://b8iw8gfyw4eay" path="res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg" id="8_25u6b"]

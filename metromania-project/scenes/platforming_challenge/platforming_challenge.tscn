@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_vqeit"]
 [ext_resource type="PackedScene" uid="uid://du2mq2c44cwpq" path="res://scenes/platforming_challenge/platforming_challenge.blend" id="2_1jkkh"]
-[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://entities/player/player.tscn" id="3_fnkyv"]
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="3_fnkyv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vqeit"]
 
