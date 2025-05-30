@@ -1,7 +1,8 @@
 extends Node
  
-const CLEAR := Color(0,0,0,0)
+const CLEAR : Color = Color(0,0,0,0)
 var _tween: Tween
+var tween2: Tween
 var fade : ColorRect
 @export var fade_duration := 1.0
 @export var musics : Array[AudioStream]
@@ -30,11 +31,10 @@ func late_ready() -> void:
 func set_progress_bar_value(amount: float) -> void:
 	var max_value = progress_bar.max_value
 	var clamped_amount = clamp(amount, 0, max_value)
-	var tween: Tween
-	if tween && tween.is_running():
-		tween.Kill()
-	tween = create_tween()
-	tween.tween_property(progress_bar, "value", clamped_amount, 0.3)
+	if tween2 && tween2.is_running():
+		tween2.Kill()
+	tween2 = create_tween()
+	tween2.tween_property(progress_bar, "value", clamped_amount, 0.3)
 	
 func change_scenes(path : String) -> void:
 	Music.fade_out()
@@ -75,9 +75,9 @@ func create_progress_bar():
 	canvas_layer.add_child(progress_bar)
  
 func create_sun_envio():
-	var sun := DirectionalLight3D.new()
+	var sun : DirectionalLight3D = DirectionalLight3D.new()
 	sun.light_color = Color(1.0, 0.95, 0.8)  
-	sun.light_energy = 1.0 
+	sun.light_energy = 0.8
 	sun.light_indirect_energy = 0.5 
 	sun.shadow_enabled = true
 	sun.shadow_bias = 0.05 
@@ -85,7 +85,7 @@ func create_sun_envio():
 	sun.shadow_blur = 2.0 
 	sun.rotation_degrees = Vector3(-45, 30, 0)
 	add_child(sun)
-	var environment := Environment.new()
+	var environment : Environment = Environment.new()
 	environment.background_mode = Environment.BG_COLOR
 	environment.background_color = Color(0.6, 0.8, 1.0)  
 	environment.ambient_light_color = Color(0.3, 0.35, 0.4)
@@ -95,7 +95,7 @@ func create_sun_envio():
 	environment.fog_light_color = Color(0.6, 0.8, 1.0)
 	environment.fog_depth_begin = 10.0
 	environment.fog_depth_end = 50.0
-	var world_env := WorldEnvironment.new()
+	var world_env : WorldEnvironment = WorldEnvironment.new()
 	world_env.environment = environment
 	add_child(world_env)
 	environment.tonemap_mode = Environment.TONE_MAPPER_ACES

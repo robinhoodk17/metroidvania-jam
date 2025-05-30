@@ -578,8 +578,8 @@ func create_hit_box():
 	hit_box.collision_mask = 1 << 5
 	hit_box.monitorable = false
 	hit_box.monitoring = false
-	var collision_shape := CollisionShape3D.new()
-	var sphere_shape := SphereShape3D.new()
+	var collision_shape : CollisionShape3D = CollisionShape3D.new()
+	var sphere_shape : SphereShape3D = SphereShape3D.new()
 	sphere_shape.radius = 0.5  
 	collision_shape.shape = sphere_shape
 	hit_box.add_child(collision_shape)
@@ -595,8 +595,8 @@ func create_hurt_box() -> void:
 	hurt_box = Area3D.new()
 	hurt_box.collision_layer = 1 << 4
 	hurt_box.collision_mask = 0
-	var collision_shape := CollisionShape3D.new()
-	var capsule_shape := CapsuleShape3D.new()
+	var collision_shape : CollisionShape3D = CollisionShape3D.new()
+	var capsule_shape : CapsuleShape3D = CapsuleShape3D.new()
 	capsule_shape.radius = 0.5 - 0.1
 	capsule_shape.height = 2.0 - 0.4
 	collision_shape.shape = capsule_shape

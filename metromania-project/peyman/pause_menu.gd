@@ -46,7 +46,7 @@ func create_nodes() -> void:
 	}
  
 	for text in buttons.keys():
-		var btn := Button.new()
+		var btn : Button = Button.new()
 		btn.text = text
 		btn.focus_mode = Control.FOCUS_ALL
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
