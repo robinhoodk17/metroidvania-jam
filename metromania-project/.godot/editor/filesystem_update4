@@ -5,11 +5,6 @@ res://input/keyboard.tres
 res://entities/player/animation_tree.tres
 res://peyman/enemy_tree.tres
 res://scenes/master.tscn
-res://main.gd
+res://aa&&root/player.tscn
 res://peyman/enemy_rigid.tscn
 res://peyman/enemy_rigid.gd
-res://peyman/enemy.gd
-res://aa&&root/player.tscn
-res://entities/player/player.gd
-res://peyman/pause_menu.gd
-res://scripts/AutoLoads/Music.gd

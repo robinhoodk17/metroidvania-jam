@@ -194,27 +194,15 @@ func handle_first_adustments() -> void:
 	axis_lock_linear_z = true
 
 func rotate_pivot_toward_target() -> void:
-	if state == "chase" or state == "attack":
-		var direction : Vector3 = (player.global_position - pivot_node.global_position)
-		direction.y = 0
-		if direction.length() == 0:
-			return 
-		direction = direction.normalized()
-		var target_angle = atan2(direction.x, direction.z) 
-		var new_basis = Basis(Vector3.UP, target_angle)
-		var new_transform = pivot_node.global_transform
-		new_transform.basis = new_basis
-		pivot_node.global_transform = new_transform
-	else:
-		var vel : Vector3 = linear_velocity
-		if vel.length() < 0.1:
-			return
-		vel.y = 0
-		if vel.length() == 0:
-			return
-		vel = vel.normalized()
-		var target_angle = atan2(vel.x, vel.z)
-		var new_basis = Basis(Vector3.UP, target_angle)
-		var new_transform = pivot_node.global_transform
-		new_transform.basis = new_basis
-		pivot_node.global_transform = new_transform
+	var vel : Vector3 = linear_velocity
+	if vel.length() < 0.1:
+		return
+	vel.y = 0
+	if vel.length() == 0:
+		return
+	vel = vel.normalized()
+	var target_angle = atan2(vel.x, vel.z)
+	var new_basis = Basis(Vector3.UP, target_angle)
+	var new_transform = pivot_node.global_transform
+	new_transform.basis = new_basis
+	pivot_node.global_transform = new_transform
