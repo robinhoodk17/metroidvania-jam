@@ -1,4 +1,8 @@
 CSGBox3D
+AnimationTree
+CollisionShape3D
+RigidBody3D
+WorldEnvironment
+DirectionalLight3D
 Camera3D
 CanvasLayer
-WorldEnvironment

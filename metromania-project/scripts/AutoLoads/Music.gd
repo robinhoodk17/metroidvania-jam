@@ -42,8 +42,8 @@ func play_sfx(player: AudioStreamPlayer3D, clip_key: String) -> void:
 	player.play()
 
 func preload_items_from_folder(folder_path: String) -> Dictionary:
-	var dir := DirAccess.open(folder_path)
-	var resources := {}
+	var dir = DirAccess.open(folder_path)
+	var resources : Dictionary = {}
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()

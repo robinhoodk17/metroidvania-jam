@@ -18,7 +18,6 @@ const TELEPORT_DISTANCE := 20.0
 const TELEPORT_OFFSET := 3.0
 var current_state = State.IDLE
 var patrol_points: Array[Vector3] = []
-var patrol_distance := 2.0
 var obstacle_detection_distance := 3.0
 var stuck_distance_threshold := 0.1 
 var current_patrol_index = 0
@@ -295,7 +294,7 @@ func create_hitbox():
 	hit_box.add_child(collision_shape_hit)
 	bone_attachment.add_child(hit_box)
 	bone_attachment.bone_name = "Palm1.R"
-	
+ 
 func create_label_3d():
 	label_3d = Label3D.new()
 	add_child(label_3d)
@@ -319,6 +318,7 @@ func create_navmesh():
 	add_child(nav_region)
  
 func create_partrol_points():
+	var patrol_distance := 2.0
 	var left_dir = -global_transform.basis.x.normalized()
 	var right_dir = global_transform.basis.x.normalized()
 	var left_point = global_position + left_dir * patrol_distance
@@ -328,6 +328,7 @@ func create_partrol_points():
 #endregion 
 
 func handle_adustments() -> void:
+	remove_from_group("player")
 	set_state(State.IDLE)
 	###initial_adustments
 	rotate_y(deg_to_rad(180))
