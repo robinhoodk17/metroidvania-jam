@@ -4,9 +4,11 @@ extends AudioStreamPlayer
 
 var _tween : Tween 
 var Sounds : Dictionary
+var Musics:  Dictionary
 
 func _ready() -> void:
 	Sounds = preload_items_from_folder("res://sfx/")
+	Musics = preload_items_from_folder("res://music/")
 	bus = "Music"
 	set_linear_volume(0)
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -26,12 +28,12 @@ func fade_out(duration : float = _duration) -> void:
 	stop()
 	stream = null
 	
-func play_music(track : AudioStream, duration : float = _duration) -> Signal:
+func play_music(track : String, duration : float = _duration) -> Signal:
 	if playing:
-		if stream == track:
+		if stream == Musics[track]:
 			return  _fade_volume(1, duration)
 		await _fade_volume(0, duration)
-	stream = track
+	stream = Musics[track]
 	play()
 	return _fade_volume(1, duration)
  

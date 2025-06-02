@@ -4,9 +4,10 @@ const CLEAR : Color = Color(0,0,0,0)
 var _tween: Tween
 var tween2: Tween
 var fade : ColorRect
+
 @export var fade_duration := 1.0
-@export var musics : Array[AudioStream]
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
+
 const HEALTH_BAR_FILL = preload("res://peyman/Health bar fill.png")
 const HEALTH_BAR_OUTLINE = preload("res://peyman/Health bar outline.png")
 var progress_bar: TextureProgressBar
@@ -19,8 +20,7 @@ func _ready() -> void:
 	if SaveLoad.progress == null:
 		SaveLoad.progress = Progress.new()
 		print("progress resource created")
-	if musics.size() > 0:
-		Music.play_music(musics[0])
+	Music.play_music("[Idea 2] Into the Darkness")
 	progress_bar.hide()
 	await fade_to_clear()
 	set_progress_bar_value(50)
@@ -30,13 +30,7 @@ func late_ready() -> void:
 	await get_tree().create_timer(5).timeout
 
 func play_different_music (int):
-	match int:
-		0:
-			Music.play_music(musics[0])
-		1: 
-			Music.play_music(musics[1])
-		2:
-			pass
+	pass
 
 func set_progress_bar_value(amount: float) -> void:
 	var max_value = progress_bar.max_value
