@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://bk4hxejv0l7ap"]
+[gd_scene load_steps=38 format=4 uid="uid://bk4hxejv0l7ap"]
 
 [ext_resource type="Script" uid="uid://rb8t4py4akyh" path="res://peyman/enemy_rigid.gd" id="1_6gibt"]
 [ext_resource type="Animation" uid="uid://dlurxyouho5ba" path="res://entities/Animated-3D-Robot/animations/death.res" id="1_u3o57"]
@@ -2899,6 +2899,10 @@ _data = {
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jr8h8"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_doehx"]
+radius = 1.0
+height = 3.0
+
 [node name="Robot" type="RigidBody3D"]
 script = ExtResource("1_6gibt")
 
@@ -2926,7 +2930,7 @@ bones/2/name = "Body"
 bones/2/parent = 0
 bones/2/rest = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0.0052459, 1.44646, 0.30772)
 bones/2/enabled = true
-bones/2/position = Vector3(0.0052459, 1.40781, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.40262, 0.30772)
 bones/2/rotation = Quaternion(0, 1.19209e-07, 0, 1)
 bones/2/scale = Vector3(1, 1, 1)
 bones/3/name = "Hips"
@@ -2962,7 +2966,7 @@ bones/7/parent = 6
 bones/7/rest = Transform3D(0.999996, -0.00280693, -5.71434e-05, 0.00280715, 0.999987, 0.00426114, 4.5182e-05, -0.00426128, 0.999991, 1.33227e-15, 0.309866, 2.498e-16)
 bones/7/enabled = true
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
-bones/7/rotation = Quaternion(-0.0307074, 0.00115044, -0.00125201, 0.999527)
+bones/7/rotation = Quaternion(-0.0309211, -0.00285618, -0.00128305, 0.999517)
 bones/7/scale = Vector3(1, 1, 1)
 bones/8/name = "Shoulder.L"
 bones/8/parent = 5
@@ -3165,28 +3169,28 @@ bones/36/parent = 2
 bones/36/rest = Transform3D(1, -9.75514e-08, 1.82486e-07, -6.37748e-08, -0.984268, -0.176684, 1.9685e-07, 0.176683, -0.984273, 0.628246, 0.0962255, -0.182561)
 bones/36/enabled = true
 bones/36/position = Vector3(0.628246, 0.0962255, -0.182561)
-bones/36/rotation = Quaternion(0.787468, 0.122069, -0.591182, 0.124487)
+bones/36/rotation = Quaternion(0.786502, 0.126425, -0.590336, 0.130133)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
 bones/37/name = "LowerLeg.L"
 bones/37/parent = 36
 bones/37/rest = Transform3D(1, 1.57482e-07, 2.4274e-07, -5.94661e-08, 0.932863, -0.360232, -2.83173e-07, 0.360232, 0.932863, 3.98206e-08, 0.611007, -8.81869e-10)
 bones/37/enabled = true
 bones/37/position = Vector3(3.98206e-08, 0.611007, -8.81869e-10)
-bones/37/rotation = Quaternion(0.291245, 1.21611e-07, -7.17247e-08, 0.956649)
+bones/37/rotation = Quaternion(0.302569, 1.283e-07, -7.54485e-08, 0.953127)
 bones/37/scale = Vector3(1, 1, 1)
 bones/38/name = "UpperLeg.R"
 bones/38/parent = 2
 bones/38/rest = Transform3D(1, -9.75512e-08, 1.1513e-06, 1.07397e-07, -0.984268, -0.176684, 1.15042e-06, 0.176683, -0.984273, -0.645357, 0.0962255, -0.182562)
 bones/38/enabled = true
 bones/38/position = Vector3(-0.645357, 0.0962255, -0.182562)
-bones/38/rotation = Quaternion(0.783587, -0.121453, 0.596847, 0.122533)
+bones/38/rotation = Quaternion(0.782645, -0.125842, 0.595994, 0.128148)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
 bones/39/name = "LowerLeg.R"
 bones/39/parent = 38
 bones/39/rest = Transform3D(1, -1.348e-07, -6.08012e-07, -9.32751e-08, 0.932863, -0.360232, 6.15751e-07, 0.360232, 0.932863, -6.17907e-08, 0.611007, -4.62268e-09)
 bones/39/enabled = true
 bones/39/position = Vector3(-6.17907e-08, 0.611007, -4.62268e-09)
-bones/39/rotation = Quaternion(0.291245, -3.01909e-07, 4.15307e-08, 0.956649)
+bones/39/rotation = Quaternion(0.302569, -3.10015e-07, 4.60581e-08, 0.953127)
 bones/39/scale = Vector3(1, 1, 1)
 bones/40/name = "PoleTarget.L"
 bones/40/parent = 0
@@ -3282,3 +3286,12 @@ parameters/OneShotBlend/active = false
 parameters/OneShotBlend/internal_active = false
 parameters/OneShotBlend/request = 0
 parameters/TimeScale/scale = 1.0
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.73268, 0)
+shape = SubResource("CapsuleShape3D_doehx")

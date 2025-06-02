@@ -38,7 +38,7 @@ signal break_interaction
 @export var wall_slide_gravity : float = 0.5
 @export var dash_velocity : float = 30.0
 @export var dash_duration : float = 0.35
-@export var coyote_time : float = 0.1
+@export var coyote_time : float = 0.25
 @export var ledge_grab_offset : float = -.35
 
 @export_group("Combat")
@@ -48,8 +48,8 @@ signal break_interaction
 @export var hitbox_start_position : Vector3 = Vector3(0,1.5,0)
 @export var hitbox_vertical_offset : float = 4.0
 @export var hitbox_horizontal_offset : float = 3.0
-@export var self_stagger_distance : float = 1.0
-@export var self_stagger_speed : float = 2.5
+@export var self_stagger_distance : float = 2.5
+@export var self_stagger_speed : float = 7.5
 
 @export_group("Hookshot")
 @export var hookshot_range : float = 10.0
@@ -81,6 +81,7 @@ signal break_interaction
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
 @onready var vfx_sphere: MeshInstance3D = $MeshParent/Robot/VFXSphere
+@onready var hitbox: Area3D = $MeshParent/Robot/VFXSphere/BoneAttachment3D/Hitbox
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -141,6 +142,7 @@ func _ready() -> void:
 	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
 	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
 	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
+	hitbox.area_entered.connect(deal_damage)
 	#add_call_method_to_animation()
 	
 #endregion
@@ -579,11 +581,14 @@ func attack(_x : float, _y : float) -> void:
 	set_oneshot_animation("Robot_Punch")
 	#set_oneshot_animation("Robot_Punch")
 	combo_number = (combo_number + 1) % max_combo
-	#vfx_sphere.position = 
+	
+	hitbox.monitoring = true
 	traveled_stagger_distance = 0
 	current_run_state = run_state.STAGGERING
 	staggering_towards = -Vector3(_x,_y,0)
 	staggering_distance = self_stagger_distance
+	await get_tree().create_timer(1).timeout
+	hitbox.monitoring = false
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	if knockback > 0.0:
@@ -592,6 +597,9 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 		staggering_distance = knockback
 		GlobalsPlayer.current_hp -= amount
 		SignalbusPlayer.took_damage.emit(amount, knockback)
+
+func deal_damage(area : Area3D) -> void:
+	print_debug("dealing damage")
 #endregion
 
 #region create_nodes
