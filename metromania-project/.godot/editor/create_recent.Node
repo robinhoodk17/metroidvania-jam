@@ -1,6 +1,12 @@
+CollisionShape3D
+Area3D
+BoneAttachment3D
+Skeleton3D
+AnimationPlayer
+AnimatableBody3D
+StaticBody3D
 CSGBox3D
 AnimationTree
-CollisionShape3D
 RigidBody3D
 WorldEnvironment
 DirectionalLight3D

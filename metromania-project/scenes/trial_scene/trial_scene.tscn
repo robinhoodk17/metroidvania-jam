@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://dxprpl0eyv2xm"]
-
-[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_mvmfu"]
-[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="2_x8wpy"]
-
-[node name="Node" instance=ExtResource("1_mvmfu")]
-
-[node name="Myck" parent="Map" index="0" instance=ExtResource("2_x8wpy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.076, 1.13686, 0)

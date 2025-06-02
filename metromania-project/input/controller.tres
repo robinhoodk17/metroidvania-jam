@@ -106,9 +106,9 @@ action = ExtResource("9_6486w")
 input_mappings = Array[ExtResource("3_42qf2")]([SubResource("Resource_3nx2q")])
 metadata/_guide_input_mappings_collapsed = true
 
-[sub_resource type="Resource" id="Resource_4qgdg"]
+[sub_resource type="Resource" id="Resource_ekpdh"]
 script = ExtResource("10_k5ore")
-button = 2
+button = 9
 joy_index = -1
 
 [sub_resource type="Resource" id="Resource_xbald"]
@@ -121,7 +121,7 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_4qgdg")
+input = SubResource("Resource_ekpdh")
 modifiers = Array[ExtResource("5_jmo8q")]([])
 triggers = Array[ExtResource("7_tbrtx")]([SubResource("Resource_xbald")])
 
@@ -129,7 +129,7 @@ triggers = Array[ExtResource("7_tbrtx")]([SubResource("Resource_xbald")])
 script = ExtResource("1_ok07p")
 action = ExtResource("13_6486w")
 input_mappings = Array[ExtResource("3_42qf2")]([SubResource("Resource_fit6u")])
-metadata/_guide_input_mappings_collapsed = true
+metadata/_guide_input_mappings_collapsed = false
 
 [sub_resource type="Resource" id="Resource_d7t4g"]
 script = ExtResource("10_k5ore")
@@ -206,7 +206,7 @@ action = ExtResource("13_gb5w4")
 input_mappings = Array[ExtResource("3_42qf2")]([SubResource("Resource_ls5vo")])
 metadata/_guide_input_mappings_collapsed = true
 
-[sub_resource type="Resource" id="Resource_ekpdh"]
+[sub_resource type="Resource" id="Resource_4qgdg"]
 script = ExtResource("10_k5ore")
 button = 2
 joy_index = -1
@@ -221,7 +221,7 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_ekpdh")
+input = SubResource("Resource_4qgdg")
 modifiers = Array[ExtResource("5_jmo8q")]([])
 triggers = Array[ExtResource("7_tbrtx")]([SubResource("Resource_ojte6")])
 

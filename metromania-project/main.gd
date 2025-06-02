@@ -27,6 +27,16 @@ func _ready() -> void:
  
 func late_ready() -> void:
 	Ui.show_ui("MainMenu")
+	await get_tree().create_timer(5).timeout
+
+func play_different_music (int):
+	match int:
+		0:
+			Music.play_music(musics[0])
+		1: 
+			Music.play_music(musics[1])
+		2:
+			pass
 
 func set_progress_bar_value(amount: float) -> void:
 	var max_value = progress_bar.max_value

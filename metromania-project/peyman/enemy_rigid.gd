@@ -193,6 +193,9 @@ func handle_first_adustments() -> void:
 	collision_mask = (1 << 0) | (1 << 2)
 	axis_lock_linear_z = true
 
+func take_damage(amount):
+	print_debug("took damage")
+
 func rotate_pivot_toward_target() -> void:
 	var vel : Vector3 = linear_velocity
 	if vel.length() < 0.1:
