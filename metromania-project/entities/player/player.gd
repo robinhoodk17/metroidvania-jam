@@ -40,16 +40,25 @@ signal break_interaction
 @export var dash_duration : float = 0.35
 @export var coyote_time : float = 0.1
 @export var ledge_grab_offset : float = -.35
+
 @export_group("Combat")
 @export var combo_reset : float = 1.5
 @export var max_combo : int = 3
 @export var stagger_speed : float = 20.0
+@export var hitbox_start_position : Vector3 = Vector3(0,1.5,0)
+@export var hitbox_vertical_offset : float = 4.0
+@export var hitbox_horizontal_offset : float = 3.0
+@export var self_stagger_distance : float = 1.0
+@export var self_stagger_speed : float = 2.5
+
 @export_group("Hookshot")
 @export var hookshot_range : float = 10.0
 @export var movement_to_grapple_speed : float = 40.0
 @export var gravity_damp_while_hooking : float = 0.25
+
 @export_group("Camera")
 @export var dampen_frames : int = 20
+
 @export_group("Nodes")
 @export var mesh : Marker3D
 @export var animation_player : AnimationPlayer
@@ -71,6 +80,7 @@ signal break_interaction
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
+@onready var vfx_sphere: MeshInstance3D = $MeshParent/Robot/VFXSphere
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -89,6 +99,7 @@ var last_interaction : float = -1.0
 
 var carrying_child : bool = true
 var direction_x : float = 0.0
+var looking : int = 1
 var running_time : float = 0.0
 var braking_time : float = 0.0
 var jumping_time : float = 0.0
@@ -188,6 +199,7 @@ func manage_action_inputs() -> void:
 	if jump_action.is_triggered():
 		input_queued = inputs.JUMP
 		queue_timer.start(queue_time)
+	#if attack_action.is_triggered():
 	if attack_action.is_triggered():
 		input_queued = inputs.ATTACK
 		queue_timer.start(queue_time_for_attacks)
@@ -292,11 +304,13 @@ func handle_gravity(delta: float) -> void:
 			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
 		else:
 			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
-
-	if velocity.x < 0:
-		mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
-	if  velocity.x > 0:
-		mesh.basis = Basis.IDENTITY
+	if current_run_state != run_state.STAGGERING:
+		if velocity.x < 0:
+			mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
+			looking = -1
+		if  velocity.x > 0:
+			mesh.basis = Basis.IDENTITY
+			looking = 1
 
 func jump() -> void:
 	if !second_jump or current_run_state == run_state.WALL_SLIDING:
@@ -344,12 +358,6 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 #region statemachine and animations
 func run_state_machine(delta: float) -> void:
 	if current_action_state == action_state.INTERACTING:
-		return
-	if current_run_state == run_state.STAGGERING:
-		velocity = staggering_towards * stagger_speed
-		traveled_stagger_distance += stagger_speed * delta
-		if traveled_stagger_distance > staggering_distance:
-			current_run_state = run_state.IDLE
 		return
 	
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
@@ -458,6 +466,15 @@ func run_state_machine(delta: float) -> void:
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE
+	
+		run_state.STAGGERING:
+			traveled_stagger_distance += stagger_speed * delta
+			if traveled_stagger_distance > staggering_distance:
+				current_run_state = run_state.WALKING
+				running_time = 0
+				velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
+				return
+			velocity = staggering_towards * stagger_speed
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
@@ -545,14 +562,34 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
 	var _attack_string : String = str("attack", combo_number)
+	var centered = 1
+	if abs(_x) < 0.5:
+		_x = looking
+		if abs(_y) > 0.5:
+			_x = 0
+			centered = 0
+	else:
+		_x = sign(_x)
+	if abs(_y) < 0.5:
+		_y = 0
+	else:
+		_y = sign(_y)
+	vfx_sphere.position = hitbox_start_position + Vector3(0,\
+	 _y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
 	set_oneshot_animation("Robot_Punch")
 	#set_oneshot_animation("Robot_Punch")
 	combo_number = (combo_number + 1) % max_combo
+	#vfx_sphere.position = 
+	traveled_stagger_distance = 0
+	current_run_state = run_state.STAGGERING
+	staggering_towards = -Vector3(_x,_y,0)
+	staggering_distance = self_stagger_distance
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
 		staggering_towards = global_position - _position
+		staggering_distance = knockback
 		GlobalsPlayer.current_hp -= amount
 		SignalbusPlayer.took_damage.emit(amount, knockback)
 #endregion
