@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://cnjw54m0awi81"]
+
+[ext_resource type="Script" uid="uid://ckek1lkf401wp" path="res://scenes/world/prompts.gd" id="1_k0dqg"]
+[ext_resource type="Resource" uid="uid://n7cvsuoh381r" path="res://input/jump.tres" id="2_ndw3b"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ndw3b"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Sprite3D" type="Sprite3D"]
+billboard = 1
+double_sided = false
+no_depth_test = true
+texture = SubResource("ViewportTexture_ndw3b")
+script = ExtResource("1_k0dqg")
+interact_action = ExtResource("2_ndw3b")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1024, 512)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.5
+offset_top = -20.0
+offset_right = 20.5
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="SubViewport/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 100
+text = "The child fits"
+horizontal_alignment = 1
+
+[node name="Prompt" type="RichTextLabel" parent="SubViewport/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 100
+bbcode_enabled = true
+text = "Woooo"
+fit_content = true
+autowrap_mode = 0
+horizontal_alignment = 1
