@@ -1,16 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://docds2qsao4bg"]
+[gd_scene load_steps=6 format=3 uid="uid://docds2qsao4bg"]
 
 [ext_resource type="Script" uid="uid://bvr8gs45y6h57" path="res://main.gd" id="1_01t3b"]
 [ext_resource type="PackedScene" uid="uid://jftpla2ic4fw" path="res://peyman/pause_menu.tscn" id="2_h2xdl"]
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="3_ghgs2"]
 [ext_resource type="PackedScene" uid="uid://dkhjtbwvdf2ss" path="res://aa&&root/trial_scene.blend" id="4_yr5bg"]
 [ext_resource type="PackedScene" uid="uid://bk4hxejv0l7ap" path="res://peyman/enemy_rigid.tscn" id="5_02anf"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4f2ec"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_64tkh"]
-radius = 1.06463
-height = 3.83869
 
 [node name="main" type="Node"]
 script = ExtResource("1_01t3b")
@@ -22,25 +16,8 @@ script = ExtResource("1_01t3b")
 [node name="Myck" parent="." instance=ExtResource("3_ghgs2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.0169, 1.12744, -0.891544)
 
-[node name="player_hurt" type="Area3D" parent="Myck"]
-collision_layer = 16
-collision_mask = 0
-monitoring = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Myck/player_hurt"]
-shape = SubResource("CapsuleShape3D_4f2ec")
-
 [node name="trial_scene" parent="." instance=ExtResource("4_yr5bg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.52585, 0, -0.540892)
 
 [node name="enemy" parent="." instance=ExtResource("5_02anf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.0897, 0.2437, -0.365974)
-
-[node name="enemy_hurt" type="Area3D" parent="enemy"]
-collision_layer = 32
-collision_mask = 0
-monitoring = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="enemy/enemy_hurt"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.60088, 0)
-shape = SubResource("CapsuleShape3D_64tkh")

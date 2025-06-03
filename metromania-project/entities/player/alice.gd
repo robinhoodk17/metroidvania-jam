@@ -54,7 +54,6 @@ signal break_interaction
 @onready var wall_jump: ShapeCast3D = $MeshParent/MeshChild/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/MeshChild/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/MeshChild/LedgeGrab/CheckCollisions
-@onready var hurt_box: Area3D = $MeshParent/MeshChild/HurtBox
 @onready var wall_jump_freeze_timer: Timer = $"../../../WallJumpFreezeTimer"
 
 """state machine"""
@@ -96,8 +95,7 @@ var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
-
-
+ 
 func turn_off() -> void:
 	SignalbusPlayer.child_picked_up.emit()
 	if retracting:
@@ -135,11 +133,13 @@ func turn_on() -> void:
 
 func _ready() -> void:
 	hurt_box.body_entered.connect(check_body)
+	hit_box.area_entered.connect(on_hit_box_entered)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
 	dash_reset_timer.timeout.connect(change_action_state)
 	call_deferred("turn_off")
+	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 
 func _physics_process(delta: float) -> void:
 	if off:
@@ -428,3 +428,39 @@ func check_body(body : Node3D):
 				turn_off()
 			return
 		turn_off()
+
+##below function is for demonstration purposes
+func take_damage(amount):
+	velocity.y = 10
+ 
+#region hit_hurt
+@export var hit_box : Area3D 
+@export var hurt_box: Area3D 
+var _damage := 10
+ 
+func on_hit_box_entered(area: Area3D) -> void:
+	var parent: Node3D = area.owner
+	if parent && parent.has_method("take_damage") && parent is Enemy:
+		parent.take_damage(_damage)
+
+func enable_hit_box(time_sec: float = 0.2) -> void:
+	hit_box.monitoring = true
+	await get_tree().create_timer(time_sec).timeout
+	hit_box.monitoring = false
+
+func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
+	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
+	if animation == null:
+		push_error("Animation % not found!" % animation_name)
+		return 0.0
+	var track_index = animation.add_track(Animation.TYPE_METHOD)
+	if relative_path == "none":
+		relative_path = $".".get_path()
+	animation.track_set_path(track_index, relative_path)
+	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
+	return animation.length
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("f"):
+		set_oneshot_animation("Robot_Punch")
+#endregion 

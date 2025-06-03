@@ -81,7 +81,6 @@ signal break_interaction
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
 @onready var vfx_sphere: MeshInstance3D = $MeshParent/Robot/VFXSphere
-@onready var hitbox: Area3D = $MeshParent/Robot/VFXSphere/BoneAttachment3D/Hitbox
 @onready var spike_hurtbox = $MeshParent/SpikeHurtbox
 @onready var checkpoint_box = $MeshParent/Checkpoint
 
@@ -132,22 +131,15 @@ var lerp_power : float = 2.5
 var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
-
-"""new_variables"""
-var skeleton : Skeleton3D
-var hit_box : Area3D
-var hurt_box : Area3D
-var bone_attachment = BoneAttachment3D
-var _damage := 10
-
+  
 func _ready() -> void:
 #region Setting up combat
-	handle_the_node()
 	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
 	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
 	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
-	hitbox.area_entered.connect(deal_damage)
+	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
+	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 	
 #endregion
 	checkpoint = global_position
@@ -576,41 +568,47 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
-	var _attack_string : String = str("attack", combo_number)
-	var centered = 1
-	if abs(_x) < 0.5:
-		_x = looking
-		if abs(_y) > 0.5:
-			_x = 0
-			centered = 0
-	else:
-		_x = sign(_x)
-	if abs(_y) < 0.5:
-		_y = 0
-	else:
-		_y = sign(_y)
-	vfx_sphere.position = hitbox_start_position + Vector3(0,\
-	 _y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
-	set_oneshot_animation("Robot_Punch")
+	pass
+	#var _attack_string : String = str("attack", combo_number)
+	#var centered = 1
+	#if abs(_x) < 0.5:
+		#_x = looking
+		#if abs(_y) > 0.5:
+			#_x = 0
+			#centered = 0
+	#else:
+		#_x = sign(_x)
+	#if abs(_y) < 0.5:
+		#_y = 0
+	#else:
+		#_y = sign(_y)
+	#vfx_sphere.position = hitbox_start_position + Vector3(0,\
+	 #_y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
 	#set_oneshot_animation("Robot_Punch")
-	combo_number = (combo_number + 1) % max_combo
-	
-	hitbox.monitoring = true
-	traveled_stagger_distance = 0
-	current_run_state = run_state.STAGGERING
-	staggering_towards = -Vector3(_x,_y,0)
-	staggering_distance = self_stagger_distance
-	await get_tree().create_timer(1).timeout
-	hitbox.monitoring = false
+	##set_oneshot_animation("Robot_Punch")
+	#combo_number = (combo_number + 1) % max_combo
+	#
+	#hit_box.monitoring = true
+	#traveled_stagger_distance = 0
+	#current_run_state = run_state.STAGGERING
+	#staggering_towards = -Vector3(_x,_y,0)
+	#staggering_distance = self_stagger_distance
+	#await get_tree().create_timer(1).timeout
+	#hit_box.monitoring = false
 
-func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
-	GlobalsPlayer.current_hp -= amount
-	if knockback > 0.0:
-		current_run_state = run_state.STAGGERING
-		staggering_towards = global_position - _position
-		staggering_distance = knockback
-		GlobalsPlayer.current_hp -= amount
-		SignalbusPlayer.took_damage.emit(amount, knockback)
+#func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	#GlobalsPlayer.current_hp -= amount
+	#if knockback > 0.0:
+		#current_run_state = run_state.STAGGERING
+		#staggering_towards = global_position - _position
+		#staggering_distance = knockback
+		#GlobalsPlayer.current_hp -= amount
+		#SignalbusPlayer.took_damage.emit(amount, knockback)
+
+##below function is for demonstration purposes
+func take_damage(amount):
+	velocity.y = 10
+	print("player_take_damge")
 
 func take_damage_and_respawn(amount : int = 0) -> void:
 	await Ui.fade_to_black(0.25)
@@ -625,65 +623,23 @@ func deal_damage(area : Area3D) -> void:
 	print_debug("dealing damage")
 #endregion
 
-#region create_nodes
-func handle_the_node() -> void:
-	create_bone_attachment()
-	create_hit_box()
-	create_hurt_box()
-	
-func create_bone_attachment() -> void:
-	skeleton = find_child("Skeleton3D") 
-	if not skeleton:
-		push_error("Skeleton3D node not found!")
-		return
-	bone_attachment = BoneAttachment3D.new()
-	skeleton.add_child(bone_attachment)
-
-func create_hit_box():
-	hit_box = Area3D.new()
-	hit_box.name = "hit_box"
-	hit_box.collision_layer = 0
-	hit_box.collision_mask = 1 << 5
-	hit_box.monitorable = false
-	hit_box.monitoring = false
-	var collision_shape : CollisionShape3D = CollisionShape3D.new()
-	var sphere_shape : SphereShape3D = SphereShape3D.new()
-	sphere_shape.radius = 0.5  
-	collision_shape.shape = sphere_shape
-	hit_box.add_child(collision_shape)
-	bone_attachment.add_child(hit_box)
-	hit_box.area_entered.connect(on_hit_box_entered)
+#region hit_hurt
+@export var hit_box : Area3D 
+@export var hurt_box: Area3D 
+var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
-	var parent: Node3D = area.get_parent()
-	if parent && parent.has_method("take_damage"):
+	var parent: Node3D = area.owner
+	if parent && parent.has_method("take_damage") && parent is Enemy:
 		parent.take_damage(_damage)
 
-func create_hurt_box() -> void:
-	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 4
-	hurt_box.collision_mask = 0
-	var collision_shape : CollisionShape3D = CollisionShape3D.new()
-	var capsule_shape : CapsuleShape3D = CapsuleShape3D.new()
-	capsule_shape.radius = 0.5 - 0.1
-	capsule_shape.height = 2.0 - 0.4
-	collision_shape.shape = capsule_shape
-	hurt_box.add_child(collision_shape)
-	hurt_box.monitoring = false
-	add_child(hurt_box)
-
-func enable_hit_box(bone_name: String = "Palm1.R", time_sec: float = 2) -> void:
-	var bone_node := skeleton.get_node_or_null(bone_name)
-	if not bone_node:
-		push_error("Bone node '%s' not found!" % bone_name)
-		return
-	bone_attachment.bone_name = "Palm1.R"
+func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true
 	await get_tree().create_timer(time_sec).timeout
 	hit_box.monitoring = false
 
-func add_call_method_to_animation(animation_name : String = "attack1", method_name : String = "toggle_lock", time_sec : float = 0.0, args : Array = [1.3], relative_path : String = "none") -> float:
-	var animation : Animation = animation_player.get_animation(animation_name)
+func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
+	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
 	if animation == null:
 		push_error("Animation % not found!" % animation_name)
 		return 0.0
@@ -694,4 +650,7 @@ func add_call_method_to_animation(animation_name : String = "attack1", method_na
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("f"):
+		set_oneshot_animation("Robot_Punch")
 #endregion 
