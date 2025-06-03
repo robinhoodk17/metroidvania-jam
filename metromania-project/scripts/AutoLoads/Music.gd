@@ -3,11 +3,15 @@ extends AudioStreamPlayer
 @export var _duration : float= 1.0
 
 var _tween : Tween 
-var Sounds : Dictionary
+
+@onready var Sounds : Dictionary = {"cat" : preload("res://sfx/cat.wav"), 
+"EnemyCry" : preload("res://sfx/EnemyCry.wav")}
+
+@onready var Musics:  Dictionary = {"[Idea 1] Main Theme V2" : preload("res://music/[Idea 1] Main Theme V2.mp3"),
+"[Idea 2] Into the Darkness" : preload("res://music/[Idea 2] Into the Darkness.mp3")}
 
 func _ready() -> void:
-	Sounds = preload_items_from_folder("res://sfx/")
-	bus = "Music"
+	#bus = "Music"
 	set_linear_volume(0)
 	process_mode = Node.PROCESS_MODE_ALWAYS
  
@@ -26,12 +30,12 @@ func fade_out(duration : float = _duration) -> void:
 	stop()
 	stream = null
 	
-func play_music(track : AudioStream, duration : float = _duration) -> Signal:
+func play_music(track : String, duration : float = _duration) -> Signal:
 	if playing:
-		if stream == track:
+		if stream == Musics[track]:
 			return  _fade_volume(1, duration)
 		await _fade_volume(0, duration)
-	stream = track
+	stream = Musics[track]
 	play()
 	return _fade_volume(1, duration)
  
@@ -40,24 +44,4 @@ func play_sfx(player: AudioStreamPlayer3D, clip_key: String) -> void:
 		return
 	player.stream = Sounds[clip_key]
 	player.play()
-
-func preload_items_from_folder(folder_path: String) -> Dictionary:
-	var dir = DirAccess.open(folder_path)
-	var resources : Dictionary = {}
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if not dir.current_is_dir() && not file_name.ends_with("import"):
-				var file_path = folder_path + file_name
-				var res = ResourceLoader.load(file_path)
-				if res:
-					var key = file_name.get_basename()
-					resources[key] = res
-				else:
-					push_warning("Failed to load resource: %s" % file_path)
-			file_name = dir.get_next()
-		dir.list_dir_end()
-	else:
-		push_error("Cannot open directory: %s" % folder_path)
-	return resources
+ 

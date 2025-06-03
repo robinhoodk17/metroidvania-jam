@@ -117,40 +117,6 @@ func create_detect_raycast():
 	raycast.exclude_parent = true  
 	$MeshParent.add_child(raycast)
 	raycast.collision_mask = (1 << 0) | (1 << 2)
-	
-func create_hurt_box():
-	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 5
-	hurt_box.collision_mask = 0
-	var collision_shape = CollisionShape3D.new()
-	var capsule_shape = CapsuleShape3D.new()
-	capsule_shape.radius = 0.5 - 0.1
-	capsule_shape.height = 2.0 - 0.4
-	collision_shape.shape = capsule_shape
-	hurt_box.add_child(collision_shape)
-	hurt_box.monitoring = false
-	add_child(hurt_box)
- 
-func create_hitbox():
-	skeleton = find_child("Skeleton3D")  
-	if not skeleton:
-		push_error("Enemy Skeleton3D node not found!")
-		return
-	bone_attachment = BoneAttachment3D.new()
-	skeleton.add_child(bone_attachment)
-	hit_box = Area3D.new()
-	hit_box.name = "hit_box"
-	hit_box.collision_layer = 0
-	hit_box.collision_mask = 1 << 4
-	var collision_shape_hit = CollisionShape3D.new()
-	var sphere_shape = SphereShape3D.new()
-	sphere_shape.radius = 0.5  
-	hit_box.monitorable = false
-	hit_box.monitoring = false
-	collision_shape_hit.shape = sphere_shape
-	hit_box.add_child(collision_shape_hit)
-	bone_attachment.add_child(hit_box)
-	bone_attachment.bone_name = "Palm1.R"
 
 #region create_nodes
 func create_navmesh():

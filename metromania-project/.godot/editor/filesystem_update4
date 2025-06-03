@@ -2,14 +2,12 @@ res://aa&&root/main.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
-res://entities/player/animation_tree.tres
 res://peyman/enemy_tree.tres
+res://entities/player/animation_tree.tres
+res://scripts/AutoLoads/Music.gd
 res://scenes/master.tscn
 res://aa&&root/player.tscn
 res://peyman/enemy_rigid.tscn
 res://aa&&root/trial_scene.tscn
 res://entities/player/alice.tscn
 res://ui/game/game_ui.tscn
-res://main.gd
-res://entities/player/player.gd
-res://peyman/enemy_rigid.gd
