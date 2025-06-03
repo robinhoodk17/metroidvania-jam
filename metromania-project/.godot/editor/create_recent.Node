@@ -1,9 +1,9 @@
+CollisionShape3D
+Area3D
 Node3D
 AnimationPlayer
-CollisionShape3D
 MeshInstance3D
 AnimatableBody3D
-Area3D
 SubViewport
 Sprite3D
 StaticBody3D

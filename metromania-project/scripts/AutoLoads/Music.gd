@@ -1,7 +1,7 @@
 extends AudioStreamPlayer 
 
 @export var _duration : float= 1.0
-
+@export var max_volume := 0.05
 var _tween : Tween 
 
 @onready var Sounds : Dictionary = {"cat" : preload("res://sfx/cat.wav"), 
@@ -33,11 +33,11 @@ func fade_out(duration : float = _duration) -> void:
 func play_music(track : String, duration : float = _duration) -> Signal:
 	if playing:
 		if stream == Musics[track]:
-			return  _fade_volume(1, duration)
+			return  _fade_volume(max_volume, duration)
 		await _fade_volume(0, duration)
 	stream = Musics[track]
 	play()
-	return _fade_volume(1, duration)
+	return _fade_volume(max_volume, duration)
  
 func play_sfx(player: AudioStreamPlayer3D, clip_key: String) -> void:
 	if Sounds.has(clip_key) == false:

@@ -13,21 +13,26 @@ var attack_timer: float = 0.0
 @onready var pivot_node : Node3D = find_child("RobotArmature") 
 @onready var player: Node3D = get_tree().get_first_node_in_group("player")
 var navigation_agent: NavigationAgent3D
-var locomotion : AnimationNodeStateMachinePlayback
 var raycast: RayCast3D 
 var skeleton : Skeleton3D
-var hurt_box: Area3D 
+@onready var hurt_box: Area3D = $hurt_box
 var hit_box : Area3D
 var bone_attachment : BoneAttachment3D
+var locomotion: AnimationNodeStateMachinePlayback
+var upper_state: AnimationNodeStateMachinePlayback
 
 func _ready():
 	create_navmesh()
 	create_navigation_agent()   
 	create_partrol_points()
 	navigation_agent.max_speed = move_speed
+	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
 	handle_first_adustments()
+	create_hitbox()
+	#create_hurt_box()
+	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 
 func _physics_process(delta):
 	if linear_velocity.length() > 0.1:
@@ -106,9 +111,7 @@ func move_along_path(delta):
 	var velocity_change = desired_velocity - linear_velocity
 	var force = velocity_change * mass * 10.0
 	apply_central_force(force)
- 
-func perform_attack():
-	print("Enemy attacks the player!")
+
 
 func create_detect_raycast():
 	raycast = RayCast3D.new()
@@ -147,8 +150,71 @@ func create_partrol_points():
 	var right_point = global_position + right_dir * patrol_distance
 	patrol_points.append(left_point)
 	patrol_points.append(right_point)
-#endregion
 
+func create_hurt_box():
+	hurt_box = Area3D.new()
+	hurt_box.collision_layer = 1 << 5
+	hurt_box.collision_mask = 0
+	var collision_shape = CollisionShape3D.new()
+	var capsule_shape = CapsuleShape3D.new()
+	capsule_shape.radius = 0.5 
+	capsule_shape.height = 2.0 
+	collision_shape.shape = capsule_shape
+	hurt_box.add_child(collision_shape)
+	hurt_box.monitoring = false
+	hurt_box.position = Vector3(0, 1, 0)
+	add_child(hurt_box)
+ 
+func create_hitbox():
+	skeleton = find_child("Skeleton3D")  
+	if not skeleton:
+		push_error("Enemy Skeleton3D node not found!")
+		return
+	bone_attachment = BoneAttachment3D.new()
+	skeleton.add_child(bone_attachment)
+	hit_box = Area3D.new()
+	hit_box.name = "hit_box"
+	hit_box.collision_layer = 0
+	hit_box.collision_mask = 1 << 4
+	var collision_shape_hit := CollisionShape3D.new()
+	var sphere_shape := SphereShape3D.new()
+	sphere_shape.radius = 0.5  
+	hit_box.monitorable = false
+	hit_box.monitoring = false
+	collision_shape_hit.shape = sphere_shape
+	hit_box.add_child(collision_shape_hit)
+	bone_attachment.add_child(hit_box)
+	bone_attachment.bone_name = "Palm1.R"
+	hit_box.area_entered.connect(on_hit_box_entered)
+ 
+func on_hit_box_entered(area: Area3D) -> void:
+	var parent: Node3D = area.owner
+	if parent && parent.has_method("take_damage"):
+		parent.take_damage(10)
+		
+func enable_hit_box(time_sec: float = 0.2) -> void:
+	hit_box.monitoring = true
+	await get_tree().create_timer(time_sec).timeout
+	hit_box.monitoring = false
+	
+func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
+	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
+	if animation == null:
+		push_error("Animation % not found!" % animation_name)
+		return 0.0
+	var track_index = animation.add_track(Animation.TYPE_METHOD)
+	if relative_path == "none":
+		relative_path = $".".get_path()
+	animation.track_set_path(track_index, relative_path)
+	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
+	return animation.length
+
+#endregion
+ 
+func perform_attack():
+	print("Enemy attacks the player!")
+	upper_state.travel("Robot_Punch")
+ 
 func handle_first_adustments() -> void:
 	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
 	add_to_group("enemy")
@@ -160,7 +226,8 @@ func handle_first_adustments() -> void:
 	axis_lock_linear_z = true
 
 func take_damage(amount):
-	print_debug("took damage")
+	linear_velocity.y = 2
+	print("enemy_takes_damage")
 
 func rotate_pivot_toward_target() -> void:
 	var vel : Vector3 = linear_velocity
@@ -175,3 +242,12 @@ func rotate_pivot_toward_target() -> void:
 	var new_transform = pivot_node.global_transform
 	new_transform.basis = new_basis
 	pivot_node.global_transform = new_transform
+
+#func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	##GlobalsPlayer.current_hp -= amount
+	##if knockback > 0.0:
+		##current_run_state = run_state.STAGGERING
+		##staggering_towards = global_position - _position
+		##staggering_distance = knockback
+		##GlobalsPlayer.current_hp -= amount
+		##SignalbusPlayer.took_damage.emit(amount, knockback)
