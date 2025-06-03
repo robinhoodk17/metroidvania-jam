@@ -31,7 +31,6 @@ func _ready():
 	set_patrol_target()
 	handle_first_adustments()
 	create_hitbox()
-	#create_hurt_box()
 	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 
 func _physics_process(delta):
@@ -150,20 +149,6 @@ func create_partrol_points():
 	var right_point = global_position + right_dir * patrol_distance
 	patrol_points.append(left_point)
 	patrol_points.append(right_point)
-
-func create_hurt_box():
-	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 5
-	hurt_box.collision_mask = 0
-	var collision_shape = CollisionShape3D.new()
-	var capsule_shape = CapsuleShape3D.new()
-	capsule_shape.radius = 0.5 
-	capsule_shape.height = 2.0 
-	collision_shape.shape = capsule_shape
-	hurt_box.add_child(collision_shape)
-	hurt_box.monitoring = false
-	hurt_box.position = Vector3(0, 1, 0)
-	add_child(hurt_box)
  
 func create_hitbox():
 	skeleton = find_child("Skeleton3D")  
