@@ -212,6 +212,8 @@ nodes/TimeScale/position = Vector2(133.333, 160)
 node_connections = [&"Add2", 0, &"StateMachine_running", &"Add2", 1, &"StateMachine_action", &"OneShotBlend", 0, &"Add2", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7prqh"]
+radius = 0.676854
+height = 2.04704
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
 radius = 1.46906
@@ -283,10 +285,10 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.34041, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.34115, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
-bones/7/rotation = Quaternion(-0.0370747, -0.122519, -0.00220058, 0.991771)
+bones/7/rotation = Quaternion(-0.0170265, 0.240532, 0.000639668, 0.970492)
 bones/8/position = Vector3(0.582738, 0.29672, 0.0324413)
 bones/8/rotation = Quaternion(-0.0114497, -0.0532471, -0.9762, 0.209923)
 bones/9/rotation = Quaternion(-0.0545858, -0.689887, 0.0692138, 0.718531)
@@ -312,12 +314,12 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.774462, 0.169999, -0.580203, 0.186205)
+bones/36/rotation = Quaternion(0.77461, 0.169547, -0.580325, 0.185626)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.412812, 1.30887e-07, -8.06463e-08, 0.910816)
-bones/38/rotation = Quaternion(0.77089, -0.169716, 0.585747, 0.183917)
+bones/37/rotation = Quaternion(0.411697, 1.12662e-07, -8.30601e-08, 0.911321)
+bones/38/rotation = Quaternion(0.771034, -0.16926, 0.58587, 0.183341)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.412812, -3.0853e-07, 8.70716e-08, 0.910817)
+bones/39/rotation = Quaternion(0.411697, -2.96672e-07, 8.43971e-08, 0.911321)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
@@ -397,7 +399,7 @@ monitoring = false
 shape = SubResource("CapsuleShape3D_7prqh")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="."]
-transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.674198, 0.554608)
+transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.673882, 0.554608)
 bone_name = "Palm2.R"
 bone_idx = 25
 use_external_skeleton = true
@@ -405,7 +407,7 @@ external_skeleton = NodePath("../MeshParent/Robot/RobotArmature/Skeleton3D")
 
 [node name="Hitbox" type="Area3D" parent="BoneAttachment3D"]
 collision_layer = 0
-collision_mask = 32
+collision_mask = 1024
 monitoring = false
 monitorable = false
 

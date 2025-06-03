@@ -132,6 +132,7 @@ func turn_on() -> void:
 	top_level = true
 
 func _ready() -> void:
+	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	hurt_box.body_entered.connect(check_body)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
@@ -139,7 +140,7 @@ func _ready() -> void:
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
 	dash_reset_timer.timeout.connect(change_action_state)
 	call_deferred("turn_off")
-	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
+	#add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 
 func _physics_process(delta: float) -> void:
 	if off:
@@ -440,7 +441,8 @@ var _damage := 10
  
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage") && parent is Enemy:
+	print(parent)
+	if parent && parent.has_method("take_damage"):
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
