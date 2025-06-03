@@ -4,6 +4,7 @@ res://input/controller.tres
 res://input/keyboard.tres
 res://peyman/enemy_tree.tres
 res://entities/player/animation_tree.tres
+res://entities/player/player.gd
 res://scenes/master.tscn
 res://peyman/enemy_rigid.tscn
 res://scenes/world/prompt.tscn
@@ -14,5 +15,4 @@ res://scenes/beginning_area/tutorial/tutorial.tscn
 res://aa&&root/main.tscn
 res://entities/player/alice.tscn
 res://peyman/enemy_rigid.gd
-res://entities/player/player.gd
 res://entities/player/alice.gd

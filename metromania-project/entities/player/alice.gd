@@ -140,7 +140,7 @@ func _ready() -> void:
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
 	dash_reset_timer.timeout.connect(change_action_state)
 	call_deferred("turn_off")
-	#add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
+ 
 
 func _physics_process(delta: float) -> void:
 	if off:
@@ -440,7 +440,7 @@ func take_damage(amount):
 var _damage := 10
  
 func on_hit_box_entered(area: Area3D) -> void:
-	var parent: Node3D = area.owner
+	var parent: Node3D = area.get_parent()
 	print(parent)
 	if parent && parent.has_method("take_damage"):
 		parent.take_damage(_damage)
@@ -463,6 +463,6 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	return animation.length
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("f"):
-		set_oneshot_animation("Robot_Punch")
+	if event.is_action_pressed("g"):
+		pass
 #endregion 
