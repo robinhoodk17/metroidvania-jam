@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwqoqtkvuftt4"]
+
+[ext_resource type="Script" uid="uid://cgtt5cb2ufwb8" path="res://scenes/world/game_events/triggers/GameTrigger.gd" id="1_vghpo"]
+
+[node name="HoldSwitch" type="Area3D"]
+script = ExtResource("1_vghpo")

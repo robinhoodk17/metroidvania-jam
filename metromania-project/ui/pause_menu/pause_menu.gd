@@ -24,7 +24,7 @@ func _input(event: InputEvent) -> void:
 		else:
 			ui.go_to("PauseMenu")
 			%Resume.grab_focus()
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			Input.mouse_mode = Input.MOUSE_MODE_CONFINED
 			get_tree().paused = true
 
 

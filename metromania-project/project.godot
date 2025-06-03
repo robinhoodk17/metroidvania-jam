@@ -148,6 +148,8 @@ dialogic_default_action={
 3d_physics/layer_5="Player_hurtbox"
 3d_physics/layer_6="Enemy_hurtbox"
 3d_physics/layer_7="AutoAim"
+3d_physics/layer_8="Checkpoints"
+3d_physics/layer_9="Respawn_Hazards"
 
 [rendering]
 

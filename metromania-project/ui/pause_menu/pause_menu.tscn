@@ -52,7 +52,6 @@ text = "Resume"
 connect_as_button = true
 hover_rotation = 0.4
 hover_transition = 11
-random_entrance = true
 entrance_time = 0.4
 entrance_transition = 11
 hover_easing = 1

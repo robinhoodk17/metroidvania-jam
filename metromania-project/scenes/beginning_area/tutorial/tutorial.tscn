@@ -1,0 +1,169 @@
+[gd_scene load_steps=24 format=3 uid="uid://dqu1x7e4qyyv"]
+
+[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_sbt6m"]
+[ext_resource type="PackedScene" uid="uid://doxjfrb6rmcek" path="res://scenes/beginning_area/tutorial/tutorial.glb" id="3_cy5y7"]
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="3_yef74"]
+[ext_resource type="PackedScene" uid="uid://buglwrfsemxbe" path="res://scenes/world/game_events/events/self_free/self_free.tscn" id="4_cy5y7"]
+[ext_resource type="PackedScene" uid="uid://62blrovmjyqf" path="res://scenes/world/game_events/triggers/lever/lever.tscn" id="4_kscy4"]
+[ext_resource type="PackedScene" uid="uid://t0vesgyvqqj" path="res://scenes/world/game_events/events/start_animation/start_animation.tscn" id="6_lvptp"]
+[ext_resource type="PackedScene" uid="uid://cnjw54m0awi81" path="res://scenes/world/prompt.tscn" id="7_lvptp"]
+[ext_resource type="Resource" uid="uid://d0781vuxbhofs" path="res://input/left_right.tres" id="8_tqki5"]
+[ext_resource type="Resource" uid="uid://dn7xm7551du3c" path="res://input/throw.tres" id="9_espid"]
+[ext_resource type="Resource" uid="uid://bwv7mx7ef41bo" path="res://input/left_right_alice.tres" id="10_dbb2v"]
+[ext_resource type="Resource" uid="uid://djbmv3glvtkcn" path="res://input/dash.tres" id="11_yeacc"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lvptp"]
+size = Vector3(9.565, 1, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tqki5"]
+data = PackedVector3Array(-4.7825, 0.5, 0.5, 4.7825, 0.5, 0.5, -4.7825, -0.5, 0.5, 4.7825, 0.5, 0.5, 4.7825, -0.5, 0.5, -4.7825, -0.5, 0.5, 4.7825, 0.5, -0.5, -4.7825, 0.5, -0.5, 4.7825, -0.5, -0.5, -4.7825, 0.5, -0.5, -4.7825, -0.5, -0.5, 4.7825, -0.5, -0.5, 4.7825, 0.5, 0.5, 4.7825, 0.5, -0.5, 4.7825, -0.5, 0.5, 4.7825, 0.5, -0.5, 4.7825, -0.5, -0.5, 4.7825, -0.5, 0.5, -4.7825, 0.5, -0.5, -4.7825, 0.5, 0.5, -4.7825, -0.5, -0.5, -4.7825, 0.5, 0.5, -4.7825, -0.5, 0.5, -4.7825, -0.5, -0.5, 4.7825, 0.5, 0.5, -4.7825, 0.5, 0.5, 4.7825, 0.5, -0.5, -4.7825, 0.5, 0.5, -4.7825, 0.5, -0.5, 4.7825, 0.5, -0.5, -4.7825, -0.5, 0.5, 4.7825, -0.5, 0.5, -4.7825, -0.5, -0.5, 4.7825, -0.5, 0.5, 4.7825, -0.5, -0.5, -4.7825, -0.5, -0.5)
+
+[sub_resource type="Animation" id="Animation_lvptp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(174.494, -37.6006, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_espid"]
+resource_name = "new_animation"
+length = 5.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(174.494, -37.6006, 0), Vector3(214.765, -37.6006, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dbb2v"]
+_data = {
+&"RESET": SubResource("Animation_lvptp"),
+&"new_animation": SubResource("Animation_espid")
+}
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tqki5"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_espid"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_y4ogp"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_yeacc"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dbb2v"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_uqtx1"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ffs1a"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Node" instance=ExtResource("1_sbt6m")]
+
+[node name="Myck" parent="Map" index="0" instance=ExtResource("3_yef74")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.197, 2.857, 0)
+
+[node name="tutorial" parent="Map" index="1" instance=ExtResource("3_cy5y7")]
+
+[node name="SelfFree" parent="Interactables(not_in_blender)" index="0" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
+free_others = [NodePath("../../Map/tutorial/door")]
+triggers = [NodePath("Lever")]
+
+[node name="Lever" parent="Interactables(not_in_blender)/SelfFree" index="0" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 54.5041, 0.168, 0)
+
+[node name="SelfFree2" parent="Interactables(not_in_blender)" index="1" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
+free_others = [NodePath("../../Map/tutorial/trapdoor")]
+triggers = [NodePath("Lever")]
+
+[node name="Lever" parent="Interactables(not_in_blender)/SelfFree2" index="0" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 167.18, 8.15098, 0)
+
+[node name="MovingPlatform" parent="Interactables(not_in_blender)" index="2" node_paths=PackedStringArray("animationplayer", "triggers") instance=ExtResource("6_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -27.768, 0)
+animationplayer = NodePath("MovingPlatform/AnimationPlayer")
+triggers = [NodePath("Lever")]
+
+[node name="MovingPlatform" type="AnimatableBody3D" parent="Interactables(not_in_blender)/MovingPlatform" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 174.494, -37.6006, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables(not_in_blender)/MovingPlatform/MovingPlatform" index="0"]
+mesh = SubResource("BoxMesh_lvptp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/MovingPlatform/MovingPlatform" index="1"]
+shape = SubResource("ConcavePolygonShape3D_tqki5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interactables(not_in_blender)/MovingPlatform/MovingPlatform" index="2"]
+libraries = {
+&"": SubResource("AnimationLibrary_dbb2v")
+}
+
+[node name="Lever" parent="Interactables(not_in_blender)/MovingPlatform" index="1" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 165.37, -37.6102, 0)
+progression_needed = 20
+
+[node name="SelfFree" parent="Interactables(not_in_blender)/MovingPlatform" index="2" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
+free_others = [NodePath("../Lever")]
+triggers = [NodePath("../Lever")]
+
+[node name="Move" parent="Messages" index="0" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.959, 9.56044, 0)
+texture = SubResource("ViewportTexture_tqki5")
+interact_action = ExtResource("8_tqki5")
+message = "Move"
+
+[node name="Jump" parent="Messages" index="1" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.274, 9.56044, 0)
+texture = SubResource("ViewportTexture_espid")
+message = "Double jump"
+
+[node name="Jump2" parent="Messages" index="2" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 149.268, -67.7473, 0)
+texture = SubResource("ViewportTexture_y4ogp")
+interact_action = null
+message = "Wall jump"
+
+[node name="Throw" parent="Messages" index="3" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.3891, 2.73836, 0)
+texture = SubResource("ViewportTexture_yeacc")
+interact_action = ExtResource("9_espid")
+message = "The child fits"
+
+[node name="Move2" parent="Messages" index="4" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.1466, -2.75476, 0)
+texture = SubResource("ViewportTexture_dbb2v")
+interact_action = ExtResource("10_dbb2v")
+message = "Move"
+
+[node name="Dash" parent="Messages" index="5" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 271.144, -101.875, 0)
+texture = SubResource("ViewportTexture_uqtx1")
+interact_action = ExtResource("11_yeacc")
+message = "Dash"
+
+[node name="Playground" parent="Messages" index="6" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 384.337, -96.5766, 0)
+texture = SubResource("ViewportTexture_ffs1a")
+interact_action = null
+message = "The playground"
+
+[editable path="Map/tutorial"]
