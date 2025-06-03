@@ -432,7 +432,7 @@ func check_body(body : Node3D):
 ##below function is for demonstration purposes
 func take_damage(amount):
 	velocity.y = 10
-	
+ 
 #region hit_hurt
 @export var hit_box : Area3D 
 @export var hurt_box: Area3D 
@@ -440,7 +440,7 @@ var _damage := 10
  
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage"):
+	if parent && parent.has_method("take_damage") && parent is Enemy:
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:

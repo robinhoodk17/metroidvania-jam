@@ -568,32 +568,33 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
-	var _attack_string : String = str("attack", combo_number)
-	var centered = 1
-	if abs(_x) < 0.5:
-		_x = looking
-		if abs(_y) > 0.5:
-			_x = 0
-			centered = 0
-	else:
-		_x = sign(_x)
-	if abs(_y) < 0.5:
-		_y = 0
-	else:
-		_y = sign(_y)
-	vfx_sphere.position = hitbox_start_position + Vector3(0,\
-	 _y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
-	set_oneshot_animation("Robot_Punch")
+	pass
+	#var _attack_string : String = str("attack", combo_number)
+	#var centered = 1
+	#if abs(_x) < 0.5:
+		#_x = looking
+		#if abs(_y) > 0.5:
+			#_x = 0
+			#centered = 0
+	#else:
+		#_x = sign(_x)
+	#if abs(_y) < 0.5:
+		#_y = 0
+	#else:
+		#_y = sign(_y)
+	#vfx_sphere.position = hitbox_start_position + Vector3(0,\
+	 #_y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
 	#set_oneshot_animation("Robot_Punch")
-	combo_number = (combo_number + 1) % max_combo
-	
-	hit_box.monitoring = true
-	traveled_stagger_distance = 0
-	current_run_state = run_state.STAGGERING
-	staggering_towards = -Vector3(_x,_y,0)
-	staggering_distance = self_stagger_distance
-	await get_tree().create_timer(1).timeout
-	hit_box.monitoring = false
+	##set_oneshot_animation("Robot_Punch")
+	#combo_number = (combo_number + 1) % max_combo
+	#
+	#hit_box.monitoring = true
+	#traveled_stagger_distance = 0
+	#current_run_state = run_state.STAGGERING
+	#staggering_towards = -Vector3(_x,_y,0)
+	#staggering_distance = self_stagger_distance
+	#await get_tree().create_timer(1).timeout
+	#hit_box.monitoring = false
 
 #func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	#GlobalsPlayer.current_hp -= amount
@@ -607,7 +608,7 @@ func attack(_x : float, _y : float) -> void:
 ##below function is for demonstration purposes
 func take_damage(amount):
 	velocity.y = 10
-	
+	print("player_take_damge")
 
 func take_damage_and_respawn(amount : int = 0) -> void:
 	await Ui.fade_to_black(0.25)
@@ -629,7 +630,7 @@ var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage"):
+	if parent && parent.has_method("take_damage") && parent is Enemy:
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:

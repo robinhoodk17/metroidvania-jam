@@ -1,5 +1,5 @@
 extends RigidBody3D
-
+class_name Enemy
 @export var patrol_points: Array[Vector3] = []
 @export var chase_distance: float = 15.0 - 5.0
 @export var attack_distance: float = 2.5 
@@ -16,21 +16,21 @@ var navigation_agent: NavigationAgent3D
 var raycast: RayCast3D 
 var skeleton : Skeleton3D
 @onready var hurt_box: Area3D = $hurt_box
-var hit_box : Area3D
+@onready var hit_box: Area3D = $BoneAttachment3D/hit_box
 var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
-
+var distance_to_player : float
 func _ready():
 	create_navmesh()
 	create_navigation_agent()   
 	create_partrol_points()
+	hit_box.area_entered.connect(on_hit_box_entered)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
 	handle_first_adustments()
-	create_hitbox()
 	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 
 func _physics_process(delta):
@@ -40,9 +40,9 @@ func _physics_process(delta):
 	else:
 		if locomotion.get_current_node() != "Robot_Idle":
 			locomotion.travel("Robot_Idle")
-	var distance_to_player = global_position.distance_to(player.global_position)
+	distance_to_player = global_position.distance_to(player.global_position)
 	
-	rotate_pivot_toward_target()
+	rotate_pivot_toward_target(delta)
 	
 	match state:
 		"patrol":
@@ -150,33 +150,11 @@ func create_partrol_points():
 	patrol_points.append(left_point)
 	patrol_points.append(right_point)
  
-func create_hitbox():
-	skeleton = find_child("Skeleton3D")  
-	if not skeleton:
-		push_error("Enemy Skeleton3D node not found!")
-		return
-	bone_attachment = BoneAttachment3D.new()
-	skeleton.add_child(bone_attachment)
-	hit_box = Area3D.new()
-	hit_box.name = "hit_box"
-	hit_box.collision_layer = 0
-	hit_box.collision_mask = 1 << 4
-	var collision_shape_hit := CollisionShape3D.new()
-	var sphere_shape := SphereShape3D.new()
-	sphere_shape.radius = 0.5  
-	hit_box.monitorable = false
-	hit_box.monitoring = false
-	collision_shape_hit.shape = sphere_shape
-	hit_box.add_child(collision_shape_hit)
-	bone_attachment.add_child(hit_box)
-	bone_attachment.bone_name = "Palm1.R"
-	hit_box.area_entered.connect(on_hit_box_entered)
- 
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage"):
+	if parent && parent.has_method("take_damage") && parent == player:
 		parent.take_damage(10)
-		
+ 
 func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true
 	await get_tree().create_timer(time_sec).timeout
@@ -211,22 +189,32 @@ func handle_first_adustments() -> void:
 	axis_lock_linear_z = true
 
 func take_damage(amount):
-	linear_velocity.y = 2
-	print("enemy_takes_damage")
-
-func rotate_pivot_toward_target() -> void:
-	var vel : Vector3 = linear_velocity
-	if vel.length() < 0.1:
-		return
-	vel.y = 0
-	if vel.length() == 0:
-		return
-	vel = vel.normalized()
-	var target_angle = atan2(vel.x, vel.z)
-	var new_basis = Basis(Vector3.UP, target_angle)
-	var new_transform = pivot_node.global_transform
-	new_transform.basis = new_basis
-	pivot_node.global_transform = new_transform
+	linear_velocity.y = 5
+	
+func rotate_pivot_toward_target(delta) -> void:
+	if distance_to_player < attack_distance:
+		var direction = player.position - pivot_node.global_position
+		direction.y = 0
+		if direction.length() == 0:
+			return  
+		direction = direction.normalized()
+		var current_yaw = pivot_node.rotation.y
+		var target_yaw = atan2(direction.x, direction.z)
+		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
+		pivot_node.rotation = Vector3(0, new_yaw, 0)
+	else:
+		var vel : Vector3 = linear_velocity
+		if vel.length() < 0.1:
+			return
+		vel.y = 0
+		if vel.length() == 0:
+			return
+		vel = vel.normalized()
+		var target_angle = atan2(vel.x, vel.z)
+		var new_basis = Basis(Vector3.UP, target_angle)
+		var new_transform = pivot_node.global_transform
+		new_transform.basis = new_basis
+		pivot_node.global_transform = new_transform
 
 #func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	##GlobalsPlayer.current_hp -= amount

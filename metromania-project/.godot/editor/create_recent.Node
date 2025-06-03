@@ -1,5 +1,7 @@
 CollisionShape3D
+BoneAttachment3D
 Area3D
+AudioStreamPlayer
 Node3D
 AnimationPlayer
 MeshInstance3D
@@ -10,5 +12,3 @@ StaticBody3D
 CSGBox3D
 Label
 VBoxContainer
-RichTextLabel
-BoneAttachment3D
