@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://h8a8r2wb5lu3"]
+[gd_scene load_steps=62 format=3 uid="uid://h8a8r2wb5lu3"]
 
 [ext_resource type="Script" uid="uid://bcji03sv3g5eh" path="res://entities/player/player.gd" id="1_symyc"]
 [ext_resource type="PackedScene" uid="uid://cpmp45bvptfux" path="res://entities/Animated-3D-Robot/Blend/Robot.blend" id="2_abrql"]
@@ -27,6 +27,13 @@ size = Vector3(15, 10, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bls4j"]
 size = Vector3(0.996185, 1.54065, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rioum"]
+size = Vector3(1.445, 2.65, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rioum"]
+radius = 0.4
+height = 1.8
 
 [sub_resource type="Animation" id="Animation_bls4j"]
 resource_name = "Attack1"
@@ -239,11 +246,32 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 2, 0)
 shape = SubResource("BoxShape3D_fkugw")
 
 [node name="PickChild" type="Area3D" parent="MeshParent"]
+visible = false
 collision_layer = 0
 collision_mask = 8
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/PickChild"]
 shape = SubResource("BoxShape3D_bls4j")
+
+[node name="Checkpoint" type="Area3D" parent="MeshParent"]
+visible = false
+collision_layer = 128
+collision_mask = 0
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/Checkpoint"]
+shape = SubResource("BoxShape3D_rioum")
+debug_color = Color(0.670588, 0.564706, 0, 1)
+
+[node name="SpikeHurtbox" type="Area3D" parent="MeshParent"]
+collision_layer = 0
+collision_mask = 256
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshParent/SpikeHurtbox"]
+shape = SubResource("CapsuleShape3D_rioum")
+debug_color = Color(1, 0, 0, 1)
 
 [node name="Robot" parent="MeshParent" instance=ExtResource("2_abrql")]
 transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-08, 0, -0.984005, 0)
@@ -251,10 +279,10 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.38121, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.3373, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
-bones/7/rotation = Quaternion(-0.0345974, -0.0732966, -0.00182537, 0.996708)
+bones/7/rotation = Quaternion(-0.0368784, -0.118562, -0.00217053, 0.992259)
 bones/8/position = Vector3(0.582738, 0.29672, 0.0324413)
 bones/8/rotation = Quaternion(-0.0114497, -0.0532471, -0.9762, 0.209923)
 bones/9/rotation = Quaternion(-0.0545858, -0.689887, 0.0692138, 0.718531)
@@ -280,12 +308,12 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.782447, 0.14294, -0.586857, 0.151474)
+bones/36/rotation = Quaternion(0.773841, 0.171893, -0.579693, 0.188623)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.345033, 1.23687e-07, -7.37497e-08, 0.938591)
-bones/38/rotation = Quaternion(0.778689, -0.142477, 0.59248, 0.149372)
+bones/37/rotation = Quaternion(0.418737, 1.29791e-07, -8.43308e-08, 0.908108)
+bones/38/rotation = Quaternion(0.770283, -0.171621, 0.58523, 0.186322)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.345033, -2.99128e-07, 6.18753e-08, 0.938591)
+bones/39/rotation = Quaternion(0.418737, -3.14565e-07, 9.20647e-08, 0.908108)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)

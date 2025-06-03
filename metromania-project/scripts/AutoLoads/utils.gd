@@ -4,6 +4,17 @@ extends Node
 # If the function is completely independent of the game, it's probably a utility.
 # If not, it (probably) belongs in globals.gd
 
+func start_dialogue(timeline : String) -> void:
+	get_tree().paused = true
+	if DialogicResourceUtil.get_timeline_resource(timeline) == null:
+		print_debug("timeline missing:  ", timeline)
+		Dialogic.start("whoops")
+		return
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CONFINED
+		Dialogic.start(timeline).process_mode = Node.PROCESS_MODE_ALWAYS
+		Dialogic.process_mode = Node.PROCESS_MODE_ALWAYS
+		Dialogic.timeline_ended.connect(func(): get_tree().paused = false)
 
 func reparent_node(node: Node, parent: Node, position_reset: bool = true) -> void:
 	if not is_instance_valid(node):

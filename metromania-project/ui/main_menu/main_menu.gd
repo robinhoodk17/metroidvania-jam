@@ -17,8 +17,12 @@ func _connect_buttons() -> void:
 		%Credits.pressed.connect(ui.go_to.bind("Credits"))
 		%Exit.pressed.connect(get_tree().call_deferred.bind("quit"))
 
+func show_ui() -> void:
+	show()
+	Input.mouse_mode = Input.MOUSE_MODE_CONFINED
 
 func _start_game() -> void:
 	# TODO: Consider adding some kind of scene transition
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	Ui.go_to("Game")
-	get_tree().change_scene_to_file("uid://dxprpl0eyv2xm")
+	get_tree().change_scene_to_file("uid://dqu1x7e4qyyv")

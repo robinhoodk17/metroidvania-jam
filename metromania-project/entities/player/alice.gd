@@ -309,7 +309,7 @@ func action_state_machine(_delta: float) -> void:
 		action_state.INTERACTING:
 			if horizontal_direction * last_interaction < 0.0:
 				last_interaction = horizontal_direction
-				interacted.emit()
+				interacted.emit(horizontal_direction)
 
 func manage_action_inputs():
 	if jump_action.is_triggered():

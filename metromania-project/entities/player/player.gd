@@ -14,7 +14,7 @@ signal break_interaction
 ##for example, when a player jumps before reaching the ground
 @export var queue_time : float = 0.35
 @export var queue_time_for_attacks : float = 1.0
-@export var landing_time : float = .3
+@export var landing_time : float = .5
 @export_subgroup("running")
 ##player max speed
 @export var speed : float = 1.0
@@ -82,6 +82,8 @@ signal break_interaction
 @onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
 @onready var vfx_sphere: MeshInstance3D = $MeshParent/Robot/VFXSphere
 @onready var hitbox: Area3D = $MeshParent/Robot/VFXSphere/BoneAttachment3D/Hitbox
+@onready var spike_hurtbox = $MeshParent/SpikeHurtbox
+@onready var checkpoint_box = $MeshParent/Checkpoint
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -97,6 +99,8 @@ var current_action_state : action_state = action_state.IDLE_ACTION :
 		current_action_state = value
 
 var last_interaction : float = -1.0
+
+var checkpoint : Vector3
 
 var carrying_child : bool = true
 var direction_x : float = 0.0
@@ -146,6 +150,9 @@ func _ready() -> void:
 	#add_call_method_to_animation()
 	
 #endregion
+	checkpoint = global_position
+	checkpoint_box.area_entered.connect(store_checkpoint)
+	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
 	camera_pivot.top_level = true
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
@@ -160,6 +167,12 @@ func _ready() -> void:
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+
+func store_checkpoint(body : Node3D = null, _position : Vector3 = Vector3.ZERO):
+	if body != null:
+		checkpoint = body.global_position
+	if _position != Vector3.ZERO:
+		checkpoint = _position
 
 func pick_up_child(_body : Node3D = null):
 	if carrying_child:
@@ -541,7 +554,7 @@ func action_state_machine(_delta: float) -> void:
 		action_state.INTERACTING:
 			if horizontal_direction * last_interaction < 0.0:
 				last_interaction = horizontal_direction
-				interacted.emit()
+				interacted.emit(horizontal_direction)
 
 func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
 	animation_tree.set("parameters/TimeScale/scale", time_scale)
@@ -591,12 +604,22 @@ func attack(_x : float, _y : float) -> void:
 	hitbox.monitoring = false
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
 		staggering_towards = global_position - _position
 		staggering_distance = knockback
 		GlobalsPlayer.current_hp -= amount
 		SignalbusPlayer.took_damage.emit(amount, knockback)
+
+func take_damage_and_respawn(amount : int = 0) -> void:
+	await Ui.fade_to_black(0.25)
+	current_action_state = action_state.BLOCKED
+	current_run_state = run_state.IDLE
+	GlobalsPlayer.current_hp -= amount
+	global_position = checkpoint
+	await Ui.fade_to_clear(0.25)
+	current_action_state = action_state.IDLE_ACTION
 
 func deal_damage(area : Area3D) -> void:
 	print_debug("dealing damage")
