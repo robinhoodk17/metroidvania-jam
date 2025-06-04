@@ -23,6 +23,7 @@ var distance_to_player : float
 var hurt: bool
 var _hitbox_timer: Timer
 var _stunned_timer: Timer
+var call_method_timer: Timer
 
 func _ready():
 	create_navmesh()
@@ -31,7 +32,8 @@ func _ready():
 	create_hitbox()
 	create_hurt_box()
 	create_hitbox_timer(0.2)
-	create_stun_timer(2.5)
+	create_stun_timer(1.1)
+	create_call_method_timer(0.26)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
@@ -211,6 +213,12 @@ func create_stun_timer(time: float):
 	_stunned_timer.wait_time = time   
 	_stunned_timer.one_shot = true         
  
+func create_call_method_timer(time: float):
+	call_method_timer = Timer.new()
+	add_child(call_method_timer)              
+	call_method_timer.wait_time = time   
+	call_method_timer.one_shot = true
+
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
 	if animation == null:
@@ -227,9 +235,9 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
  
 func perform_attack():
 	upper_state.travel("Robot_Punch")
-	await get_tree().create_timer(0.26).timeout
-	if hurt == false: 
-		enable_hit_box()
+	call_method_timer.start()
+	await call_method_timer.timeout
+	enable_hit_box()
  
 func handle_first_adustments() -> void:
 	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
