@@ -69,7 +69,19 @@ func _physics_process(delta):
 				state = "chase"
 			else:
 				attack_behavior(delta)
- 
+				
+func chase_behavior(delta):
+	var target_pos : Vector3 = player.global_position
+	target_pos.y = global_position.y
+	target_pos.z = global_position.z
+	navigation_agent.set_target_position(target_pos)
+	move_along_path(delta)
+	
+func attack_behavior(delta):
+	attack_timer -= delta
+	if attack_timer <= 0.0:
+		perform_attack()
+		attack_timer = attack_cooldown
 
 func patrol_behavior(delta):
 	if navigation_agent.is_navigation_finished():
@@ -77,18 +89,22 @@ func patrol_behavior(delta):
 		set_patrol_target()
 	move_along_path(delta)
 
-func chase_behavior(delta):
-	var target_pos : Vector3 = player.global_position
-	target_pos.y = global_position.y
-	target_pos.z = global_position.z
-	navigation_agent.set_target_position(target_pos)
-	move_along_path(delta)
-
-func attack_behavior(delta):
-	attack_timer -= delta
-	if attack_timer <= 0.0:
-		perform_attack()
-		attack_timer = attack_cooldown
+func move_along_path(delta):
+	if navigation_agent.is_navigation_finished() or hurt:
+		linear_velocity = Vector3.ZERO
+		return
+	var next_pos = navigation_agent.get_next_path_position()
+	var direction = (next_pos - global_transform.origin)
+	direction.y = 0
+	direction.z = 0
+	if direction.length() > 0:
+		direction = direction.normalized()
+	else:
+		direction = Vector3.ZERO
+	var desired_velocity = direction * move_speed
+	var velocity_change = desired_velocity - linear_velocity
+	var force = velocity_change * mass * 10.0
+	apply_central_force(force)
 
 func set_patrol_target():
 	if patrol_points.size() == 0:
@@ -98,32 +114,13 @@ func set_patrol_target():
 	target.z = global_transform.origin.z
 	navigation_agent.set_target_position(target)
 
-func move_along_path(delta):
-	if navigation_agent.is_navigation_finished() or hurt:
-		linear_velocity = Vector3.ZERO
-		return
-
-	var next_pos = navigation_agent.get_next_path_position()
-	var direction = (next_pos - global_transform.origin)
-	direction.y = 0
-	direction.z = 0
-	if direction.length() > 0:
-		direction = direction.normalized()
-	else:
-		direction = Vector3.ZERO
-
-	var desired_velocity = direction * move_speed
-	var velocity_change = desired_velocity - linear_velocity
-	var force = velocity_change * mass * 10.0
-	apply_central_force(force)
-
-func create_detect_raycast():
-	raycast = RayCast3D.new()
-	raycast.enabled = true 
-	raycast.target_position = Vector3(3, 0, 0)  
-	raycast.exclude_parent = true  
-	$MeshParent.add_child(raycast)
-	raycast.collision_mask = (1 << 0) | (1 << 2)
+#func create_detect_raycast():
+	#raycast = RayCast3D.new()
+	#raycast.enabled = true 
+	#raycast.target_position = Vector3(3, 0, 0)  
+	#raycast.exclude_parent = true  
+	#$MeshParent.add_child(raycast)
+	#raycast.collision_mask = (1 << 0) | (1 << 2)
 
 #region create_nodes
 func create_hurt_box():
