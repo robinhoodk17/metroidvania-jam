@@ -13,8 +13,8 @@
 [ext_resource type="Script" uid="uid://cgrmmvxxkccrt" path="res://entities/player/auto_aim.gd" id="8_7thud"]
 
 [sub_resource type="Curve" id="Curve_symyc"]
-_data = [Vector2(0, 0), 0.0, 12.1039, 0, 0, Vector2(0.15404, 0.641721), 0.0, 0.0, 0, 0, Vector2(0.4, 0.75), 0.0, 0.151481, 0, 1, Vector2(0.958754, 0.834641), 0.0, 0.0, 0, 0, Vector2(1, 1), 6.90092, 0.0, 0, 0]
-point_count = 5
+_data = [Vector2(0, 0), 0.0, 4.50435, 0, 0, Vector2(1, 1), 1.38649, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="Curve" id="Curve_abrql"]
 _data = [Vector2(0, 1), 0.0, -0.080464, 0, 0, Vector2(1e-05, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.95077, 0.0, 0, 0]
@@ -212,6 +212,8 @@ nodes/TimeScale/position = Vector2(133.333, 160)
 node_connections = [&"Add2", 0, &"StateMachine_running", &"Add2", 1, &"StateMachine_action", &"OneShotBlend", 0, &"Add2", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7prqh"]
+radius = 0.676854
+height = 2.04704
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
 radius = 1.46906
@@ -221,6 +223,7 @@ collision_layer = 4
 collision_mask = 3
 axis_lock_linear_z = true
 script = ExtResource("1_symyc")
+speed = 13.0
 acceleration_curve = SubResource("Curve_symyc")
 deceleration_curve = SubResource("Curve_abrql")
 mesh = NodePath("MeshParent")
@@ -240,7 +243,6 @@ shape = SubResource("CapsuleShape3D_pwfib")
 [node name="MeshParent" type="Marker3D" parent="."]
 
 [node name="AutoAim" type="Area3D" parent="MeshParent"]
-visible = false
 collision_layer = 0
 collision_mask = 64
 script = ExtResource("8_7thud")
@@ -283,10 +285,10 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.35901, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.34115, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
-bones/7/rotation = Quaternion(-0.0370622, -0.122266, -0.00219866, 0.991803)
+bones/7/rotation = Quaternion(-0.0170265, 0.240532, 0.000639668, 0.970492)
 bones/8/position = Vector3(0.582738, 0.29672, 0.0324413)
 bones/8/rotation = Quaternion(-0.0114497, -0.0532471, -0.9762, 0.209923)
 bones/9/rotation = Quaternion(-0.0545858, -0.689887, 0.0692138, 0.718531)
@@ -312,12 +314,12 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.778136, 0.158242, -0.583241, 0.171154)
+bones/36/rotation = Quaternion(0.77461, 0.169547, -0.580325, 0.185626)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.383659, 1.21231e-07, -8.31905e-08, 0.923475)
-bones/38/rotation = Quaternion(0.77448, -0.157883, 0.588822, 0.168946)
+bones/37/rotation = Quaternion(0.411697, 1.12662e-07, -8.30601e-08, 0.911321)
+bones/38/rotation = Quaternion(0.771034, -0.16926, 0.58587, 0.183341)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.383659, -3.08596e-07, 7.00727e-08, 0.923475)
+bones/39/rotation = Quaternion(0.411697, -2.96672e-07, 8.43971e-08, 0.911321)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
@@ -397,7 +399,7 @@ monitoring = false
 shape = SubResource("CapsuleShape3D_7prqh")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="."]
-transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.666201, 0.554608)
+transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.673882, 0.554608)
 bone_name = "Palm2.R"
 bone_idx = 25
 use_external_skeleton = true
@@ -405,7 +407,7 @@ external_skeleton = NodePath("../MeshParent/Robot/RobotArmature/Skeleton3D")
 
 [node name="Hitbox" type="Area3D" parent="BoneAttachment3D"]
 collision_layer = 0
-collision_mask = 32
+collision_mask = 1024
 monitoring = false
 monitorable = false
 
