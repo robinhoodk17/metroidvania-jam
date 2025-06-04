@@ -45,8 +45,8 @@ func _physics_process(delta):
 	else:
 		if locomotion.get_current_node() != "Robot_Idle":
 			locomotion.travel("Robot_Idle")
+			
 	distance_to_player = global_position.distance_to(player.global_position)
-	
 	rotate_pivot_toward_target(delta)
 	
 	match state:
@@ -240,8 +240,6 @@ func handle_first_adustments() -> void:
 	axis_lock_angular_x = true
 	axis_lock_angular_z = true
 	axis_lock_angular_y = true
-	collision_layer = 1 << 1
-	collision_mask = (1 << 0) | (1 << 2)
 	axis_lock_linear_z = true
 
 func take_damage(amount):
@@ -285,3 +283,9 @@ func rotate_pivot_toward_target(delta) -> void:
 		##staggering_distance = knockback
 		##GlobalsPlayer.current_hp -= amount
 		##SignalbusPlayer.took_damage.emit(amount, knockback)
+ 
+func teleport() -> void:
+	var offset : float = 3.0
+	var player_forward = -player.global_transform.basis.x.normalized()
+	global_position = player.global_position + player_forward * offset
+	pivot_node.look_at(player.global_position, Vector3.UP)
