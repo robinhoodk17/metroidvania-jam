@@ -61,6 +61,21 @@ _data = {
 &"new_animation": SubResource("Animation_espid")
 }
 
+[sub_resource type="Animation" id="Animation_km1px"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(387.479, -45.466, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_ffs1a"]
 resource_name = "new_animation"
 length = 5.0
@@ -78,7 +93,13 @@ tracks/0/keys = {
 "values": [Vector3(387.479, -45.466, 0), Vector3(416.756, -27.864, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_km1px"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m2nt4"]
+_data = {
+&"RESET": SubResource("Animation_km1px"),
+&"new_animation": SubResource("Animation_ffs1a")
+}
+
+[sub_resource type="Animation" id="Animation_y4ogp"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -90,13 +111,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(387.479, -45.466, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_m2nt4"]
-_data = {
-&"RESET": SubResource("Animation_km1px"),
-&"new_animation": SubResource("Animation_ffs1a")
+"values": [Vector3(361.394, -99.6812, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_uqtx1"]
@@ -114,21 +129,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(363.184, -99.681, 0), Vector3(363.184, -88.61, 0), Vector3(363.184, -88.61, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_y4ogp"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(361.394, -99.6812, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ffs1a"]

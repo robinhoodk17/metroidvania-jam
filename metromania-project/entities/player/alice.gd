@@ -446,10 +446,9 @@ func on_hit_box_entered(area: Area3D) -> void:
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
-	pass
-	#hit_box.monitoring = true
-	#await get_tree().create_timer(time_sec).timeout
-	#hit_box.monitoring = false
+	hit_box.monitoring = true
+	await get_tree().create_timer(time_sec).timeout
+	hit_box.monitoring = false
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
