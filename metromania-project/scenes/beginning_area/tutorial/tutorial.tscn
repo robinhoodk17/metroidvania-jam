@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://dqu1x7e4qyyv"]
+[gd_scene load_steps=37 format=3 uid="uid://dqu1x7e4qyyv"]
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_sbt6m"]
 [ext_resource type="PackedScene" uid="uid://doxjfrb6rmcek" path="res://scenes/beginning_area/tutorial/tutorial.glb" id="3_cy5y7"]
@@ -40,7 +40,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_espid"]
 resource_name = "new_animation"
-length = 5.0
+length = 7.5
 loop_mode = 2
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -49,10 +49,10 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 5),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 3.7, 5.56667, 7.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(177, -37.601, 0), Vector3(231.76, -37.601, 0)]
+"values": [Vector3(177, -37.601, 0), Vector3(208.812, -37.601, 0), Vector3(218.888, -37.601, 0), Vector3(231.76, -37.601, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dbb2v"]
@@ -136,9 +136,6 @@ _data = {
 &"RESET": SubResource("Animation_y4ogp"),
 &"new_animation": SubResource("Animation_uqtx1")
 }
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_uqtx1"]
-radius = 1.19641
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_tqki5"]
 viewport_path = NodePath("SubViewport")
@@ -279,14 +276,6 @@ libraries = {
 &"": SubResource("AnimationLibrary_ffs1a")
 }
 autoplay = "new_animation"
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Interactables(not_in_blender)" index="5" groups=["hook"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 370.761, -84.4356, 0)
-collision_layer = 64
-collision_mask = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/StaticBody3D" index="0"]
-shape = SubResource("SphereShape3D_uqtx1")
 
 [node name="Move" parent="Messages" index="0" instance=ExtResource("7_lvptp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.9213, 9.56044, 0)
