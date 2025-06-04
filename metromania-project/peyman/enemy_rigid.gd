@@ -20,6 +20,7 @@ var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
+
 func _ready():
 	create_navmesh()
 	create_navigation_agent()   
@@ -31,7 +32,7 @@ func _ready():
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
 	handle_first_adustments()
-	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.26, [0.3])
+	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.26, [0.2])
 
 func _physics_process(delta):
 	if linear_velocity.length() > 0.1:
@@ -188,8 +189,7 @@ func create_partrol_points():
  
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.owner
-	print(parent)
-	if parent && parent.has_method("take_damage"):
+	if parent && parent.has_method("take_damage") && parent.is_in_group("player"):
 		parent.take_damage(10)
  
 func enable_hit_box(time_sec: float = 0.2) -> void:
@@ -227,7 +227,7 @@ func handle_first_adustments() -> void:
 
 func take_damage(amount):
 	print("enemy take damage")
-	#linear_velocity.y = 5
+	linear_velocity.y = 5
 	
 func rotate_pivot_toward_target(delta) -> void:
 	if distance_to_player < attack_distance:

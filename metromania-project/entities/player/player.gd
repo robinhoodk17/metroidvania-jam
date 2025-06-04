@@ -140,7 +140,6 @@ func _ready() -> void:
 	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
-	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.26, [0.3])
 	
 #endregion
 	checkpoint = global_position
@@ -630,9 +629,9 @@ func deal_damage(area : Area3D) -> void:
 var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
-	var parent: Node3D = area.owner
+	var parent: Node3D = area.get_parent()
 	print(parent)
-	if parent && parent.has_method("take_damage"):
+	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
@@ -653,6 +652,8 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	return animation.length
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("f"):
+	if event.is_action_pressed("g"):
 		set_oneshot_animation("Robot_Punch")
+		await get_tree().create_timer(0.25).timeout
+		enable_hit_box(0.2)
 #endregion 
