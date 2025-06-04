@@ -22,7 +22,7 @@ signal break_interaction
 @export var coyote_time : float = 0.1
 @export var queue_time : float = 0.35
 @export var movement_to_grapple_speed : float = 20.0
-@export var throw_range : float = 5.0
+@export var throw_range : float = 10.0
 
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
@@ -55,6 +55,7 @@ signal break_interaction
 @onready var ledge_grab: RayCast3D = $MeshParent/MeshChild/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/MeshChild/LedgeGrab/CheckCollisions
 @onready var wall_jump_freeze_timer: Timer = $"../../../WallJumpFreezeTimer"
+@onready var interaction_box: Area3D = $MeshParent/MeshChild/InteractionBox
 
 """state machine"""
 #var current_run_state : run_state = run_state.IDLE
@@ -133,6 +134,7 @@ func turn_on() -> void:
 
 func _ready() -> void:
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
+	interaction_box.body_entered.connect(check_body)
 	hurt_box.body_entered.connect(check_body)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
