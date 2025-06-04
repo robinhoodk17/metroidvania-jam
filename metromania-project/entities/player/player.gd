@@ -17,12 +17,12 @@ signal break_interaction
 @export var landing_time : float = .5
 @export_subgroup("running")
 ##player max speed
-@export var speed : float = 1.0
+@export var speed : float = 20.0
 ##how accelerating from 0 to max speed looks like
 @export var acceleration_curve : Curve
 @export var deceleration_curve : Curve
 ##the number of seconds required to accelerate from 0 to max speed
-@export var acceleration : float = 1.5
+@export var acceleration : float = 3.0
 ##the number of seconds required to brake from max to 0
 @export var deceleration : float = .35
 @export_subgroup("jump")
@@ -33,11 +33,11 @@ signal break_interaction
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
 @export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 0.25
+@export var wall_jump_time : float = 0.2
 ##when the player is pressing against a wall, how much it stops falling
 @export var wall_slide_gravity : float = 0.5
 @export var dash_velocity : float = 30.0
-@export var dash_duration : float = 0.35
+@export var dash_duration : float = 0.25
 @export var coyote_time : float = 0.25
 @export var ledge_grab_offset : float = -.35
 
