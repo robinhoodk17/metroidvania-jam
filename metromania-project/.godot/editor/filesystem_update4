@@ -1,10 +1,9 @@
-res://scenes/timelines/mycktest.dtl
 res://aa&&root/player.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
-res://entities/player/animation_tree.tres
 res://peyman/enemy_tree.tres
+res://entities/player/animation_tree.tres
 res://scenes/master.tscn
 res://peyman/enemy_rigid.tscn
 res://scenes/world/prompt.tscn
@@ -14,5 +13,6 @@ res://scenes/world/game_events/triggers/area_entered/area_entered.tscn
 res://scenes/beginning_area/tutorial/tutorial.tscn
 res://aa&&root/main.tscn
 res://entities/player/alice.tscn
-res://scenes/timelines/characters/Alice.dch
-res://scenes/timelines/characters/Amelia.dch
+res://peyman/enemy_rigid.gd
+res://entities/player/player.gd
+res://entities/player/alice.gd

@@ -1,6 +1,6 @@
 CollisionShape3D
-BoneAttachment3D
 Area3D
+BoneAttachment3D
 AudioStreamPlayer
 Node3D
 AnimationPlayer

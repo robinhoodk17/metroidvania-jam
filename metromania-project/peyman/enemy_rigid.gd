@@ -1,5 +1,4 @@
 extends RigidBody3D
-class_name Enemy
 @export var patrol_points: Array[Vector3] = []
 @export var chase_distance: float = 15.0 - 5.0
 @export var attack_distance: float = 2.5 
@@ -15,8 +14,8 @@ var attack_timer: float = 0.0
 var navigation_agent: NavigationAgent3D
 var raycast: RayCast3D 
 var skeleton : Skeleton3D
-@onready var hurt_box: Area3D = $hurt_box
-@onready var hit_box: Area3D = $BoneAttachment3D/hit_box
+var hurt_box: Area3D 
+var hit_box:  Area3D
 var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
@@ -25,13 +24,14 @@ func _ready():
 	create_navmesh()
 	create_navigation_agent()   
 	create_partrol_points()
-	hit_box.area_entered.connect(on_hit_box_entered)
+	create_hitbox()
+	create_hurt_box()
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
 	handle_first_adustments()
-	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
+	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.26, [0.3])
 
 func _physics_process(delta):
 	if linear_velocity.length() > 0.1:
@@ -121,6 +121,42 @@ func create_detect_raycast():
 	raycast.collision_mask = (1 << 0) | (1 << 2)
 
 #region create_nodes
+func create_hurt_box():
+	hurt_box = Area3D.new()
+	hurt_box.collision_layer = 1 << 5
+	hurt_box.collision_mask = 0
+	var collision_shape = CollisionShape3D.new()
+	var capsule_shape = CapsuleShape3D.new()
+	capsule_shape.radius = 0.5 
+	capsule_shape.height = 2.0  
+	collision_shape.shape = capsule_shape
+	hurt_box.add_child(collision_shape)
+	hurt_box.monitoring = false
+	hurt_box.position = Vector3(0, 1, 0)
+	add_child(hurt_box)
+ 
+func create_hitbox():
+	skeleton = find_child("Skeleton3D")  
+	if not skeleton:
+		push_error("Enemy Skeleton3D node not found!")
+		return
+	bone_attachment = BoneAttachment3D.new()
+	skeleton.add_child(bone_attachment)
+	hit_box = Area3D.new()
+	hit_box.name = "hit_box"
+	hit_box.collision_layer = 0
+	hit_box.collision_mask = 1 << 4
+	var collision_shape_hit := CollisionShape3D.new()
+	var sphere_shape := SphereShape3D.new()
+	sphere_shape.radius = 0.5 * 2
+	hit_box.monitorable = false
+	hit_box.monitoring = false
+	collision_shape_hit.shape = sphere_shape
+	hit_box.add_child(collision_shape_hit)
+	bone_attachment.add_child(hit_box)
+	bone_attachment.bone_name = "Palm1.R"
+	hit_box.area_entered.connect(on_hit_box_entered)
+	
 func create_navmesh():
 	var nav_region = NavigationRegion3D.new()
 	var nav_mesh = NavigationMesh.new()
@@ -152,7 +188,8 @@ func create_partrol_points():
  
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage") && parent == player:
+	print(parent)
+	if parent && parent.has_method("take_damage"):
 		parent.take_damage(10)
  
 func enable_hit_box(time_sec: float = 0.2) -> void:
@@ -175,7 +212,7 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 #endregion
  
 func perform_attack():
-	print("Enemy attacks the player!")
+	#print("Enemy attacks the player!")
 	upper_state.travel("Robot_Punch")
  
 func handle_first_adustments() -> void:
@@ -189,7 +226,8 @@ func handle_first_adustments() -> void:
 	axis_lock_linear_z = true
 
 func take_damage(amount):
-	linear_velocity.y = 5
+	print("enemy take damage")
+	#linear_velocity.y = 5
 	
 func rotate_pivot_toward_target(delta) -> void:
 	if distance_to_player < attack_distance:
