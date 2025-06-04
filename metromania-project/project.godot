@@ -42,13 +42,17 @@ gdscript/warnings/inferred_declaration=1
 [dialogic]
 
 directories/dch_directory={
-"Alice": "res://scenes/timelines/characters/Alice.dch",
+"Amelia": "res://scenes/timelines/characters/Amelia.dch",
 "Myck": "res://scenes/timelines/characters/Myck.dch"
 }
 directories/dtl_directory={
 "discord_timeline": "res://scenes/timelines/discord_timeline.dtl",
+"mycktest": "res://scenes/timelines/mycktest.dtl",
 "trial_timeline": "res://scenes/timelines/trial_timeline.dtl"
 }
+glossary/default_case_sensitive=true
+layout/style_list=[]
+layout/default_style="Default"
 
 [display]
 
