@@ -17,12 +17,12 @@ signal break_interaction
 @export var landing_time : float = .5
 @export_subgroup("running")
 ##player max speed
-@export var speed : float = 1.0
+@export var speed : float = 20.0
 ##how accelerating from 0 to max speed looks like
 @export var acceleration_curve : Curve
 @export var deceleration_curve : Curve
 ##the number of seconds required to accelerate from 0 to max speed
-@export var acceleration : float = 1.5
+@export var acceleration : float = 3.0
 ##the number of seconds required to brake from max to 0
 @export var deceleration : float = .35
 @export_subgroup("jump")
@@ -33,11 +33,11 @@ signal break_interaction
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
 @export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 0.25
+@export var wall_jump_time : float = 0.2
 ##when the player is pressing against a wall, how much it stops falling
 @export var wall_slide_gravity : float = 0.5
 @export var dash_velocity : float = 30.0
-@export var dash_duration : float = 0.35
+@export var dash_duration : float = 0.25
 @export var coyote_time : float = 0.25
 @export var ledge_grab_offset : float = -.35
 
@@ -134,12 +134,12 @@ var oneshot_animation : AnimationNode
   
 func _ready() -> void:
 #region Setting up combat
+	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
 	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
 	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
-	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.39, [0.2])
 	
 #endregion
 	checkpoint = global_position
@@ -629,8 +629,9 @@ func deal_damage(area : Area3D) -> void:
 var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
-	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage") && parent is Enemy:
+	var parent: Node3D = area.get_parent()
+	print(parent)
+	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
@@ -651,6 +652,8 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	return animation.length
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("f"):
+	if event.is_action_pressed("g"):
 		set_oneshot_animation("Robot_Punch")
+		await get_tree().create_timer(0.25).timeout
+		enable_hit_box(0.2)
 #endregion 

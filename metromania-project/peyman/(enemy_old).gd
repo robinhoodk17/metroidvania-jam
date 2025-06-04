@@ -1,5 +1,5 @@
 extends CharacterBody3D
-class_name Enemy
+class_name Enemy_old
  
 @export var detection_radius: float = 25.0
 @export var attack_range: float = 2.5
