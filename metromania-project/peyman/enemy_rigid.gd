@@ -22,6 +22,7 @@ var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
 var hurt: bool
 var _hitbox_timer: Timer
+var _stunned_timer: Timer
 
 func _ready():
 	create_navmesh()
@@ -29,7 +30,8 @@ func _ready():
 	create_partrol_points()
 	create_hitbox()
 	create_hurt_box()
-	create_hitbox_timer()
+	create_hitbox_timer(0.2)
+	create_stun_timer(2.5)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
@@ -67,6 +69,7 @@ func _physics_process(delta):
 				state = "chase"
 			else:
 				attack_behavior(delta)
+ 
 
 func patrol_behavior(delta):
 	if navigation_agent.is_navigation_finished():
@@ -96,7 +99,7 @@ func set_patrol_target():
 	navigation_agent.set_target_position(target)
 
 func move_along_path(delta):
-	if navigation_agent.is_navigation_finished():
+	if navigation_agent.is_navigation_finished() or hurt:
 		linear_velocity = Vector3.ZERO
 		return
 
@@ -113,7 +116,6 @@ func move_along_path(delta):
 	var velocity_change = desired_velocity - linear_velocity
 	var force = velocity_change * mass * 10.0
 	apply_central_force(force)
-
 
 func create_detect_raycast():
 	raycast = RayCast3D.new()
@@ -200,11 +202,17 @@ func enable_hit_box() -> void:
 	await _hitbox_timer.timeout
 	hit_box.monitoring = false
 	
-func create_hitbox_timer():
+func create_hitbox_timer(time: float):
 	_hitbox_timer = Timer.new()
 	add_child(_hitbox_timer)              
-	_hitbox_timer.wait_time = 0.2    
-	_hitbox_timer.one_shot = true           
+	_hitbox_timer.wait_time = time    
+	_hitbox_timer.one_shot = true     
+	
+func create_stun_timer(time: float):
+	_stunned_timer = Timer.new()
+	add_child(_stunned_timer)              
+	_stunned_timer.wait_time = time   
+	_stunned_timer.one_shot = true         
  
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
@@ -238,8 +246,12 @@ func handle_first_adustments() -> void:
 
 func take_damage(amount):
 	print("enemy take damage")
-	linear_velocity.y = 5
-	
+	hurt = true
+	upper_state.travel("Robot_Wave")
+	_stunned_timer.start()
+	await _stunned_timer.timeout
+	hurt = false
+ 
 func rotate_pivot_toward_target(delta) -> void:
 	if distance_to_player < attack_distance:
 		var direction = player.position - pivot_node.global_position
