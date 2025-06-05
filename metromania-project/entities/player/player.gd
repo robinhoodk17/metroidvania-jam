@@ -12,7 +12,7 @@ signal break_interaction
 @export_group("Player Movement")
 ##how long an action remains queued before it gets deleted
 ##for example, when a player jumps before reaching the ground
-@export var queue_time : float = 0.35
+@export var queue_time : float = 0.15
 @export var queue_time_for_attacks : float = 1.0
 @export var landing_time : float = .5
 @export_subgroup("running")
@@ -26,20 +26,20 @@ signal break_interaction
 ##the number of seconds required to brake from max to 0
 @export var deceleration : float = .35
 @export_subgroup("jump")
-@export var jump_velocity : float = 15.0
+@export var jump_velocity : float = 13.0
 @export var jump_floatiness : float = 0.15
 ##how big is gravity
 @export var going_down_speed : float = 3.0
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
-@export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 0.2
+@export var wall_jump_repulsion : float = 12.5
+@export var wall_jump_time : float = 0.375
 ##when the player is pressing against a wall, how much it stops falling
-@export var wall_slide_gravity : float = 0.5
+@export var wall_slide_gravity : float = 0.85
 @export var dash_velocity : float = 30.0
 @export var dash_duration : float = 0.25
 @export var coyote_time : float = 0.25
-@export var ledge_grab_offset : float = -.35
+@export var ledge_grab_offset : float = -.15
 
 @export_group("Combat")
 @export var combo_reset : float = 1.5
@@ -58,6 +58,8 @@ signal break_interaction
 
 @export_group("Camera")
 @export var dampen_frames : int = 20
+@export var camera_zoom_min : float = 15
+@export var camera_zoom_max : float = 25
 
 @export_group("Nodes")
 @export var mesh : Marker3D
@@ -69,6 +71,7 @@ signal break_interaction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
 
+@onready var camera_3d: Camera3D = $CameraPivot/Camera3D
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var combo_reset_timer: Timer = $ComboResetTimer
@@ -142,6 +145,12 @@ func _ready() -> void:
 	#add_call_method_to_animation()
 	
 #endregion
+	
+	jump_action.triggered.connect(queue_jump)
+	attack_action.triggered.connect(queue_attack)
+	throw_action.triggered.connect(queue_throw)
+	dash_action.triggered.connect(queue_dash)
+
 	checkpoint = global_position
 	checkpoint_box.area_entered.connect(store_checkpoint)
 	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
@@ -159,6 +168,23 @@ func _ready() -> void:
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+
+func queue_dash() -> void:
+	input_queued = inputs.DASH
+	queue_timer.start(queue_time)
+
+func queue_throw() -> void:
+	input_queued = inputs.THROW_CHILD
+	queue_timer.start(queue_time)
+
+func queue_attack() -> void:
+	input_queued = inputs.ATTACK
+	queue_timer.start(queue_time_for_attacks)
+
+func queue_jump() -> void:
+	input_queued = inputs.JUMP
+	queue_timer.start(queue_time)
+	
 
 func store_checkpoint(body : Node3D = null, _position : Vector3 = Vector3.ZERO):
 	if body != null:
@@ -180,10 +206,12 @@ func pick_up_child(_body : Node3D = null):
 func _physics_process(delta: float) -> void:
 	if slow_time:
 		Engine.time_scale = 0.25
+	if queue_timer.is_stopped():
+		input_queued = inputs.NONE
 	position_camera(delta)
+	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
-	handle_gravity(delta)
 
 	move_and_slide()
 
@@ -194,15 +222,17 @@ func position_camera(delta: float) -> void:
 	for i : float in dampened_y_array:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
+	var target_position = (Vector3(global_position.x, averaged_y, global_position.z) + alice.global_position)/2
 	if is_on_floor():
 		lerp_power = lerp(lerp_power, 5.0, delta * 10)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, global_position, delta * lerp_power)
+		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
 		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
-		var target_position = Vector3(global_position.x, averaged_y, global_position.z)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
+	camera_3d.global_position.z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
 
 func manage_action_inputs() -> void:
+	return
 	if jump_action.is_triggered():
 		input_queued = inputs.JUMP
 		queue_timer.start(queue_time)
@@ -311,7 +341,15 @@ func handle_gravity(delta: float) -> void:
 			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
 		else:
 			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
-	if current_run_state != run_state.STAGGERING:
+	if current_run_state == run_state.WALKING or current_action_state == action_state.BLOCKED:
+		if direction_x < 0.0:
+			mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
+			looking = -1
+		if direction_x > 0.0:
+			mesh.basis = Basis.IDENTITY
+			looking = 1
+		return
+	if current_run_state != run_state.STAGGERING and current_run_state != run_state.WALL_SLIDING:
 		if velocity.x < 0:
 			mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
 			looking = -1
@@ -320,6 +358,8 @@ func handle_gravity(delta: float) -> void:
 			looking = 1
 
 func jump() -> void:
+	if coyote_timer.is_stopped() and !carrying_child:
+		return
 	if !second_jump or current_run_state == run_state.WALL_SLIDING:
 		input_queued = inputs.NONE
 	else:
@@ -340,6 +380,7 @@ func jump() -> void:
 			return
 		second_jump = true
 	SignalbusPlayer.jumped.emit()
+	coyote_timer.stop()
 
 func do_wall_jump() -> void:
 	current_action_state = action_state.BLOCKED
@@ -348,10 +389,14 @@ func do_wall_jump() -> void:
 	if mesh.basis == Basis.IDENTITY:
 		_sign = -1
 	velocity.x = wall_jump_repulsion * _sign
+	direction_x = _sign
+	running_time = 0.5
 	dash_reset_timer.start(wall_jump_time)
 	SignalbusPlayer.wall_jumped.emit()
 
 func dash(horizontal_direction : float, vertical_direction : float) -> void:
+	if !carrying_child:
+		return
 	if horizontal_direction == 0.0 and vertical_direction == 0.0:
 		horizontal_direction = mesh.global_basis.z.z
 	dash_spent = true
@@ -395,7 +440,7 @@ func run_state_machine(delta: float) -> void:
 					return
 	
 	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
-		aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
+		aiming_for_wall = direction_x * mesh.global_basis.z.z > 0
 		#print_debug("overlapping bodies and not ledge grab ", current_action_state)
 		if aiming_for_wall and !is_on_floor():
 			#print_debug("facing and pressing button")
