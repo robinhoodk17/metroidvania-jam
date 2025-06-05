@@ -286,7 +286,7 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.35036, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.35798, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
 bones/7/rotation = Quaternion(-0.0309211, -0.00285618, -0.00128305, 0.999517)
@@ -315,12 +315,12 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.776436, 0.16381, -0.58183, 0.178289)
+bones/36/rotation = Quaternion(0.777938, 0.158905, -0.583076, 0.172003)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.397523, 1.18378e-07, -8.23676e-08, 0.917592)
-bones/38/rotation = Quaternion(0.772818, -0.163488, 0.587395, 0.176043)
+bones/37/rotation = Quaternion(0.385313, 1.1157e-07, -7.89408e-08, 0.922786)
+bones/38/rotation = Quaternion(0.774286, -0.158551, 0.588655, 0.169791)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.397523, -3.06444e-07, 8.20136e-08, 0.917592)
+bones/39/rotation = Quaternion(0.385313, -3.10614e-07, 7.66494e-08, 0.922786)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
@@ -401,7 +401,7 @@ monitoring = false
 shape = SubResource("CapsuleShape3D_7prqh")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="."]
-transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.669921, 0.554608)
+transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.666644, 0.554608)
 bone_name = "Palm2.R"
 bone_idx = 25
 use_external_skeleton = true

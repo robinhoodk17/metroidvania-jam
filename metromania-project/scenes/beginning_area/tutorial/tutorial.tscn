@@ -63,18 +63,6 @@ _data = {
 
 [sub_resource type="Animation" id="Animation_km1px"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(387.479, -45.466, 0)]
-}
 
 [sub_resource type="Animation" id="Animation_ffs1a"]
 resource_name = "new_animation"
@@ -90,7 +78,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(387.479, -45.466, 0), Vector3(416.756, -27.864, 0)]
+"values": [Vector3(361.099, -45.466, 0), Vector3(332.456, -27.864, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m2nt4"]
@@ -101,18 +89,6 @@ _data = {
 
 [sub_resource type="Animation" id="Animation_y4ogp"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(361.394, -99.6812, 0)]
-}
 
 [sub_resource type="Animation" id="Animation_uqtx1"]
 resource_name = "new_animation"
@@ -128,7 +104,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 4.5, 5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector3(363.184, -99.681, 0), Vector3(363.184, -88.61, 0), Vector3(363.184, -88.61, 0)]
+"values": [Vector3(380.554, -99.681, 0), Vector3(380.554, -88.61, 0), Vector3(380.554, -88.61, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ffs1a"]
@@ -227,7 +203,7 @@ libraries = {
 }
 
 [node name="Lever" parent="Interactables(not_in_blender)/MovingPlatform" index="1" instance=ExtResource("4_kscy4")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 241.119, -42.0744, 0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 240.162, -40.4469, 0)
 progression_needed = 20
 
 [node name="SelfFree" parent="Interactables(not_in_blender)/MovingPlatform" index="2" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
@@ -241,7 +217,7 @@ delay = 2.0
 triggers = [NodePath("Lever")]
 
 [node name="MovingPlatform" type="AnimatableBody3D" parent="Interactables(not_in_blender)/MovingPlatform2" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 387.479, -45.466, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 361.099, -45.466, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables(not_in_blender)/MovingPlatform2/MovingPlatform" index="0"]
 mesh = SubResource("BoxMesh_lvptp")
@@ -255,7 +231,7 @@ libraries = {
 }
 
 [node name="Lever" parent="Interactables(not_in_blender)/MovingPlatform2" index="1" instance=ExtResource("4_kscy4")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 377.587, -52.79, 0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 369.573, -52.79, 0)
 progression_needed = 20
 
 [node name="SelfFree" parent="Interactables(not_in_blender)/MovingPlatform2" index="2" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
@@ -263,7 +239,7 @@ free_others = [NodePath("../Lever")]
 triggers = [NodePath("../Lever")]
 
 [node name="MovingPlatform_Playground" type="AnimatableBody3D" parent="Interactables(not_in_blender)" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 361.394, -99.6812, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380.554, -99.681, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables(not_in_blender)/MovingPlatform_Playground" index="0"]
 mesh = SubResource("BoxMesh_lvptp")
@@ -314,13 +290,13 @@ interact_action = ExtResource("9_uqtx1")
 text = "Jump"
 
 [node name="Throw" parent="Messages" index="5" instance=ExtResource("7_lvptp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.3891, 2.73836, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.2034, 2.73836, 0)
 texture = SubResource("ViewportTexture_yeacc")
 interact_action = ExtResource("9_espid")
 message = "Yeet"
 
 [node name="Move2" parent="Messages" index="6" instance=ExtResource("7_lvptp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.1466, -2.75476, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.9609, -2.75476, 0)
 texture = SubResource("ViewportTexture_dbb2v")
 interact_action = ExtResource("10_dbb2v")
 message = "Move"
@@ -338,19 +314,19 @@ interact_action = null
 message = "The playground"
 
 [node name="Playground2" parent="Messages" index="9" instance=ExtResource("7_lvptp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 424.705, -52.6046, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 325.034, -52.6046, 0)
 texture = SubResource("ViewportTexture_5qgyi")
 interact_action = null
 message = "Heart container"
 
 [node name="Right2" type="Sprite3D" parent="Messages" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 437.629, -99.2002, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 408.293, -99.2002, 0)
 pixel_size = 0.25
 billboard = 1
 texture = ExtResource("9_y4ogp")
 
 [node name="NextLevel" parent="Messages" index="11" instance=ExtResource("7_lvptp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 483.752, -100.198, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 443.821, -100.198, 0)
 texture = SubResource("ViewportTexture_qk7on")
 interact_action = null
 message = "Next room"
