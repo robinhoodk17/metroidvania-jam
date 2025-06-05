@@ -22,7 +22,7 @@ signal break_interaction
 @export var coyote_time : float = 0.1
 @export var queue_time : float = 0.35
 @export var movement_to_grapple_speed : float = 20.0
-@export var throw_range : float = 5.0
+@export var throw_range : float = 10.0
 
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
@@ -55,6 +55,7 @@ signal break_interaction
 @onready var ledge_grab: RayCast3D = $MeshParent/MeshChild/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/MeshChild/LedgeGrab/CheckCollisions
 @onready var wall_jump_freeze_timer: Timer = $"../../../WallJumpFreezeTimer"
+@onready var interaction_box: Area3D = $MeshParent/MeshChild/InteractionBox
 
 """state machine"""
 #var current_run_state : run_state = run_state.IDLE
@@ -133,6 +134,7 @@ func turn_on() -> void:
 
 func _ready() -> void:
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
+	interaction_box.body_entered.connect(check_body)
 	hurt_box.body_entered.connect(check_body)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
@@ -191,16 +193,14 @@ func run_state_machine(delta: float) -> void:
 					return
 	
 	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
-		aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
-		#print_debug("overlapping bodies and not ledge grab ", current_action_state)
-		if aiming_for_wall and !is_on_floor():
-			#print_debug("facing and pressing button")
-			if current_run_state != run_state.WALL_SLIDING:
-				if velocity.y < 0:
-					velocity.y = 0
-					wall_jump_freeze_timer.start(wall_jump_freeze)
-			current_run_state = run_state.WALL_SLIDING
-			#print_debug("wall sliding")
+		pass
+		#aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
+		#if aiming_for_wall and !is_on_floor():
+			#if current_run_state != run_state.WALL_SLIDING:
+				#if velocity.y < 0:
+					#velocity.y = 0
+					#wall_jump_freeze_timer.start(wall_jump_freeze)
+			#current_run_state = run_state.WALL_SLIDING
 	
 	if current_action_state == action_state.BLOCKED:
 		return
@@ -351,6 +351,7 @@ func jump() -> void:
 		second_jump = true
 
 func do_wall_jump() -> void:
+	return
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.WALKING
 	var _sign = 1
@@ -446,10 +447,9 @@ func on_hit_box_entered(area: Area3D) -> void:
 		parent.take_damage(_damage)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
-	pass
-	#hit_box.monitoring = true
-	#await get_tree().create_timer(time_sec).timeout
-	#hit_box.monitoring = false
+	hit_box.monitoring = true
+	await get_tree().create_timer(time_sec).timeout
+	hit_box.monitoring = false
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)

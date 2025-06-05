@@ -20,6 +20,10 @@ var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
+var hurt: bool
+var _hitbox_timer: Timer
+var _stunned_timer: Timer
+var call_method_timer: Timer
 
 func _ready():
 	create_navmesh()
@@ -27,12 +31,14 @@ func _ready():
 	create_partrol_points()
 	create_hitbox()
 	create_hurt_box()
+	create_hitbox_timer(0.2)
+	create_stun_timer(1.1)
+	create_call_method_timer(0.26)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
 	handle_first_adustments()
-	add_call_method_to_animation("Robot_Punch", "enable_hit_box", 0.26, [0.2])
 
 func _physics_process(delta):
 	if linear_velocity.length() > 0.1:
@@ -41,8 +47,8 @@ func _physics_process(delta):
 	else:
 		if locomotion.get_current_node() != "Robot_Idle":
 			locomotion.travel("Robot_Idle")
+			
 	distance_to_player = global_position.distance_to(player.global_position)
-	
 	rotate_pivot_toward_target(delta)
 	
 	match state:
@@ -65,6 +71,19 @@ func _physics_process(delta):
 				state = "chase"
 			else:
 				attack_behavior(delta)
+				
+func chase_behavior(delta):
+	var target_pos : Vector3 = player.global_position
+	target_pos.y = global_position.y
+	target_pos.z = global_position.z
+	navigation_agent.set_target_position(target_pos)
+	move_along_path(delta)
+	
+func attack_behavior(delta):
+	attack_timer -= delta
+	if attack_timer <= 0.0:
+		perform_attack()
+		attack_timer = attack_cooldown
 
 func patrol_behavior(delta):
 	if navigation_agent.is_navigation_finished():
@@ -72,18 +91,22 @@ func patrol_behavior(delta):
 		set_patrol_target()
 	move_along_path(delta)
 
-func chase_behavior(delta):
-	var target_pos : Vector3 = player.global_position
-	target_pos.y = global_position.y
-	target_pos.z = global_position.z
-	navigation_agent.set_target_position(target_pos)
-	move_along_path(delta)
-
-func attack_behavior(delta):
-	attack_timer -= delta
-	if attack_timer <= 0.0:
-		perform_attack()
-		attack_timer = attack_cooldown
+func move_along_path(delta):
+	if navigation_agent.is_navigation_finished() or hurt:
+		linear_velocity = Vector3.ZERO
+		return
+	var next_pos = navigation_agent.get_next_path_position()
+	var direction = (next_pos - global_transform.origin)
+	direction.y = 0
+	direction.z = 0
+	if direction.length() > 0:
+		direction = direction.normalized()
+	else:
+		direction = Vector3.ZERO
+	var desired_velocity = direction * move_speed
+	var velocity_change = desired_velocity - linear_velocity
+	var force = velocity_change * mass * 10.0
+	apply_central_force(force)
 
 func set_patrol_target():
 	if patrol_points.size() == 0:
@@ -93,33 +116,13 @@ func set_patrol_target():
 	target.z = global_transform.origin.z
 	navigation_agent.set_target_position(target)
 
-func move_along_path(delta):
-	if navigation_agent.is_navigation_finished():
-		linear_velocity = Vector3.ZERO
-		return
-
-	var next_pos = navigation_agent.get_next_path_position()
-	var direction = (next_pos - global_transform.origin)
-	direction.y = 0
-	direction.z = 0
-	if direction.length() > 0:
-		direction = direction.normalized()
-	else:
-		direction = Vector3.ZERO
-
-	var desired_velocity = direction * move_speed
-	var velocity_change = desired_velocity - linear_velocity
-	var force = velocity_change * mass * 10.0
-	apply_central_force(force)
-
-
-func create_detect_raycast():
-	raycast = RayCast3D.new()
-	raycast.enabled = true 
-	raycast.target_position = Vector3(3, 0, 0)  
-	raycast.exclude_parent = true  
-	$MeshParent.add_child(raycast)
-	raycast.collision_mask = (1 << 0) | (1 << 2)
+#func create_detect_raycast():
+	#raycast = RayCast3D.new()
+	#raycast.enabled = true 
+	#raycast.target_position = Vector3(3, 0, 0)  
+	#raycast.exclude_parent = true  
+	#$MeshParent.add_child(raycast)
+	#raycast.collision_mask = (1 << 0) | (1 << 2)
 
 #region create_nodes
 func create_hurt_box():
@@ -192,11 +195,30 @@ func on_hit_box_entered(area: Area3D) -> void:
 	if parent && parent.has_method("take_damage") && parent.is_in_group("player"):
 		parent.take_damage(10)
  
-func enable_hit_box(time_sec: float = 0.2) -> void:
+func enable_hit_box() -> void:
 	hit_box.monitoring = true
-	await get_tree().create_timer(time_sec).timeout
+	_hitbox_timer.start()
+	await _hitbox_timer.timeout
 	hit_box.monitoring = false
 	
+func create_hitbox_timer(time: float):
+	_hitbox_timer = Timer.new()
+	add_child(_hitbox_timer)              
+	_hitbox_timer.wait_time = time    
+	_hitbox_timer.one_shot = true     
+	
+func create_stun_timer(time: float):
+	_stunned_timer = Timer.new()
+	add_child(_stunned_timer)              
+	_stunned_timer.wait_time = time   
+	_stunned_timer.one_shot = true         
+ 
+func create_call_method_timer(time: float):
+	call_method_timer = Timer.new()
+	add_child(call_method_timer)              
+	call_method_timer.wait_time = time   
+	call_method_timer.one_shot = true
+
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
 	if animation == null:
@@ -212,8 +234,10 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 #endregion
  
 func perform_attack():
-	#print("Enemy attacks the player!")
 	upper_state.travel("Robot_Punch")
+	call_method_timer.start()
+	await call_method_timer.timeout
+	enable_hit_box()
  
 func handle_first_adustments() -> void:
 	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
@@ -221,14 +245,16 @@ func handle_first_adustments() -> void:
 	axis_lock_angular_x = true
 	axis_lock_angular_z = true
 	axis_lock_angular_y = true
-	collision_layer = 1 << 1
-	collision_mask = (1 << 0) | (1 << 2)
 	axis_lock_linear_z = true
 
 func take_damage(amount):
 	print("enemy take damage")
-	linear_velocity.y = 5
-	
+	hurt = true
+	upper_state.travel("Robot_Wave")
+	_stunned_timer.start()
+	await _stunned_timer.timeout
+	hurt = false
+ 
 func rotate_pivot_toward_target(delta) -> void:
 	if distance_to_player < attack_distance:
 		var direction = player.position - pivot_node.global_position
@@ -262,3 +288,9 @@ func rotate_pivot_toward_target(delta) -> void:
 		##staggering_distance = knockback
 		##GlobalsPlayer.current_hp -= amount
 		##SignalbusPlayer.took_damage.emit(amount, knockback)
+ 
+func teleport() -> void:
+	var offset : float = 3.0
+	var player_forward = -player.global_transform.basis.x.normalized()
+	global_position = player.global_position + player_forward * offset
+	pivot_node.look_at(player.global_position, Vector3.UP)
