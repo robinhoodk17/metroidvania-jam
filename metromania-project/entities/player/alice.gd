@@ -193,16 +193,14 @@ func run_state_machine(delta: float) -> void:
 					return
 	
 	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
-		aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
-		#print_debug("overlapping bodies and not ledge grab ", current_action_state)
-		if aiming_for_wall and !is_on_floor():
-			#print_debug("facing and pressing button")
-			if current_run_state != run_state.WALL_SLIDING:
-				if velocity.y < 0:
-					velocity.y = 0
-					wall_jump_freeze_timer.start(wall_jump_freeze)
-			current_run_state = run_state.WALL_SLIDING
-			#print_debug("wall sliding")
+		pass
+		#aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
+		#if aiming_for_wall and !is_on_floor():
+			#if current_run_state != run_state.WALL_SLIDING:
+				#if velocity.y < 0:
+					#velocity.y = 0
+					#wall_jump_freeze_timer.start(wall_jump_freeze)
+			#current_run_state = run_state.WALL_SLIDING
 	
 	if current_action_state == action_state.BLOCKED:
 		return
@@ -353,6 +351,7 @@ func jump() -> void:
 		second_jump = true
 
 func do_wall_jump() -> void:
+	return
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.WALKING
 	var _sign = 1

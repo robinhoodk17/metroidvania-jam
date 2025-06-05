@@ -26,14 +26,14 @@ signal break_interaction
 ##the number of seconds required to brake from max to 0
 @export var deceleration : float = .35
 @export_subgroup("jump")
-@export var jump_velocity : float = 14.0
-@export var jump_floatiness : float = 0.175
+@export var jump_velocity : float = 13.0
+@export var jump_floatiness : float = 0.15
 ##how big is gravity
 @export var going_down_speed : float = 3.0
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
-@export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 0.3
+@export var wall_jump_repulsion : float = 12.5
+@export var wall_jump_time : float = 0.375
 ##when the player is pressing against a wall, how much it stops falling
 @export var wall_slide_gravity : float = 0.85
 @export var dash_velocity : float = 30.0
@@ -358,6 +358,8 @@ func handle_gravity(delta: float) -> void:
 			looking = 1
 
 func jump() -> void:
+	if coyote_timer.is_stopped() and !carrying_child:
+		return
 	if !second_jump or current_run_state == run_state.WALL_SLIDING:
 		input_queued = inputs.NONE
 	else:
@@ -393,6 +395,8 @@ func do_wall_jump() -> void:
 	SignalbusPlayer.wall_jumped.emit()
 
 func dash(horizontal_direction : float, vertical_direction : float) -> void:
+	if !carrying_child:
+		return
 	if horizontal_direction == 0.0 and vertical_direction == 0.0:
 		horizontal_direction = mesh.global_basis.z.z
 	dash_spent = true
