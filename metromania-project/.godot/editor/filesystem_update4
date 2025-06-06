@@ -1,11 +1,12 @@
-res://scenes/beginning_area/combat_scene/combat_scene.tscn
+res://aa&&root/player.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
 res://entities/player/animation_tree.tres
 res://peyman/enemy_tree.tres
+res://peyman/enemy_flying.gd
+res://scenes/beginning_area/combat_scene/combat_scene.tscn
 res://scenes/master.tscn
-res://aa&&root/player.tscn
 res://peyman/enemy_rigid.tscn
 res://scenes/world/prompt.tscn
 res://scenes/world/game_events/triggers/lever/lever.tscn
@@ -17,5 +18,4 @@ res://entities/player/alice.tscn
 res://ui/game/game_ui.tscn
 res://peyman/enemy_flying.tscn
 res://ui/main_menu/main_menu.tscn
-res://peyman/enemy_rigid.gd
 res://entities/player/player.gd

@@ -632,7 +632,6 @@ func attack(_x : float, _y : float) -> void:
 	else:
 		_y = sign(_y)
 		centered = 0
-	print_debug(centered)
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
 	VFX.show()
