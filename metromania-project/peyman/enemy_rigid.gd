@@ -5,12 +5,15 @@ extends RigidBody3D
 @export var move_speed: float = 6.0
 @export var rotation_speed: float = 5.0
 @export var attack_cooldown: float = 1.5
+@export var knockback_resistance : float = 0.0
+@export var knockback_speed : float = 10.0
 @onready var animation_tree: AnimationTree = $AnimationTree
 var current_patrol_index: int = 0
 var state: String = "patrol"  
 var attack_timer: float = 0.0
 @onready var pivot_node : Node3D = find_child("RobotArmature") 
 @onready var player: Node3D = get_tree().get_first_node_in_group("player")
+var stagger_position_target : Vector3
 var navigation_agent: NavigationAgent3D
 var raycast: RayCast3D 
 var skeleton : Skeleton3D
@@ -32,7 +35,7 @@ func _ready():
 	create_hitbox()
 	create_hurt_box()
 	create_hitbox_timer(0.2)
-	create_stun_timer(1.1)
+	create_stun_timer(0.05)
 	create_call_method_timer(0.26)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
@@ -93,7 +96,7 @@ func patrol_behavior(delta):
 
 func move_along_path(delta):
 	if navigation_agent.is_navigation_finished() or hurt:
-		linear_velocity = Vector3.ZERO
+		linear_velocity = stagger_position_target * knockback_speed
 		return
 	var next_pos = navigation_agent.get_next_path_position()
 	var direction = (next_pos - global_transform.origin)
@@ -247,11 +250,13 @@ func handle_first_adustments() -> void:
 	axis_lock_angular_y = true
 	axis_lock_linear_z = true
 
-func take_damage(amount):
-	print("enemy take damage")
+func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = Vector3.ZERO) -> void:
+	print_debug("enemy take damage")
 	hurt = true
 	upper_state.travel("Robot_Wave")
 	_stunned_timer.start()
+	if knockback > knockback_resistance:
+		stagger_position_target = global_position - _position
 	await _stunned_timer.timeout
 	hurt = false
  

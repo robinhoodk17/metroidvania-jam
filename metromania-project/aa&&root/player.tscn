@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://h8a8r2wb5lu3"]
+[gd_scene load_steps=60 format=3 uid="uid://h8a8r2wb5lu3"]
 
 [ext_resource type="Script" uid="uid://bcji03sv3g5eh" path="res://entities/player/player.gd" id="1_symyc"]
 [ext_resource type="PackedScene" uid="uid://cpmp45bvptfux" path="res://entities/Animated-3D-Robot/Blend/Robot.blend" id="2_abrql"]
@@ -34,47 +34,6 @@ size = Vector3(1.445, 2.65, 1)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rioum"]
 radius = 0.4
 height = 1.8
-
-[sub_resource type="Animation" id="Animation_bls4j"]
-resource_name = "Attack1"
-length = 0.8
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("VFXSphere:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.8),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-
-[sub_resource type="Animation" id="Animation_fkugw"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("VFXSphere:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_8fjmc"]
-_data = {
-&"Attack1": SubResource("Animation_bls4j"),
-&"RESET": SubResource("Animation_fkugw")
-}
-
-[sub_resource type="SphereMesh" id="SphereMesh_qpopc"]
-radius = 2.0
-height = 4.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8fjmc"]
 size = Vector3(0.1, 1.75, 1)
@@ -216,9 +175,13 @@ radius = 0.676854
 height = 2.04704
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
-radius = 1.46906
+radius = 1.94398
 
-[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "animation_player", "hit_box", "hurt_box") groups=["player"]]
+[sub_resource type="SphereMesh" id="SphereMesh_qpopc"]
+radius = 2.0
+height = 4.0
+
+[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX", "animation_player", "hit_box", "hurt_box") groups=["player"]]
 collision_layer = 4
 collision_mask = 3
 axis_lock_linear_z = true
@@ -227,6 +190,7 @@ speed = 18.0
 acceleration_curve = SubResource("Curve_symyc")
 deceleration_curve = SubResource("Curve_abrql")
 mesh = NodePath("MeshParent")
+VFX = NodePath("Hitbox/VFXSphere")
 animation_player = NodePath("MeshParent/Robot/AnimationPlayer")
 left_right = ExtResource("2_wvtmh")
 up_down = ExtResource("3_7thud")
@@ -234,7 +198,7 @@ jump_action = ExtResource("4_a1qjk")
 dash_action = ExtResource("5_j3ovn")
 throw_action = ExtResource("6_afbqv")
 attack_action = ExtResource("7_gx6sm")
-hit_box = NodePath("BoneAttachment3D/Hitbox")
+hit_box = NodePath("Hitbox")
 hurt_box = NodePath("hurt_box")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -286,10 +250,10 @@ transform = Transform3D(-1.87959e-08, 0, 0.43, 0, 0.43, 0, -0.43, 0, -1.87959e-0
 [node name="Skeleton3D" parent="MeshParent/Robot/RobotArmature" index="0"]
 bones/1/position = Vector3(0.636722, 0.0305792, 0.0570147)
 bones/1/rotation = Quaternion(8.27772e-09, 0.69555, 0.718478, 1.35428e-07)
-bones/2/position = Vector3(0.0052459, 1.35947, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.33715, 0.30772)
 bones/6/rotation = Quaternion(-0.0433809, -0.0141813, 0.0282903, 0.998557)
 bones/7/position = Vector3(-8.65745e-09, 0.309866, -7.86903e-09)
-bones/7/rotation = Quaternion(-0.0309211, -0.00285618, -0.00128305, 0.999517)
+bones/7/rotation = Quaternion(-0.0370747, -0.122519, -0.00220058, 0.991771)
 bones/8/position = Vector3(0.582738, 0.29672, 0.0324413)
 bones/8/rotation = Quaternion(-0.0114497, -0.0532471, -0.9762, 0.209923)
 bones/9/rotation = Quaternion(-0.0545858, -0.689887, 0.0692138, 0.718531)
@@ -315,26 +279,16 @@ bones/32/rotation = Quaternion(-0.0418692, -0.0120427, 0.527238, 0.8486)
 bones/33/rotation = Quaternion(-0.115109, 0.858055, -0.363121, -0.344435)
 bones/34/rotation = Quaternion(0.575218, 0.552901, 0.116743, 0.591435)
 bones/35/rotation = Quaternion(0.138603, 0.024903, 0.427063, 0.893189)
-bones/36/rotation = Quaternion(0.77823, 0.15793, -0.583319, 0.170752)
+bones/36/rotation = Quaternion(0.773812, 0.17198, -0.579669, 0.188735)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
-bones/37/rotation = Quaternion(0.382875, 1.23983e-07, -8.02973e-08, 0.9238)
-bones/38/rotation = Quaternion(0.774571, -0.157569, 0.588901, 0.168546)
+bones/37/rotation = Quaternion(0.418171, 1.27576e-07, -8.69604e-08, 0.908368)
+bones/38/rotation = Quaternion(0.770255, -0.171709, 0.585206, 0.186433)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
-bones/39/rotation = Quaternion(0.382875, -3.03231e-07, 7.35434e-08, 0.9238)
+bones/39/rotation = Quaternion(0.418171, -3.12315e-07, 8.53091e-08, 0.908368)
 bones/40/position = Vector3(2.96706, 2.65557, 0.837375)
 bones/41/position = Vector3(-0.636881, 0.0305792, 0.057014)
 bones/41/rotation = Quaternion(5.22173e-07, 0.69555, 0.718478, 6.32924e-07)
 bones/42/position = Vector3(-3.23068, 2.42529, 0.859867)
-
-[node name="VFX" type="AnimationPlayer" parent="MeshParent/Robot"]
-libraries = {
-&"": SubResource("AnimationLibrary_8fjmc")
-}
-
-[node name="VFXSphere" type="MeshInstance3D" parent="MeshParent/Robot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-visible = false
-mesh = SubResource("SphereMesh_qpopc")
 
 [node name="ChildContainer" type="Node3D" parent="MeshParent"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.5, 0)
@@ -402,19 +356,21 @@ monitoring = false
 shape = SubResource("CapsuleShape3D_7prqh")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="."]
-transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.666004, 0.554608)
-bone_name = "Palm2.R"
-bone_idx = 25
-use_external_skeleton = true
-external_skeleton = NodePath("../MeshParent/Robot/RobotArmature/Skeleton3D")
+transform = Transform3D(0.157161, 0.211594, 0.339747, -0.0881146, -0.337754, 0.251113, 0.390431, -0.1614, -0.0800868, 0.402052, -0.642569, 0.554609)
 
-[node name="Hitbox" type="Area3D" parent="BoneAttachment3D"]
+[node name="Hitbox" type="Area3D" parent="."]
 collision_layer = 0
 collision_mask = 32
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BoneAttachment3D/Hitbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource("SphereShape3D_rioum")
+
+[node name="VFXSphere" type="MeshInstance3D" parent="Hitbox"]
+transform = Transform3D(1, 2.98023e-08, 1.49012e-08, 2.98023e-08, 1, 7.45058e-09, 4.47035e-08, 1.49012e-08, 1, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_qpopc")
+skeleton = NodePath("../../MeshParent/Robot")
 
 [editable path="MeshParent/Robot"]

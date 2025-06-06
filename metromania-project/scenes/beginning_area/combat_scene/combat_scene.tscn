@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cskc4trs2sigm"]
+[gd_scene load_steps=7 format=3 uid="uid://cskc4trs2sigm"]
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_uw1b6"]
 [ext_resource type="PackedScene" uid="uid://mwee8d8oejbe" path="res://scenes/beginning_area/combat_scene/combat_scene.blend" id="2_a533q"]
 [ext_resource type="PackedScene" uid="uid://buglwrfsemxbe" path="res://scenes/world/game_events/events/self_free/self_free.tscn" id="4_hcfm3"]
 [ext_resource type="PackedScene" uid="uid://62blrovmjyqf" path="res://scenes/world/game_events/triggers/lever/lever.tscn" id="4_ry0gu"]
+[ext_resource type="PackedScene" uid="uid://bk4hxejv0l7ap" path="res://peyman/enemy_rigid.tscn" id="6_3wvfj"]
 [ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="6_vxc8r"]
 
 [node name="Node" instance=ExtResource("1_uw1b6")]
@@ -24,3 +25,6 @@ entrance_number = 1
 [node name="Entrance2" type="Node3D" parent="Interactables(not_in_blender)" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9165, 0)
 script = ExtResource("6_vxc8r")
+
+[node name="enemy_rigid" parent="." index="6" instance=ExtResource("6_3wvfj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6708, -13.29, 0)
