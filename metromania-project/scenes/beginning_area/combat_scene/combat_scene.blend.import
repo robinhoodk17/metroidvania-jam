@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://mwee8d8oejbe"
-path="res://.godot/imported/combat_scene.blend-46513b24f42b92ad13b4de05c339bf17.scn"
+path="res://.godot/imported/combat_scene.blend-7e8047f8d5350f9d8ae0eaa875794fff.scn"
 
 [deps]
 
-source_file="res://scenes/combat_scene/combat_scene.blend"
-dest_files=["res://.godot/imported/combat_scene.blend-46513b24f42b92ad13b4de05c339bf17.scn"]
+source_file="res://scenes/beginning_area/combat_scene/combat_scene.blend"
+dest_files=["res://.godot/imported/combat_scene.blend-7e8047f8d5350f9d8ae0eaa875794fff.scn"]
 
 [params]
 

@@ -161,6 +161,7 @@ func _ready() -> void:
 	pick_child.connect("body_entered",pick_up_child)
 	screen_middle = DisplayServer.screen_get_size()/2
 	dash_reset_timer.timeout.connect(change_action_state)
+	ledge_grab.add_exception(self)
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
@@ -214,6 +215,11 @@ func _physics_process(delta: float) -> void:
 	action_state_machine(delta)
 
 	move_and_slide()
+func attach_camera() -> void:
+	camera_pivot.global_position = global_position
+	for i : int in range(dampen_frames):
+		dampened_y_array.append(global_position.y)
+		averaged_y = global_position.y
 
 func position_camera(delta: float) -> void:
 	current_y = (current_y + 1) % dampened_y_array.size()
