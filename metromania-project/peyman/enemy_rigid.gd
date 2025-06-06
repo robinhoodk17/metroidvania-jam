@@ -28,7 +28,7 @@ var _hitbox_timer: Timer
 var _stunned_timer: Timer
 var call_method_timer: Timer
 var delay_timer: Timer
-var delay_rotation: bool
+var delay_rotation: bool 
 
 func _ready():
 	create_navmesh()
@@ -226,7 +226,6 @@ func create_delay_rotatoin_timer(time: float):
 	add_child(delay_timer)              
 	delay_timer.wait_time = time   
 	delay_timer.one_shot = true
-	delay_timer.timeout.connect(func(): delay_rotation = false)
  
 #endregion
  
@@ -242,16 +241,18 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 	var nav_rid = nav_region.get_rid()
 	var stagger_position_target : Vector3
 	NavigationServer3D.region_set_enabled(nav_rid, false)
-	upper_state.travel("Robot_Wave")
+	set_oneshot_animation()
 	_stunned_timer.start()
 	if knockback > knockback_resistance:
 		stagger_position_target = global_position - _position
 	linear_velocity = (stagger_position_target * knockback_speed) 
 	await _stunned_timer.timeout
 	hurt = false
-	NavigationServer3D.region_set_enabled(nav_rid, true)
 	delay_rotation = true
+	NavigationServer3D.region_set_enabled(nav_rid, true)
 	delay_timer.start()
+	await delay_timer.timeout
+	delay_rotation = false
  
 func rotate_pivot_toward_target(delta) -> void:
 	if delay_rotation or hurt:
@@ -279,3 +280,6 @@ func rotate_pivot_toward_target(delta) -> void:
 		var target_yaw = atan2(direction.x, direction.z)
 		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
+
+func set_oneshot_animation():
+	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)

@@ -1,7 +1,7 @@
 [gd_resource type="AnimationNodeBlendTree" load_steps=24 format=3 uid="uid://clvlclskefosb"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kmjeu"]
-animation = &"Robot_ThumbsUp"
+animation = &"Robot_Wave"
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_ftwnj"]
 
@@ -91,6 +91,7 @@ graph_offset = Vector2(-52, -67)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
 
 [resource]
+graph_offset = Vector2(-586, 250)
 nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
 nodes/OneShotAnimation/position = Vector2(-400, 300)
 nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_ftwnj")
