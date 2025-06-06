@@ -30,7 +30,7 @@ var call_method_timer: Timer
 var delay_timer: Timer
 var delay_rotation: bool 
 
-func _ready():
+func _ready() -> void:
 	create_navmesh()
 	create_navigation_agent()   
 	create_partrol_points()
@@ -54,7 +54,7 @@ func handle_first_adustments() -> void:
 	axis_lock_angular_y = true
 	axis_lock_linear_z = true
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	if linear_velocity.length() > 0.1:
 		if locomotion.get_current_node() != "Robot_Walking":
 			locomotion.travel("Robot_Running")
@@ -86,26 +86,26 @@ func _physics_process(delta):
 			else:
 				attack_behavior(delta)
 				
-func chase_behavior(delta):
+func chase_behavior(delta) -> void:
 	var target_pos : Vector3 = player.global_position
 	target_pos.y = global_position.y
 	target_pos.z = global_position.z
 	navigation_agent.set_target_position(target_pos)
 	move_along_path(delta)
 	
-func attack_behavior(delta):
+func attack_behavior(delta) -> void:
 	attack_timer -= delta
 	if attack_timer <= 0.0:
 		perform_attack()
 		attack_timer = attack_cooldown
 
-func patrol_behavior(delta):
+func patrol_behavior(delta) -> void:
 	if navigation_agent.is_navigation_finished():
 		current_patrol_index = (current_patrol_index + 1) % patrol_points.size()
 		set_patrol_target()
 	move_along_path(delta)
 
-func move_along_path(delta):
+func move_along_path(delta) -> void:
 	if navigation_agent.is_navigation_finished():
 		linear_velocity = Vector3.ZERO
 		return
@@ -122,7 +122,7 @@ func move_along_path(delta):
 	var force = velocity_change * mass * 10.0
 	apply_central_force(force)
 
-func set_patrol_target():
+func set_patrol_target() -> void:
 	if patrol_points.size() == 0:
 		return
 	var target = patrol_points[current_patrol_index]
@@ -131,7 +131,7 @@ func set_patrol_target():
 	navigation_agent.set_target_position(target)
  
 #region create_nodes
-func create_hurt_box():
+func create_hurt_box() -> void:
 	hurt_box = Area3D.new()
 	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
@@ -145,7 +145,7 @@ func create_hurt_box():
 	hurt_box.position = Vector3(0, 1, 0)
 	add_child(hurt_box)
  
-func create_hitbox():
+func create_hitbox() -> void:
 	skeleton = find_child("Skeleton3D")  
 	if not skeleton:
 		push_error("Enemy Skeleton3D node not found!")
@@ -168,7 +168,7 @@ func create_hitbox():
 	hit_box.area_entered.connect(func(area: Area3D): if area.owner.has_method("take_damage") && area.owner.is_in_group("player"):
 		area.owner.take_damage(10))
 
-func create_navmesh():
+func create_navmesh() -> void:
 	nav_region = NavigationRegion3D.new()
 	var nav_mesh = NavigationMesh.new()
 	var half_size = 2.0
@@ -184,11 +184,11 @@ func create_navmesh():
 	nav_region.navmesh = nav_mesh
 	add_child(nav_region)
 
-func create_navigation_agent():
+func create_navigation_agent() -> void:
 	navigation_agent = NavigationAgent3D.new()
 	add_child(navigation_agent)
  
-func create_partrol_points():
+func create_partrol_points() -> void:
 	var patrol_distance : float = 2.0
 	var left_dir = -global_transform.basis.x.normalized()
 	var right_dir = global_transform.basis.x.normalized()
@@ -203,25 +203,25 @@ func enable_hit_box() -> void:
 	await _hitbox_timer.timeout
 	hit_box.monitoring = false
 	
-func create_hitbox_timer(time: float):
+func create_hitbox_timer(time: float) -> void:
 	_hitbox_timer = Timer.new()
 	add_child(_hitbox_timer)              
 	_hitbox_timer.wait_time = time    
 	_hitbox_timer.one_shot = true     
 	
-func create_stun_timer(time: float):
+func create_stun_timer(time: float) -> void:
 	_stunned_timer = Timer.new()
 	add_child(_stunned_timer)              
 	_stunned_timer.wait_time = time   
 	_stunned_timer.one_shot = true         
  
-func create_call_method_timer(time: float):
+func create_call_method_timer(time: float) -> void:
 	call_method_timer = Timer.new()
 	add_child(call_method_timer)              
 	call_method_timer.wait_time = time   
 	call_method_timer.one_shot = true
 	
-func create_delay_rotatoin_timer(time: float):
+func create_delay_rotatoin_timer(time: float) -> void:
 	delay_timer = Timer.new()
 	add_child(delay_timer)              
 	delay_timer.wait_time = time   
@@ -229,7 +229,7 @@ func create_delay_rotatoin_timer(time: float):
  
 #endregion
  
-func perform_attack():
+func perform_attack() -> void:
 	upper_state.travel("Robot_Punch")
 	call_method_timer.start()
 	await call_method_timer.timeout
@@ -281,5 +281,5 @@ func rotate_pivot_toward_target(delta) -> void:
 		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
 
-func set_oneshot_animation():
+func set_oneshot_animation() -> void:
 	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
