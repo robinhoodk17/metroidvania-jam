@@ -639,8 +639,8 @@ func attack(_x : float, _y : float) -> void:
 	enable_hit_box(0.1)
 
 
-
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	print("player takes damage")
 	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING

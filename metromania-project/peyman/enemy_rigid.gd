@@ -15,6 +15,7 @@ var attack_timer: float = 0.0
 @onready var player: Node3D = get_tree().get_first_node_in_group("player")
 var stagger_position_target : Vector3
 var navigation_agent: NavigationAgent3D
+var nav_region: NavigationRegion3D
 var raycast: RayCast3D 
 var skeleton : Skeleton3D
 var hurt_box: Area3D 
@@ -23,7 +24,11 @@ var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
-var hurt: bool
+var hurt: bool:
+	set(value):
+		hurt = value
+		if hurt:
+			linear_velocity = (stagger_position_target * knockback_speed) 
 var _hitbox_timer: Timer
 var _stunned_timer: Timer
 var call_method_timer: Timer
@@ -95,8 +100,8 @@ func patrol_behavior(delta):
 	move_along_path(delta)
 
 func move_along_path(delta):
-	if navigation_agent.is_navigation_finished() or hurt:
-		linear_velocity = stagger_position_target * knockback_speed
+	if navigation_agent.is_navigation_finished():
+		linear_velocity = Vector3.ZERO
 		return
 	var next_pos = navigation_agent.get_next_path_position()
 	var direction = (next_pos - global_transform.origin)
@@ -165,7 +170,7 @@ func create_hitbox():
 	hit_box.area_entered.connect(on_hit_box_entered)
 	
 func create_navmesh():
-	var nav_region = NavigationRegion3D.new()
+	nav_region = NavigationRegion3D.new()
 	var nav_mesh = NavigationMesh.new()
 	var half_size = 2.0
 	var vertices = PackedVector3Array([
@@ -253,25 +258,17 @@ func handle_first_adustments() -> void:
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = Vector3.ZERO) -> void:
 	print_debug("enemy take damage")
 	hurt = true
+	NavigationServer3D.region_set_enabled(nav_region, false)
 	upper_state.travel("Robot_Wave")
 	_stunned_timer.start()
 	if knockback > knockback_resistance:
 		stagger_position_target = global_position - _position
 	await _stunned_timer.timeout
 	hurt = false
+	NavigationServer3D.region_set_enabled(nav_region, true)
  
 func rotate_pivot_toward_target(delta) -> void:
-	if distance_to_player < attack_distance:
-		var direction = player.position - pivot_node.global_position
-		direction.y = 0
-		if direction.length() == 0:
-			return  
-		direction = direction.normalized()
-		var current_yaw = pivot_node.rotation.y
-		var target_yaw = atan2(direction.x, direction.z)
-		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
-		pivot_node.rotation = Vector3(0, new_yaw, 0)
-	else:
+	if distance_to_player > attack_distance:
 		var vel : Vector3 = linear_velocity
 		if vel.length() < 0.1:
 			return
@@ -284,7 +281,16 @@ func rotate_pivot_toward_target(delta) -> void:
 		var new_transform = pivot_node.global_transform
 		new_transform.basis = new_basis
 		pivot_node.global_transform = new_transform
-
+	else:
+		var direction = player.position - pivot_node.global_position
+		direction.y = 0
+		if direction.length() == 0:
+			return  
+		direction = direction.normalized()
+		var current_yaw = pivot_node.rotation.y
+		var target_yaw = atan2(direction.x, direction.z)
+		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
+		pivot_node.rotation = Vector3(0, new_yaw, 0)
 #func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	##GlobalsPlayer.current_hp -= amount
 	##if knockback > 0.0:
@@ -299,3 +305,4 @@ func teleport() -> void:
 	var player_forward = -player.global_transform.basis.x.normalized()
 	global_position = player.global_position + player_forward * offset
 	pivot_node.look_at(player.global_position, Vector3.UP)
+ 
