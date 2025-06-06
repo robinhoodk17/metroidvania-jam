@@ -16,7 +16,6 @@ var attack_timer: float = 0.0
 var navigation_agent: NavigationAgent3D
 var nav_region: NavigationRegion3D
 var raycast: RayCast3D 
-var skeleton : Skeleton3D
 var hurt_box: Area3D 
 var hit_box:  Area3D
 var bone_attachment : BoneAttachment3D
@@ -146,7 +145,7 @@ func create_hurt_box() -> void:
 	add_child(hurt_box)
  
 func create_hitbox() -> void:
-	skeleton = find_child("Skeleton3D")  
+	var skeleton = find_child("Skeleton3D")  
 	if not skeleton:
 		push_error("Enemy Skeleton3D node not found!")
 		return
@@ -241,7 +240,7 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 	var nav_rid = nav_region.get_rid()
 	var stagger_position_target : Vector3
 	NavigationServer3D.region_set_enabled(nav_rid, false)
-	set_oneshot_animation()
+	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 	_stunned_timer.start()
 	if knockback > knockback_resistance:
 		stagger_position_target = global_position - _position
@@ -280,6 +279,4 @@ func rotate_pivot_toward_target(delta) -> void:
 		var target_yaw = atan2(direction.x, direction.z)
 		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
-
-func set_oneshot_animation() -> void:
-	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+ 
