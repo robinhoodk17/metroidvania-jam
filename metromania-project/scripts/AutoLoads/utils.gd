@@ -36,7 +36,7 @@ func reparent_node(node: Node, parent: Node, position_reset: bool = true) -> voi
 		node.set("global_position", pos)
 
 func change_scene(new_scene : String,  _player : PlayerController, entrance_number : int = 0) -> void:
-	await Ui.fade_to_black(0.1)
+	await Ui.fade_to_black(0.2)
 	await get_tree().change_scene_to_file(new_scene)
 	await get_tree().create_timer(.01).timeout
 	SignalbusPlayer.entered_level.emit(entrance_number)

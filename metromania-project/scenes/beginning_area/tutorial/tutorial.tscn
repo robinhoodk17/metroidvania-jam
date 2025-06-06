@@ -266,6 +266,7 @@ script = ExtResource("7_ffs1a")
 
 [node name="Change_scene" parent="Interactables(not_in_blender)" index="7" instance=ExtResource("8_m2nt4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 442.132, -98.4956, 0)
+collision_mask = 8
 monitorable = true
 
 [node name="ChangeSceneEvent" type="Node3D" parent="Interactables(not_in_blender)/Change_scene" index="0" node_paths=PackedStringArray("triggers")]

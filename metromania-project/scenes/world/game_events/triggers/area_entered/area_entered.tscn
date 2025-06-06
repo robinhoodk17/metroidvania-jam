@@ -4,6 +4,6 @@
 
 [node name="AreaEntered" type="Area3D"]
 collision_layer = 0
-collision_mask = 248
+collision_mask = 8
 monitorable = false
 script = ExtResource("1_bptvw")
