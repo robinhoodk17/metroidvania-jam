@@ -4,6 +4,7 @@ res://input/controller.tres
 res://input/keyboard.tres
 res://entities/player/animation_tree.tres
 res://peyman/enemy_tree.tres
+res://peyman/enemy_rigid.gd
 res://scenes/master.tscn
 res://aa&&root/player.tscn
 res://peyman/enemy_rigid.tscn

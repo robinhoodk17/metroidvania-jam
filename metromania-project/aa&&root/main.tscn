@@ -22,6 +22,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.52585, 0, -0.540892)
 
 [node name="enemy" parent="." instance=ExtResource("5_02anf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.0897, 0.2437, -0.365974)
+provoked = false
 
 [node name="flying_enemy" parent="." instance=ExtResource("6_02anf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5241, 9.96862, -1.73476)

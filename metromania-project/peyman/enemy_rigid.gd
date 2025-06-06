@@ -62,6 +62,8 @@ func _physics_process(delta) -> void:
 		if locomotion.get_current_node() != "Robot_Idle":
 			locomotion.travel("Robot_Idle")
 			
+	if provoked == false:
+		return
 	distance_to_player = global_position.distance_to(player.global_position)
 	rotate_pivot_toward_target(delta)
 	
@@ -85,7 +87,7 @@ func _physics_process(delta) -> void:
 				state = "chase"
 			else:
 				attack_behavior(delta)
-				
+
 func chase_behavior(delta) -> void:
 	var target_pos : Vector3 = player.global_position
 	target_pos.y = global_position.y
@@ -95,7 +97,7 @@ func chase_behavior(delta) -> void:
 	
 func attack_behavior(delta) -> void:
 	attack_timer -= delta
-	if attack_timer <= 0.0 && provoked:
+	if attack_timer <= 0.0:
 		perform_attack()
 		attack_timer = attack_cooldown
 
