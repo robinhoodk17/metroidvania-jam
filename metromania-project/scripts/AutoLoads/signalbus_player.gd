@@ -1,11 +1,17 @@
 extends Node
 
+signal entered_level(entrance_number : int)
 
 signal startedaiming(current_body : Node3D)
 signal stoppedaiming(current_body : Node3D)
+
 signal child_picked_up
+signal child_captured
+signal child_released
+
 signal start_grapple(_position : Vector3)
 signal end_retracting()
+
 signal took_damage(amount : float, knockback : float)
 signal jumped
 signal landed
