@@ -1,4 +1,4 @@
-res://peyman/enemy_flying.tscn
+res://aa&&root/main.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
@@ -12,6 +12,6 @@ res://scenes/world/game_events/triggers/lever/lever.tscn
 res://scenes/world/game_events/events/start_animation/start_animation.tscn
 res://scenes/world/game_events/triggers/area_entered/area_entered.tscn
 res://scenes/beginning_area/tutorial/tutorial.tscn
-res://aa&&root/main.tscn
 res://entities/player/alice.tscn
 res://ui/game/game_ui.tscn
+res://peyman/enemy_flying.tscn

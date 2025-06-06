@@ -1,6 +1,6 @@
 [gd_scene load_steps=37 format=4 uid="uid://x08nn6lsnink"]
 
-[ext_resource type="Script" path="res://peyman/enemy_flying.gd" id="1_m0w2o"]
+[ext_resource type="Script" uid="uid://bo1u0wiwq1ivi" path="res://peyman/enemy_flying.gd" id="1_m0w2o"]
 [ext_resource type="AnimationNodeBlendTree" uid="uid://clvlclskefosb" path="res://peyman/enemy_tree.tres" id="1_rxkir"]
 [ext_resource type="Animation" uid="uid://dlurxyouho5ba" path="res://entities/Animated-3D-Robot/animations/death.res" id="2_m0w2o"]
 [ext_resource type="Animation" uid="uid://c2gc5s27debom" path="res://entities/Animated-3D-Robot/animations/idle.res" id="3_875ix"]
