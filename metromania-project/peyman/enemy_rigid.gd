@@ -258,16 +258,19 @@ func handle_first_adustments() -> void:
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = Vector3.ZERO) -> void:
 	print_debug("enemy take damage")
 	hurt = true
-	NavigationServer3D.region_set_enabled(nav_region, false)
+	var nav_rid = nav_region.get_rid()
+	NavigationServer3D.region_set_enabled(nav_rid, false)
 	upper_state.travel("Robot_Wave")
 	_stunned_timer.start()
 	if knockback > knockback_resistance:
 		stagger_position_target = global_position - _position
 	await _stunned_timer.timeout
 	hurt = false
-	NavigationServer3D.region_set_enabled(nav_region, true)
+	NavigationServer3D.region_set_enabled(nav_rid, true)
  
 func rotate_pivot_toward_target(delta) -> void:
+	if hurt:
+		return
 	if distance_to_player > attack_distance:
 		var vel : Vector3 = linear_velocity
 		if vel.length() < 0.1:
