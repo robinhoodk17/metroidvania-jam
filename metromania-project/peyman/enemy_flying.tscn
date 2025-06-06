@@ -1,13 +1,13 @@
-[gd_scene load_steps=37 format=4 uid="uid://bk4hxejv0l7ap"]
+[gd_scene load_steps=37 format=4 uid="uid://x08nn6lsnink"]
 
-[ext_resource type="Script" uid="uid://rb8t4py4akyh" path="res://peyman/enemy_rigid.gd" id="1_6gibt"]
-[ext_resource type="Animation" uid="uid://dlurxyouho5ba" path="res://entities/Animated-3D-Robot/animations/death.res" id="1_u3o57"]
-[ext_resource type="Animation" uid="uid://c2gc5s27debom" path="res://entities/Animated-3D-Robot/animations/idle.res" id="2_v4fbu"]
-[ext_resource type="Animation" uid="uid://brcl5u8538s3u" path="res://entities/Animated-3D-Robot/animations/jump.res" id="3_ui2un"]
-[ext_resource type="Animation" uid="uid://bdxt0qb5aym3v" path="res://entities/Animated-3D-Robot/animations/attack.res" id="4_nw71y"]
-[ext_resource type="Animation" uid="uid://ben35064ac1rv" path="res://entities/Animated-3D-Robot/animations/run.res" id="5_r1hsc"]
-[ext_resource type="Animation" uid="uid://c8xi6ukos3vko" path="res://entities/Animated-3D-Robot/animations/walk.res" id="6_k7ba6"]
-[ext_resource type="AnimationNodeBlendTree" uid="uid://clvlclskefosb" path="res://peyman/enemy_tree.tres" id="8_doehx"]
+[ext_resource type="Script" uid="uid://bo1u0wiwq1ivi" path="res://peyman/enemy_flying.gd" id="1_m0w2o"]
+[ext_resource type="AnimationNodeBlendTree" uid="uid://clvlclskefosb" path="res://peyman/enemy_tree.tres" id="1_rxkir"]
+[ext_resource type="Animation" uid="uid://dlurxyouho5ba" path="res://entities/Animated-3D-Robot/animations/death.res" id="2_m0w2o"]
+[ext_resource type="Animation" uid="uid://c2gc5s27debom" path="res://entities/Animated-3D-Robot/animations/idle.res" id="3_875ix"]
+[ext_resource type="Animation" uid="uid://brcl5u8538s3u" path="res://entities/Animated-3D-Robot/animations/jump.res" id="4_syerw"]
+[ext_resource type="Animation" uid="uid://bdxt0qb5aym3v" path="res://entities/Animated-3D-Robot/animations/attack.res" id="5_ac0nc"]
+[ext_resource type="Animation" uid="uid://ben35064ac1rv" path="res://entities/Animated-3D-Robot/animations/run.res" id="6_o11nv"]
+[ext_resource type="Animation" uid="uid://c8xi6ukos3vko" path="res://entities/Animated-3D-Robot/animations/walk.res" id="7_7slhg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v1hu8"]
 resource_name = "Main"
@@ -15,7 +15,7 @@ cull_mode = 2
 albedo_color = Color(0.420363, 0.653511, 0.87451, 1)
 roughness = 0.5
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_4ghoy"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_ovxj5"]
 resource_name = "Robot_Cylinder_010"
 _surfaces = [{
 "aabb": AABB(0.635543, 2.29658, -0.121705, 0.802547, 0.271219, 0.271219),
@@ -34,7 +34,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="Skin" id="Skin_1ot5m"]
+[sub_resource type="Skin" id="Skin_jssdc"]
 resource_name = "Skin"
 bind_count = 43
 bind/0/name = &"Bone"
@@ -167,7 +167,7 @@ bind/42/name = &"PoleTarget.R"
 bind/42/bone = -1
 bind/42/pose = Transform3D(1, 0, -7.15256e-07, 0, 1, 0, 7.15256e-07, 0, 1, 2.7782, -2.4194, -0.664818)
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_voj7t"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_6flg8"]
 resource_name = "Robot_Cylinder_013"
 _surfaces = [{
 "aabb": AABB(-1.44352, 2.29658, -0.121705, 0.741879, 0.271219, 0.271219),
@@ -192,7 +192,7 @@ cull_mode = 2
 albedo_color = Color(0.713324, 0.711215, 0.679032, 1)
 roughness = 0.5
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_1l1xb"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_yvjnv"]
 resource_name = "Robot_Cylinder_014"
 _surfaces = [{
 "aabb": AABB(0.376026, -0.0203044, -0.249844, 0.495883, 0.250147, 0.947776),
@@ -211,7 +211,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_ut405"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_u233q"]
 resource_name = "Robot_Cylinder_017"
 _surfaces = [{
 "aabb": AABB(-0.885848, -0.0203044, -0.249844, 0.495883, 0.250147, 0.947776),
@@ -230,7 +230,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_6dvi6"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_8m03b"]
 resource_name = "Robot_Cylinder_022"
 _surfaces = [{
 "aabb": AABB(1.40274, 2.11318, -0.328941, 1.65348, 0.644171, 0.639501),
@@ -263,7 +263,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_0mquq"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_swiyo"]
 resource_name = "Robot_Cylinder_015"
 _surfaces = [{
 "aabb": AABB(-3.06165, 2.11318, -0.328941, 1.65348, 0.644171, 0.639501),
@@ -302,7 +302,7 @@ cull_mode = 2
 albedo_color = Color(0.266667, 0.266667, 0.266667, 1)
 roughness = 0.5
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_rmfox"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_0k7vn"]
 resource_name = "Robot_Cylinder"
 _surfaces = [{
 "aabb": AABB(-1.09116, 3.16211, -1.0381, 2.20251, 1.80207, 2.08735),
@@ -349,7 +349,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_e015x"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_ntmht"]
 resource_name = "Robot_Cylinder_011"
 _surfaces = [{
 "aabb": AABB(0.511088, 0.800332, -0.12407, 0.225261, 0.668855, 0.214619),
@@ -368,7 +368,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_pbawd"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_m438b"]
 resource_name = "Robot_Cylinder_019"
 _surfaces = [{
 "aabb": AABB(-0.750288, 0.800332, -0.12407, 0.225261, 0.668855, 0.214619),
@@ -387,7 +387,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_pdbj8"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_5dln2"]
 resource_name = "Robot_Cylinder_012"
 _surfaces = [{
 "aabb": AABB(0.340654, 0.056192, -0.290582, 0.566616, 0.75944, 0.539849),
@@ -406,7 +406,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_7njjm"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_um7q8"]
 resource_name = "Robot_Cylinder_018"
 _surfaces = [{
 "aabb": AABB(-0.921209, 0.056192, -0.290582, 0.566616, 0.75944, 0.539849),
@@ -425,7 +425,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_5oie3"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_tyl1t"]
 resource_name = "Robot_Cylinder_008"
 _surfaces = [{
 "aabb": AABB(0.525419, 2.31789, -0.147954, 0.211275, 0.243959, 0.25392),
@@ -443,7 +443,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_st162"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_okmd1"]
 resource_name = "Robot_Cylinder_009"
 _surfaces = [{
 "aabb": AABB(-0.742125, 2.31789, -0.147954, 0.211275, 0.243959, 0.25392),
@@ -461,7 +461,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_46m5l"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_bju2u"]
 resource_name = "Robot_Cube_001"
 _surfaces = [{
 "aabb": AABB(-0.750288, 1.36265, -0.698266, 1.48664, 1.57559, 1.36463),
@@ -2882,26 +2882,25 @@ tracks/41/keys = PackedFloat32Array(0, 1, -3.23068, 2.42529, 0.859867)
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_oag8p"]
 _data = {
 &"Robot_Dance": SubResource("Animation_bek0b"),
-&"Robot_Death": ExtResource("1_u3o57"),
-&"Robot_Idle": ExtResource("2_v4fbu"),
-&"Robot_Jump": ExtResource("3_ui2un"),
+&"Robot_Death": ExtResource("2_m0w2o"),
+&"Robot_Idle": ExtResource("3_875ix"),
+&"Robot_Jump": ExtResource("4_syerw"),
 &"Robot_No": SubResource("Animation_xex25"),
-&"Robot_Punch": ExtResource("4_nw71y"),
-&"Robot_Running": ExtResource("5_r1hsc"),
+&"Robot_Punch": ExtResource("5_ac0nc"),
+&"Robot_Running": ExtResource("6_o11nv"),
 &"Robot_Sitting": SubResource("Animation_ocnrt"),
 &"Robot_Standing": SubResource("Animation_urt1r"),
 &"Robot_ThumbsUp": SubResource("Animation_v0q0q"),
 &"Robot_WalkJump": SubResource("Animation_efvuj"),
-&"Robot_Walking": ExtResource("6_k7ba6"),
+&"Robot_Walking": ExtResource("7_7slhg"),
 &"Robot_Wave": SubResource("Animation_xfffj"),
 &"Robot_Yes": SubResource("Animation_vqbvx")
 }
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jr8h8"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bvkhd"]
 
-[node name="enemy_rigid" type="RigidBody3D"]
-collision_mask = 5
-script = ExtResource("1_6gibt")
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_m0w2o")
 
 [node name="RobotArmature" type="Node3D" parent="."]
 metadata/extras = {
@@ -2927,7 +2926,7 @@ bones/2/name = "Body"
 bones/2/parent = 0
 bones/2/rest = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0.0052459, 1.44646, 0.30772)
 bones/2/enabled = true
-bones/2/position = Vector3(0.0052459, 1.40448, 0.30772)
+bones/2/position = Vector3(0.0052459, 1.41325, 0.30772)
 bones/2/rotation = Quaternion(0, 1.19209e-07, 0, 1)
 bones/2/scale = Vector3(1, 1, 1)
 bones/3/name = "Hips"
@@ -3166,28 +3165,28 @@ bones/36/parent = 2
 bones/36/rest = Transform3D(1, -9.75514e-08, 1.82486e-07, -6.37748e-08, -0.984268, -0.176684, 1.9685e-07, 0.176683, -0.984273, 0.628246, 0.0962255, -0.182561)
 bones/36/enabled = true
 bones/36/position = Vector3(0.628246, 0.0962255, -0.182561)
-bones/36/rotation = Quaternion(0.786849, 0.124881, -0.590639, 0.128133)
+bones/36/rotation = Quaternion(0.788473, 0.11732, -0.592069, 0.118324)
 bones/36/scale = Vector3(0.999995, 1, 1.00002)
 bones/37/name = "LowerLeg.L"
 bones/37/parent = 36
 bones/37/rest = Transform3D(1, 1.57482e-07, 2.4274e-07, -5.94661e-08, 0.932863, -0.360232, -2.83173e-07, 0.360232, 0.932863, 3.98206e-08, 0.611007, -8.81869e-10)
 bones/37/enabled = true
 bones/37/position = Vector3(3.98206e-08, 0.611007, -8.81869e-10)
-bones/37/rotation = Quaternion(0.298561, 1.29637e-07, -7.41009e-08, 0.954391)
+bones/37/rotation = Quaternion(0.278844, 1.15989e-07, -6.8155e-08, 0.960336)
 bones/37/scale = Vector3(1, 1, 1)
 bones/38/name = "UpperLeg.R"
 bones/38/parent = 2
 bones/38/rest = Transform3D(1, -9.75512e-08, 1.1513e-06, 1.07397e-07, -0.984268, -0.176684, 1.15042e-06, 0.176683, -0.984273, -0.645357, 0.0962255, -0.182562)
 bones/38/enabled = true
 bones/38/position = Vector3(-0.645357, 0.0962255, -0.182562)
-bones/38/rotation = Quaternion(0.782983, -0.124286, 0.5963, 0.126158)
+bones/38/rotation = Quaternion(0.784566, -0.116667, 0.597742, 0.116404)
 bones/38/scale = Vector3(0.999995, 1, 1.00002)
 bones/39/name = "LowerLeg.R"
 bones/39/parent = 38
 bones/39/rest = Transform3D(1, -1.348e-07, -6.08012e-07, -9.32751e-08, 0.932863, -0.360232, 6.15751e-07, 0.360232, 0.932863, -6.17907e-08, 0.611007, -4.62268e-09)
 bones/39/enabled = true
 bones/39/position = Vector3(-6.17907e-08, 0.611007, -4.62268e-09)
-bones/39/rotation = Quaternion(0.298561, -3.09665e-07, 4.41158e-08, 0.954391)
+bones/39/rotation = Quaternion(0.278844, -3.16229e-07, 4.25161e-08, 0.960336)
 bones/39/scale = Vector3(1, 1, 1)
 bones/40/name = "PoleTarget.L"
 bones/40/parent = 0
@@ -3212,60 +3211,60 @@ bones/42/rotation = Quaternion(0, 1.19209e-07, 0, 1)
 bones/42/scale = Vector3(1, 1, 1)
 
 [node name="Arm_L" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_4ghoy")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_ovxj5")
+skin = SubResource("Skin_jssdc")
 
 [node name="Arm_R" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_voj7t")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_6flg8")
+skin = SubResource("Skin_jssdc")
 
 [node name="Foot_L" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_1l1xb")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_yvjnv")
+skin = SubResource("Skin_jssdc")
 
 [node name="Foot_R" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_ut405")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_u233q")
+skin = SubResource("Skin_jssdc")
 
 [node name="Hand_L" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_6dvi6")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_8m03b")
+skin = SubResource("Skin_jssdc")
 
 [node name="Hand_R" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_0mquq")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_swiyo")
+skin = SubResource("Skin_jssdc")
 
 [node name="Head" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_rmfox")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_0k7vn")
+skin = SubResource("Skin_jssdc")
 
 [node name="Leg_L" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_e015x")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_ntmht")
+skin = SubResource("Skin_jssdc")
 
 [node name="Leg_R" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_pbawd")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_m438b")
+skin = SubResource("Skin_jssdc")
 
 [node name="LowerLeg_L" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_pdbj8")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_5dln2")
+skin = SubResource("Skin_jssdc")
 
 [node name="LowerLeg_R" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_7njjm")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_um7q8")
+skin = SubResource("Skin_jssdc")
 
 [node name="Shoulder_L" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_5oie3")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_tyl1t")
+skin = SubResource("Skin_jssdc")
 
 [node name="Shoulder_R" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_st162")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_okmd1")
+skin = SubResource("Skin_jssdc")
 
 [node name="Torso" type="MeshInstance3D" parent="RobotArmature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_46m5l")
-skin = SubResource("Skin_1ot5m")
+mesh = SubResource("ArrayMesh_bju2u")
+skin = SubResource("Skin_jssdc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -3274,10 +3273,10 @@ libraries = {
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CapsuleShape3D_jr8h8")
+shape = SubResource("CapsuleShape3D_bvkhd")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
-tree_root = ExtResource("8_doehx")
+tree_root = ExtResource("1_rxkir")
 anim_player = NodePath("../AnimationPlayer")
 parameters/OneShotBlend/active = false
 parameters/OneShotBlend/internal_active = false

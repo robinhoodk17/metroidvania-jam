@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5btd0xbsheu1"]
+
+[ext_resource type="Script" uid="uid://capujwewoo7hw" path="res://scenes/world/game_events/events/start_dialogue/start_dialogue_event.gd" id="1_1kakj"]
+
+[node name="StartDialogueEvent" type="Node3D"]
+script = ExtResource("1_1kakj")

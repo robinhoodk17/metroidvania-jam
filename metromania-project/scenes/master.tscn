@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhtbgoohearlq"]
+[gd_scene load_steps=5 format=3 uid="uid://dhtbgoohearlq"]
+
+[ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="1_aynem"]
+[ext_resource type="Script" uid="uid://dnl6d2qad3bqh" path="res://scenes/scene_manager.gd" id="1_jooxx"]
 
 [sub_resource type="Environment" id="Environment_ivxrm"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_aynem"]
 
 [node name="Node" type="Node"]
+script = ExtResource("1_jooxx")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ivxrm")
@@ -22,3 +26,7 @@ unique_name_in_owner = true
 [node name="Messages" type="Node3D" parent="."]
 
 [node name="2DWorld" type="Node2D" parent="."]
+
+[node name="Myck" parent="." instance=ExtResource("1_aynem")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0342693, -0.0342698, 13.6439)
