@@ -13,7 +13,6 @@ var state: String = "patrol"
 var attack_timer: float = 0.0
 @onready var pivot_node : Node3D = find_child("RobotArmature") 
 @onready var player: Node3D = get_tree().get_first_node_in_group("player")
-var stagger_position_target : Vector3
 var navigation_agent: NavigationAgent3D
 var nav_region: NavigationRegion3D
 var raycast: RayCast3D 
@@ -24,14 +23,12 @@ var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
-var hurt: bool:
-	set(value):
-		hurt = value
-		if hurt:
-			linear_velocity = (stagger_position_target * knockback_speed) 
+var hurt: bool
 var _hitbox_timer: Timer
 var _stunned_timer: Timer
 var call_method_timer: Timer
+var delay_timer: Timer
+var delay_rotation: bool
 
 func _ready():
 	create_navmesh()
@@ -40,8 +37,9 @@ func _ready():
 	create_hitbox()
 	create_hurt_box()
 	create_hitbox_timer(0.2)
-	create_stun_timer(0.05)
+	create_stun_timer(0.08)
 	create_call_method_timer(0.26)
+	create_delay_timer(0.3)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
@@ -226,6 +224,13 @@ func create_call_method_timer(time: float):
 	add_child(call_method_timer)              
 	call_method_timer.wait_time = time   
 	call_method_timer.one_shot = true
+	
+func create_delay_timer(time: float):
+	delay_timer = Timer.new()
+	add_child(delay_timer)              
+	delay_timer.wait_time = time   
+	delay_timer.one_shot = true
+	delay_timer.timeout.connect(func(): delay_rotation = false)
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
@@ -259,17 +264,21 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 	print_debug("enemy take damage")
 	hurt = true
 	var nav_rid = nav_region.get_rid()
+	var stagger_position_target : Vector3
 	NavigationServer3D.region_set_enabled(nav_rid, false)
 	upper_state.travel("Robot_Wave")
 	_stunned_timer.start()
 	if knockback > knockback_resistance:
 		stagger_position_target = global_position - _position
+	linear_velocity = (stagger_position_target * knockback_speed) 
 	await _stunned_timer.timeout
 	hurt = false
 	NavigationServer3D.region_set_enabled(nav_rid, true)
+	delay_rotation = true
+	delay_timer.start()
  
 func rotate_pivot_toward_target(delta) -> void:
-	if hurt:
+	if delay_rotation or hurt:
 		return
 	if distance_to_player > attack_distance:
 		var vel : Vector3 = linear_velocity
