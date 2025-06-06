@@ -39,12 +39,20 @@ func _ready():
 	create_hitbox_timer(0.2)
 	create_stun_timer(0.08)
 	create_call_method_timer(0.26)
-	create_delay_timer(0.3)
+	create_delay_rotatoin_timer(0.3)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
 	handle_first_adustments()
+
+func handle_first_adustments() -> void:
+	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
+	add_to_group("enemy")
+	axis_lock_angular_x = true
+	axis_lock_angular_z = true
+	axis_lock_angular_y = true
+	axis_lock_linear_z = true
 
 func _physics_process(delta):
 	if linear_velocity.length() > 0.1:
@@ -121,15 +129,7 @@ func set_patrol_target():
 	target.y = global_transform.origin.y
 	target.z = global_transform.origin.z
 	navigation_agent.set_target_position(target)
-
-#func create_detect_raycast():
-	#raycast = RayCast3D.new()
-	#raycast.enabled = true 
-	#raycast.target_position = Vector3(3, 0, 0)  
-	#raycast.exclude_parent = true  
-	#$MeshParent.add_child(raycast)
-	#raycast.collision_mask = (1 << 0) | (1 << 2)
-
+ 
 #region create_nodes
 func create_hurt_box():
 	hurt_box = Area3D.new()
@@ -165,8 +165,9 @@ func create_hitbox():
 	hit_box.add_child(collision_shape_hit)
 	bone_attachment.add_child(hit_box)
 	bone_attachment.bone_name = "Palm1.R"
-	hit_box.area_entered.connect(on_hit_box_entered)
-	
+	hit_box.area_entered.connect(func(area: Area3D): if area.owner.has_method("take_damage") && area.owner.is_in_group("player"):
+		area.owner.take_damage(10))
+
 func create_navmesh():
 	nav_region = NavigationRegion3D.new()
 	var nav_mesh = NavigationMesh.new()
@@ -196,11 +197,6 @@ func create_partrol_points():
 	patrol_points.append(left_point)
 	patrol_points.append(right_point)
  
-func on_hit_box_entered(area: Area3D) -> void:
-	var parent: Node3D = area.owner
-	if parent && parent.has_method("take_damage") && parent.is_in_group("player"):
-		parent.take_damage(10)
- 
 func enable_hit_box() -> void:
 	hit_box.monitoring = true
 	_hitbox_timer.start()
@@ -225,25 +221,13 @@ func create_call_method_timer(time: float):
 	call_method_timer.wait_time = time   
 	call_method_timer.one_shot = true
 	
-func create_delay_timer(time: float):
+func create_delay_rotatoin_timer(time: float):
 	delay_timer = Timer.new()
 	add_child(delay_timer)              
 	delay_timer.wait_time = time   
 	delay_timer.one_shot = true
 	delay_timer.timeout.connect(func(): delay_rotation = false)
-
-func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
-	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
-	if animation == null:
-		push_error("Animation % not found!" % animation_name)
-		return 0.0
-	var track_index = animation.add_track(Animation.TYPE_METHOD)
-	if relative_path == "none":
-		relative_path = $".".get_path()
-	animation.track_set_path(track_index, relative_path)
-	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
-	return animation.length
-
+ 
 #endregion
  
 func perform_attack():
@@ -251,15 +235,7 @@ func perform_attack():
 	call_method_timer.start()
 	await call_method_timer.timeout
 	enable_hit_box()
- 
-func handle_first_adustments() -> void:
-	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
-	add_to_group("enemy")
-	axis_lock_angular_x = true
-	axis_lock_angular_z = true
-	axis_lock_angular_y = true
-	axis_lock_linear_z = true
-
+  
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = Vector3.ZERO) -> void:
 	print_debug("enemy take damage")
 	hurt = true
@@ -303,18 +279,3 @@ func rotate_pivot_toward_target(delta) -> void:
 		var target_yaw = atan2(direction.x, direction.z)
 		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
-#func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
-	##GlobalsPlayer.current_hp -= amount
-	##if knockback > 0.0:
-		##current_run_state = run_state.STAGGERING
-		##staggering_towards = global_position - _position
-		##staggering_distance = knockback
-		##GlobalsPlayer.current_hp -= amount
-		##SignalbusPlayer.took_damage.emit(amount, knockback)
- 
-func teleport() -> void:
-	var offset : float = 3.0
-	var player_forward = -player.global_transform.basis.x.normalized()
-	global_position = player.global_position + player_forward * offset
-	pivot_node.look_at(player.global_position, Vector3.UP)
- 
