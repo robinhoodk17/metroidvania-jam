@@ -24,4 +24,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.52585, 0, -0.540892)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.0897, 0.2437, -0.365974)
 
 [node name="flying_enemy" parent="." instance=ExtResource("6_02anf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5241, 9.96862, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5241, 9.96862, -2.97571)
