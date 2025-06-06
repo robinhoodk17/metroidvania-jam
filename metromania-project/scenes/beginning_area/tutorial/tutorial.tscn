@@ -172,7 +172,7 @@ shape = SubResource("ConcavePolygonShape3D_y4ogp")
 triggers = [NodePath("Lever")]
 
 [node name="Lever" parent="Interactables(not_in_blender)/SelfFree2" index="0" instance=ExtResource("4_kscy4")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 167.18, 8.15098, 0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 163.37, 7.53032, 0)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Interactables(not_in_blender)/SelfFree2" index="1"]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 149.438, -0.673007, 0)
