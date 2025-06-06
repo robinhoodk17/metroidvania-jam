@@ -1,4 +1,5 @@
 extends RigidBody3D
+@export var provoked: bool = true
 @export var patrol_points: Array[Vector3] = []
 @export var chase_distance: float = 15.0 - 5.0
 @export var attack_distance: float = 2.5 
@@ -94,7 +95,7 @@ func chase_behavior(delta) -> void:
 	
 func attack_behavior(delta) -> void:
 	attack_timer -= delta
-	if attack_timer <= 0.0:
+	if attack_timer <= 0.0 && provoked:
 		perform_attack()
 		attack_timer = attack_cooldown
 
