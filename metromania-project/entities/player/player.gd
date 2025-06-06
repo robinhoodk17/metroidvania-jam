@@ -43,12 +43,13 @@ signal break_interaction
 
 @export_group("Combat")
 @export var combo_reset : float = 1.5
+@export var knockback_of_attack : float = 0.75
 @export var max_combo : int = 3
 @export var stagger_speed : float = 20.0
-@export var hitbox_start_position : Vector3 = Vector3(0,1.5,0)
-@export var hitbox_vertical_offset : float = 4.0
-@export var hitbox_horizontal_offset : float = 3.0
-@export var self_stagger_distance : float = 2.5
+@export var hitbox_start_position : Vector3 = Vector3(0,0.75,0)
+@export var hitbox_vertical_offset : float = 3.0
+@export var hitbox_horizontal_offset : float = 2.5
+@export var self_stagger_distance : float = 2.0
 @export var self_stagger_speed : float = 7.5
 
 @export_group("Hookshot")
@@ -63,6 +64,7 @@ signal break_interaction
 
 @export_group("Nodes")
 @export var mesh : Marker3D
+@export var VFX : Node3D
 @export var animation_player : AnimationPlayer
 @export var left_right : GUIDEAction
 @export var up_down : GUIDEAction
@@ -83,9 +85,9 @@ signal break_interaction
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
-@onready var vfx_sphere: MeshInstance3D = $MeshParent/Robot/VFXSphere
 @onready var spike_hurtbox = $MeshParent/SpikeHurtbox
 @onready var checkpoint_box = $MeshParent/Checkpoint
+@onready var bone_attachment_3d: BoneAttachment3D = $BoneAttachment3D
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -122,6 +124,7 @@ var combo_number : int = 0
 var staggering_towards : Vector3
 var staggering_distance : float
 var traveled_stagger_distance : float
+var attack_direction : Vector2
 
 """camera"""
 var dampened_y_array : Array[float]
@@ -140,7 +143,7 @@ func _ready() -> void:
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
 	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
-	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
+	#add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
 	
@@ -161,7 +164,6 @@ func _ready() -> void:
 	pick_child.connect("body_entered",pick_up_child)
 	screen_middle = DisplayServer.screen_get_size()/2
 	dash_reset_timer.timeout.connect(change_action_state)
-	ledge_grab.add_exception(self)
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
@@ -215,11 +217,13 @@ func _physics_process(delta: float) -> void:
 	action_state_machine(delta)
 
 	move_and_slide()
+
 func attach_camera() -> void:
-	camera_pivot.global_position = global_position
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+	camera_pivot.global_position = global_position
+	
 
 func position_camera(delta: float) -> void:
 	current_y = (current_y + 1) % dampened_y_array.size()
@@ -619,47 +623,31 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
-	pass
-	#var _attack_string : String = str("attack", combo_number)
-	#var centered = 1
-	#if abs(_x) < 0.5:
-		#_x = looking
-		#if abs(_y) > 0.5:
-			#_x = 0
-			#centered = 0
-	#else:
-		#_x = sign(_x)
-	#if abs(_y) < 0.5:
-		#_y = 0
-	#else:
-		#_y = sign(_y)
-	#vfx_sphere.position = hitbox_start_position + Vector3(0,\
-	 #_y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
-	#set_oneshot_animation("Robot_Punch")
-	##set_oneshot_animation("Robot_Punch")
-	#combo_number = (combo_number + 1) % max_combo
-	#
-	#hit_box.monitoring = true
-	#traveled_stagger_distance = 0
-	#current_run_state = run_state.STAGGERING
-	#staggering_towards = -Vector3(_x,_y,0)
-	#staggering_distance = self_stagger_distance
-	#await get_tree().create_timer(1).timeout
-	#hit_box.monitoring = false
+	set_oneshot_animation("Robot_Punch")
+	var centered = 1
+	_x = looking
+		
+	if abs(_y) < 0.5:
+		_y = 0
+	else:
+		_y = sign(_y)
+		centered = 0
+	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
+	 _y * hitbox_vertical_offset, 0)
+	VFX.show()
+	attack_direction = Vector2(_x,_y)
+	enable_hit_box(0.1)
 
-#func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
-	#GlobalsPlayer.current_hp -= amount
-	#if knockback > 0.0:
-		#current_run_state = run_state.STAGGERING
-		#staggering_towards = global_position - _position
-		#staggering_distance = knockback
-		#GlobalsPlayer.current_hp -= amount
-		#SignalbusPlayer.took_damage.emit(amount, knockback)
 
-##below function is for demonstration purposes
-func take_damage(amount):
-	velocity.y = 10
-	print("player_take_damge")
+
+func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	GlobalsPlayer.current_hp -= amount
+	if knockback > 0.0:
+		current_run_state = run_state.STAGGERING
+		staggering_towards = global_position - _position
+		staggering_distance = knockback
+		GlobalsPlayer.current_hp -= amount
+		SignalbusPlayer.took_damage.emit(amount, knockback)
 
 func take_damage_and_respawn(amount : int = 0) -> void:
 	await Ui.fade_to_black(0.25)
@@ -680,15 +668,22 @@ func deal_damage(area : Area3D) -> void:
 var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
+
+	traveled_stagger_distance = 0
+	current_run_state = run_state.STAGGERING
+	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
+	staggering_distance = self_stagger_distance
+
 	var parent: Node3D = area.get_parent()
-	print(parent)
+	print_debug(parent)
 	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
-		parent.take_damage(_damage)
+		parent.take_damage(_damage, knockback_of_attack, global_position)
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true
 	await get_tree().create_timer(time_sec).timeout
 	hit_box.monitoring = false
+	VFX.hide()
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)

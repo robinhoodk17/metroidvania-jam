@@ -70,6 +70,7 @@ var current_action_state : action_state = action_state.IDLE_ACTION :
 
 """state machine"""
 var input_queued : inputs = inputs.NONE
+var captured : bool = false
 var last_interaction : float = -1.0
 var dash_spent : bool = false
 var off : bool = true
@@ -98,6 +99,8 @@ var oneshot_animation : AnimationNode
 
  
 func turn_off() -> void:
+	if captured:
+		return
 	SignalbusPlayer.child_picked_up.emit()
 	if retracting:
 		SignalbusPlayer.end_retracting.emit()
@@ -116,6 +119,8 @@ func turn_off() -> void:
 	current_action_state = action_state.IDLE_ACTION
 
 func retract() -> void:
+	if captured:
+		return
 	if current_action_state == action_state.HOOKED:
 		SignalbusPlayer.start_grapple.emit(global_position)
 		retracting = true
@@ -133,6 +138,9 @@ func turn_on() -> void:
 	top_level = true
 
 func _ready() -> void:
+	SignalbusPlayer.child_captured.connect(func capture(): captured = true)
+	SignalbusPlayer.child_released.connect(func release(): captured = false)
+	
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	interaction_box.body_entered.connect(check_body)
 	hurt_box.body_entered.connect(check_body)

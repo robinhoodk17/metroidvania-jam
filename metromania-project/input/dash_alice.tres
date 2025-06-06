@@ -4,11 +4,11 @@
 
 [resource]
 script = ExtResource("1_sckvt")
-name = &"dash Alice"
+name = &"dash Amelia"
 action_value_type = 0
 block_lower_priority_actions = true
 emit_as_godot_actions = false
 is_remappable = true
-display_name = "dash Alice"
+display_name = "dash Amelia"
 display_category = ""
 metadata/_custom_type_script = "uid://c56e4jl2mxdir"
