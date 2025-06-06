@@ -34,3 +34,10 @@ func reparent_node(node: Node, parent: Node, position_reset: bool = true) -> voi
 	# await get_tree().process_frame
 	if position_reset and pos:
 		node.set("global_position", pos)
+
+func change_scene(new_scene : String, entrance_number : int = 0) -> void:
+	await Ui.fade_to_black(0.2)
+	await get_tree().change_scene_to_file(new_scene)
+	await get_tree().create_timer(.01).timeout
+	Globals.player_entrance = entrance_number
+	await Ui.fade_to_clear(0.2)

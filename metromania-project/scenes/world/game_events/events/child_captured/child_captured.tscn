@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3e2tldqnpl14"]
+
+[ext_resource type="Script" uid="uid://dthxghl0xyj20" path="res://scenes/world/game_events/events/child_captured/child_captured.gd" id="1_gmejq"]
+
+[node name="ChildCapturedEvent" type="Node3D"]
+script = ExtResource("1_gmejq")

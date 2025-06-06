@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://7717jlqjdl72"]
+
+[ext_resource type="Script" uid="uid://m5ii4jqi6vy5" path="res://scenes/world/game_events/events/pause_animation/pause_animation_event.gd" id="1_lil00"]
+
+[node name="PauseAnimationEvent" type="Node3D"]
+script = ExtResource("1_lil00")

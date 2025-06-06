@@ -1,5 +1,7 @@
 extends Node
 
+
+var player_entrance : int = 0
 # What goes into globals.gd?
 # If the function depends on the something in the game, it's a global.
 # If it's independent, it (probably) belongs in utils.gd

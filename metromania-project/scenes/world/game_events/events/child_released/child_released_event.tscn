@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3p3qjsx74xhw"]
+
+[ext_resource type="Script" uid="uid://x3kwpxcebbjl" path="res://scenes/world/game_events/events/child_released/child_released_event.gd" id="1_2syhh"]
+
+[node name="ChildReleasedEvent" type="Node3D"]
+script = ExtResource("1_2syhh")
