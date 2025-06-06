@@ -122,6 +122,7 @@ var combo_number : int = 0
 var staggering_towards : Vector3
 var staggering_distance : float
 var traveled_stagger_distance : float
+var attack_direction : Vector2
 
 """camera"""
 var dampened_y_array : Array[float]
@@ -161,7 +162,6 @@ func _ready() -> void:
 	pick_child.connect("body_entered",pick_up_child)
 	screen_middle = DisplayServer.screen_get_size()/2
 	dash_reset_timer.timeout.connect(change_action_state)
-	ledge_grab.add_exception(self)
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
 	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
@@ -215,11 +215,13 @@ func _physics_process(delta: float) -> void:
 	action_state_machine(delta)
 
 	move_and_slide()
+
 func attach_camera() -> void:
-	camera_pivot.global_position = global_position
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+	camera_pivot.global_position = global_position
+	
 
 func position_camera(delta: float) -> void:
 	current_y = (current_y + 1) % dampened_y_array.size()
@@ -619,8 +621,9 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
-	pass
-	#var _attack_string : String = str("attack", combo_number)
+	set_oneshot_animation("Robot_Punch")
+	await get_tree().create_timer(0.25).timeout
+
 	#var centered = 1
 	#if abs(_x) < 0.5:
 		#_x = looking
@@ -635,17 +638,13 @@ func attack(_x : float, _y : float) -> void:
 		#_y = sign(_y)
 	#vfx_sphere.position = hitbox_start_position + Vector3(0,\
 	 #_y * hitbox_vertical_offset, hitbox_horizontal_offset * centered)
-	#set_oneshot_animation("Robot_Punch")
-	##set_oneshot_animation("Robot_Punch")
-	#combo_number = (combo_number + 1) % max_combo
-	#
-	#hit_box.monitoring = true
-	#traveled_stagger_distance = 0
-	#current_run_state = run_state.STAGGERING
-	#staggering_towards = -Vector3(_x,_y,0)
-	#staggering_distance = self_stagger_distance
-	#await get_tree().create_timer(1).timeout
-	#hit_box.monitoring = false
+	attack_direction = Vector2(_x,_y)
+	enable_hit_box(0.2)
+	# set_oneshot_animation("Robot_Punch")
+	# await get_tree().create_timer(0.25).timeout
+	# enable_hit_box(0.2) 
+
+
 
 #func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	#GlobalsPlayer.current_hp -= amount
@@ -680,6 +679,12 @@ func deal_damage(area : Area3D) -> void:
 var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
+
+	#traveled_stagger_distance = 0
+	#current_run_state = run_state.STAGGERING
+	#staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
+	#staggering_distance = self_stagger_distance
+
 	var parent: Node3D = area.get_parent()
 	print(parent)
 	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):

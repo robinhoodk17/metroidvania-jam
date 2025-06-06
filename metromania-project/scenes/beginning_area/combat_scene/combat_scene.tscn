@@ -20,3 +20,7 @@ transform = Transform3D(-1.74846e-08, 0, 0.4, 0, 0.4, 0, -0.4, 0, -1.74846e-08, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9165, 0)
 script = ExtResource("6_vxc8r")
 entrance_number = 1
+
+[node name="Entrance2" type="Node3D" parent="Interactables(not_in_blender)" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9165, 0)
+script = ExtResource("6_vxc8r")

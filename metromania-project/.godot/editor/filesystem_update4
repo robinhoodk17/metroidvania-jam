@@ -26,3 +26,17 @@ res://scenes/beginning_area/combat_scene/combat_scene.tscn
 res://scripts/AutoLoads/globals_player.gd
 res://entities/player/player.gd
 res://scenes/world/game_events/triggers/area_entered/area_entered.gd
+res://scenes/world/game_events/events/child_captured/child_captured.gd
+res://scenes/world/game_events/events/child_released/child_released_event.tscn
+res://scenes/world/game_events/events/child_released/child_released_event.gd
+res://scenes/world/game_events/events/child_captured/child_captured.tscn
+res://scenes/world/game_events/events/start_dialogue/start_dialogue_event.gd
+res://scenes/world/game_events/events/pause_animation/pause_animation_event.tscn
+res://scenes/world/game_events/events/pause_animation/pause_animation_event.gd
+res://entities/player/alice.gd
+res://input/dash_alice.tres
+res://input/jump_alice.tres
+res://input/left_right_alice.tres
+res://input/up_down_alice.tres
+res://scripts/AutoLoads/globals.gd
+res://scenes/scene_manager.gd

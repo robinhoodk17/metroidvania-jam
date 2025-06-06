@@ -25,5 +25,5 @@ func _start_game() -> void:
 	# TODO: Consider adding some kind of scene transition
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	Ui.go_to("Game")
-	Utils.change_scene("uid://dqu1x7e4qyyv",null, 0)
+	Utils.change_scene("uid://dqu1x7e4qyyv", 0)
 	#get_tree().change_scene_to_file("uid://dqu1x7e4qyyv")

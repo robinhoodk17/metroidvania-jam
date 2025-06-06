@@ -5,4 +5,4 @@ extends GameEvent
 
 func activate():
 	var player = %Myck
-	Utils.change_scene(new_scene, player, entrance_number)
+	Utils.change_scene(new_scene, entrance_number)
