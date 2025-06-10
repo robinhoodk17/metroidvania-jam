@@ -1,3 +1,16 @@
+res://meshes/vfx/slash_mesh.res
+res://entities/Myck/Myck_Animations/Myck_Throw.res
+res://entities/Myck/Myck_Animations/Myck_Air.res
+res://entities/Myck/Myck_Animations/Myck_AttackBelow.res
+res://entities/Myck/Myck_Animations/Myck_AttackFront.res
+res://entities/Myck/Myck_Animations/Myck_AttackUp.res
+res://entities/Myck/Myck_Animations/Myck_Dash.res
+res://entities/Myck/Myck_Animations/Myck_Idle.res
+res://entities/Myck/Myck_Animations/Myck_Jump.res
+res://entities/Myck/Myck_Animations/Myck_Land.res
+res://entities/Myck/Myck_Animations/Myck_LedgeGrab.res
+res://entities/Myck/Myck_Animations/Myck_Run.res
+res://entities/Myck/Myck_Animations/Myck_Walk.res
 res://entities/player/alice.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
@@ -19,3 +32,6 @@ res://scenes/world/game_events/events/spawn_enemies/spawn_enemies.tscn
 res://aa&&root/main.tscn
 res://entities/player/hookshot.tscn
 res://ui/main_menu/main_menu.tscn
+res://peyman/camera_3d.gd
+res://entities/player/player.gd
+res://peyman/enemy_rigid.gd

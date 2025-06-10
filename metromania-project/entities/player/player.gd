@@ -73,8 +73,6 @@ signal break_interaction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
 
-@onready var camera_3d: Camera3D = $CameraPivot/Camera3D
-@onready var camera_pivot: Node3D = $CameraPivot
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
@@ -85,6 +83,7 @@ signal break_interaction
 """child interaction"""
 @onready var pick_child: Area3D = $MeshParent/PickChild
 @onready var auto_aim: Area3D = $MeshParent/AutoAim
+@onready var camera_3d: Camera3D = $Camera3D
 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
@@ -169,7 +168,6 @@ func _ready() -> void:
 	checkpoint = global_position
 	checkpoint_box.area_entered.connect(store_checkpoint)
 	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
-	camera_pivot.top_level = true
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
 	SignalbusPlayer.end_retracting.connect(end_retracting)
@@ -224,7 +222,7 @@ func _physics_process(delta: float) -> void:
 		Engine.time_scale = 0.25
 	if queue_timer.is_stopped():
 		input_queued = inputs.NONE
-	position_camera(delta)
+	#position_camera(delta)
 	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
@@ -234,9 +232,7 @@ func attach_camera() -> void:
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
-	camera_pivot.global_position = global_position
-	
-
+ 
 func position_camera(delta: float) -> void:
 	current_y = (current_y + 1) % dampened_y_array.size()
 	dampened_y_array[current_y] = global_position.y
@@ -255,10 +251,9 @@ func position_camera(delta: float) -> void:
 	target_position = Vector3(target_position.x, target_position.y, target_z)
 	if is_on_floor():
 		lerp_power = lerp(lerp_power, 5.0, delta * 10)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
 		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
+
 
 func manage_action_inputs() -> void:
 	return
@@ -677,10 +672,6 @@ func attack(_x : float, _y : float) -> void:
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	print("player takes damage")
-	_camera_shake()
-	_camera_slowmo()
-	_camera_tilt()
-	_camera_zoom()
 	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
@@ -745,84 +736,3 @@ func _unhandled_input(event: InputEvent) -> void:
 		await get_tree().create_timer(0.25).timeout
 		enable_hit_box(0.2)
 #endregion 
-
-#region camera_moves
-var shake_active: bool
-var slowmo_active: bool
-var title_active: bool
-var zoom_active: bool
-@onready var default_rotation : Vector3 = rotation_degrees
-@onready var default_fov : float = 90
- 
-func _camera_shake(duration: float = 0.3) -> void:
-	if shake_active:
-		return
-	else:
-		shake_active = true
-		handle_camera_shake(duration)
-
-func _camera_slowmo(duration: float = 0.5) -> void:
-	if slowmo_active:
-		return 
-	else:
-		slowmo_active = true
-		await handle_cam_slowmo(duration)
-		slowmo_active = false
- 
-func _camera_tilt(duration: float = 0.15) -> void:
-	if title_active:
-		return
-	else:
-		title_active = true
-		await handle_camera_tilt(duration)
-		title_active = false
-		
-func _camera_zoom(duration: float = 0.15) -> void:
-	if zoom_active:
-		return
-	else:
-		zoom_active = true
-		await handle_camera_zoom(duration)
-		zoom_active = false 
-
-func handle_camera_shake(duration : float) -> void:
-	var period : float = duration
-	var magnitude : float = 0.4
-	var initial_transform = camera_3d.transform
-	var elapsed_time : float = 0.0
-	while elapsed_time < period:
-		var offset : Vector3 = Vector3(
-			randf_range(-magnitude, magnitude),
-			randf_range(-magnitude, magnitude),
-			0.0
-		)
-		camera_3d.transform.origin = initial_transform.origin + offset
-		elapsed_time += get_process_delta_time()
-		await get_tree().process_frame
-	camera_3d.transform = initial_transform
-	shake_active = false
- 
-func handle_cam_slowmo(duration : float) -> Signal:
-	var _tween: Tween = get_tree().create_tween()
-	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
-	_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
-	return _tween.finished
-
-func handle_camera_tilt(duration : float) -> Signal:
-	var tilt_degrees : float = 5.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var target_rotation = default_rotation
-	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
-	tween.tween_property(camera_3d, "rotation_degrees", target_rotation, duration)
-	tween.tween_property(camera_3d, "rotation_degrees", default_rotation, duration)
-	return tween.finished
-
-func handle_camera_zoom(duration: float) -> Signal:
-	var zoom_amount : float = 10.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
-	tween.tween_property(camera_3d, "fov", target_fov, duration)
-	tween.tween_property(camera_3d, "fov", default_fov, duration)
-	return tween.finished 
-
-#endregion  
