@@ -145,7 +145,7 @@ func set_patrol_target() -> void:
  
 #region create_nodes
 func create_hurt_box() -> Area3D:
-	hurt_box = Area3D.new()
+	var hurt_box : Area3D = Area3D.new()
 	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
 	var collision_shape : CollisionShape3D = CollisionShape3D.new()
@@ -183,7 +183,7 @@ func create_hitbox() -> void:
 		area.owner.take_damage(10))
 
 func create_navmesh() -> NavigationRegion3D:
-	nav_region = NavigationRegion3D.new()
+	var nav_region : NavigationRegion3D = NavigationRegion3D.new()
 	var nav_mesh : NavigationMesh = NavigationMesh.new()
 	var half_size : float = 2.0
 	var vertices : PackedVector3Array = PackedVector3Array([
@@ -200,7 +200,7 @@ func create_navmesh() -> NavigationRegion3D:
 	return nav_region
 
 func create_navigation_agent() -> NavigationAgent3D:
-	navigation_agent = NavigationAgent3D.new()
+	var navigation_agent : NavigationAgent3D = NavigationAgent3D.new()
 	add_child(navigation_agent)
 	return navigation_agent
  

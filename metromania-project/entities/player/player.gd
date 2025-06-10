@@ -668,7 +668,6 @@ func attack(_x : float, _y : float) -> void:
 	await get_tree().create_timer(1.0).timeout
 	hit_box.hide()
 
-
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	print("player takes damage")
 	GlobalsPlayer.current_hp -= amount

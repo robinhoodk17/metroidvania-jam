@@ -131,7 +131,7 @@ func return_to_hover() -> void:
 	initial_position = global_transform.origin
 
 func create_hurt_box() -> Area3D:
-	hurt_box = Area3D.new()
+	var hurt_box : Area3D = Area3D.new()
 	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
 	var collision_shape : CollisionShape3D = CollisionShape3D.new()
