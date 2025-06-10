@@ -28,12 +28,22 @@ var locomotion: AnimationNodeStateMachinePlayback
 var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
 var hurt: bool
-var _hitbox_timer: Timer
-var _stunned_timer: Timer
-var call_method_timer: Timer
-var delay_timer: Timer
+
+@onready var _hitbox_timer: Timer =  create_timer(0.2)
+@onready var _stunned_timer: Timer =  create_timer(0.08)
+@onready var call_method_timer: Timer =  create_timer(0.26)
+@onready var delay_timer: Timer =  create_timer(0.3)
+
 var delay_rotation: bool 
 var hp = maxhp
+var can_teleport: bool = true
+
+func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
+	var timer = Timer.new()
+	timer.wait_time = wait_time
+	timer.one_shot = one_shot
+	add_child(timer)
+	return timer
 
 func _ready() -> void:
 	create_navmesh()
@@ -41,10 +51,7 @@ func _ready() -> void:
 	create_partrol_points()
 	create_hitbox()
 	create_hurt_box()
-	create_hitbox_timer(0.2)
-	create_stun_timer(0.08)
-	create_call_method_timer(0.26)
-	create_delay_rotatoin_timer(0.3)
+	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
@@ -102,6 +109,9 @@ func chase_behavior(delta) -> void:
 	
 func attack_behavior(delta) -> void:
 	attack_timer -= delta
+	if can_teleport:
+		teleport()
+		return
 	if attack_timer <= 0.0:
 		perform_attack()
 		attack_timer = attack_cooldown
@@ -209,30 +219,7 @@ func enable_hit_box() -> void:
 	_hitbox_timer.start()
 	await _hitbox_timer.timeout
 	hit_box.monitoring = false
-	
-func create_hitbox_timer(time: float) -> void:
-	_hitbox_timer = Timer.new()
-	add_child(_hitbox_timer)              
-	_hitbox_timer.wait_time = time    
-	_hitbox_timer.one_shot = true     
-	
-func create_stun_timer(time: float) -> void:
-	_stunned_timer = Timer.new()
-	add_child(_stunned_timer)              
-	_stunned_timer.wait_time = time   
-	_stunned_timer.one_shot = true         
- 
-func create_call_method_timer(time: float) -> void:
-	call_method_timer = Timer.new()
-	add_child(call_method_timer)              
-	call_method_timer.wait_time = time   
-	call_method_timer.one_shot = true
-	
-func create_delay_rotatoin_timer(time: float) -> void:
-	delay_timer = Timer.new()
-	add_child(delay_timer)              
-	delay_timer.wait_time = time   
-	delay_timer.one_shot = true
+
  
 #endregion
  
@@ -294,4 +281,11 @@ func rotate_pivot_toward_target(delta) -> void:
 		var target_yaw = atan2(direction.x, direction.z)
 		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
- 
+
+func teleport() -> void:
+	var player_forward = -player.global_transform.basis.x.normalized()
+	global_position = player.global_position + player_forward * 3.0
+	pivot_node.look_at(player.global_position, Vector3.UP)
+	can_teleport = false
+	await get_tree().create_timer(4).timeout
+	can_teleport = true

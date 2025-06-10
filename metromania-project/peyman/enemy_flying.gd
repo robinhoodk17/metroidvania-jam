@@ -20,37 +20,32 @@ var upper_state: AnimationNodeStateMachinePlayback
 var attack_timer: float = 0.0
 var attacking: bool = false
 var initial_position: Vector3
-var _stunned_timer: Timer
 var hurt : bool 
 var stagger_position_target : Vector3
-var hover_timer: Timer
 var delay_retreat: bool
 var hp : int = maxhp
+
+@onready var _stunned_timer: Timer = create_timer(0.1)
+@onready var hover_timer: Timer = create_timer(1.1)
+
+func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
+	var timer = Timer.new()
+	timer.wait_time = wait_time
+	timer.one_shot = one_shot
+	add_child(timer)
+	return timer
 
 func _ready():
 	handle_first_adustments()
 	create_hurt_box()
-	create_stun_timer(0.1)
-	create_hover_timer(1.0)
+	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	initial_position = global_transform.origin
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
  
 func handle_first_adustments() -> void:
 	find_child("RobotArmature").scale = Vector3(0.5, 0.5, 0.5)
 	add_to_group("enemy")
-	axis_lock_linear_z = true
-
-func create_stun_timer(time: float) -> void:
-	_stunned_timer = Timer.new()
-	add_child(_stunned_timer)              
-	_stunned_timer.wait_time = time   
-	_stunned_timer.one_shot = true   
-
-func create_hover_timer(time: float) -> void:
-	hover_timer = Timer.new()
-	add_child(hover_timer)              
-	hover_timer.wait_time = time   
-	hover_timer.one_shot = true       
+	axis_lock_linear_z = true  
 
 func _physics_process(delta) -> void:
 	if hurt:

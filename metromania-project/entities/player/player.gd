@@ -143,7 +143,6 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	timer.wait_time = wait_time
 	timer.one_shot = one_shot
 	add_child(timer)
-	timer.start()
 	return timer
 	
 func _ready() -> void:
