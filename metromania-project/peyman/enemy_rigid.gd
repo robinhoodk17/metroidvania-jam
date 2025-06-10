@@ -12,16 +12,10 @@ signal death(current_body : Node3D)
 @export var attack_cooldown: float = 1.5
 @export var knockback_resistance : float = 0.0
 @export var knockback_speed : float = 10.0
-@onready var animation_tree: AnimationTree = $AnimationTree
 var current_patrol_index: int = 0
 var state: String = "patrol"  
 var attack_timer: float = 0.0
-@onready var pivot_node : Node3D = find_child("RobotArmature") 
-@onready var player: Node3D = get_tree().get_first_node_in_group("player")
-var navigation_agent: NavigationAgent3D
-var nav_region: NavigationRegion3D
 var raycast: RayCast3D 
-var hurt_box: Area3D 
 var hit_box:  Area3D
 var bone_attachment : BoneAttachment3D
 var locomotion: AnimationNodeStateMachinePlayback
@@ -29,15 +23,21 @@ var upper_state: AnimationNodeStateMachinePlayback
 var distance_to_player : float
 var hurt: bool
 
+var hp = maxhp
+var delay_rotation: bool 
+var can_teleport: bool = true
+var is_teleport: bool
+@onready var animation_tree: AnimationTree = $AnimationTree
+@onready var pivot_node : Node3D = find_child("RobotArmature") 
+@onready var player: Node3D = get_tree().get_first_node_in_group("player")
+@onready var hurt_box: Area3D = create_hurt_box()
+@onready var nav_region: NavigationRegion3D = create_navmesh()
+@onready var navigation_agent: NavigationAgent3D = create_navigation_agent()
 @onready var _hitbox_timer: Timer =  create_timer(0.2)
 @onready var _stunned_timer: Timer =  create_timer(0.08)
 @onready var call_method_timer: Timer =  create_timer(0.26)
 @onready var delay_timer: Timer =  create_timer(0.3)
 @onready var slommo_timer: Timer =  create_timer(0.5)
-var delay_rotation: bool 
-var hp = maxhp
-var can_teleport: bool = true
-var is_teleport: bool
 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
@@ -46,20 +46,14 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	add_child(timer)
 	return timer
 
-func _ready() -> void:
-	create_navmesh()
-	create_navigation_agent()   
-	create_partrol_points()
+func _ready() -> void:  
 	create_hitbox()
-	create_hurt_box()
+	create_partrol_points()
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	navigation_agent.max_speed = move_speed
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
 	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
 	set_patrol_target()
-	handle_first_adustments()
-
-func handle_first_adustments() -> void:
 	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
 	add_to_group("enemy")
 	axis_lock_angular_x = true
@@ -144,18 +138,18 @@ func move_along_path(delta) -> void:
 func set_patrol_target() -> void:
 	if patrol_points.size() == 0:
 		return
-	var target = patrol_points[current_patrol_index]
+	var target : Vector3 = patrol_points[current_patrol_index]
 	target.y = global_transform.origin.y
 	target.z = global_transform.origin.z
 	navigation_agent.set_target_position(target)
  
 #region create_nodes
-func create_hurt_box() -> void:
+func create_hurt_box() -> Area3D:
 	hurt_box = Area3D.new()
 	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
-	var collision_shape = CollisionShape3D.new()
-	var capsule_shape = CapsuleShape3D.new()
+	var collision_shape : CollisionShape3D = CollisionShape3D.new()
+	var capsule_shape : CapsuleShape3D = CapsuleShape3D.new()
 	capsule_shape.radius = 0.5 
 	capsule_shape.height = 2.0  
 	collision_shape.shape = capsule_shape
@@ -163,9 +157,10 @@ func create_hurt_box() -> void:
 	hurt_box.monitoring = false
 	hurt_box.position = Vector3(0, 1, 0)
 	add_child(hurt_box)
+	return hurt_box
  
 func create_hitbox() -> void:
-	var skeleton = find_child("Skeleton3D")  
+	var skeleton : Skeleton3D = find_child("Skeleton3D")  
 	if not skeleton:
 		push_error("Enemy Skeleton3D node not found!")
 		return
@@ -175,8 +170,8 @@ func create_hitbox() -> void:
 	hit_box.name = "hit_box"
 	hit_box.collision_layer = 0
 	hit_box.collision_mask = 1 << 4
-	var collision_shape_hit = CollisionShape3D.new()
-	var sphere_shape = SphereShape3D.new()
+	var collision_shape_hit : CollisionShape3D = CollisionShape3D.new()
+	var sphere_shape : SphereShape3D = SphereShape3D.new()
 	sphere_shape.radius = 0.5 * 2
 	hit_box.monitorable = false
 	hit_box.monitoring = false
@@ -187,32 +182,34 @@ func create_hitbox() -> void:
 	hit_box.area_entered.connect(func(area: Area3D): if area.owner.has_method("take_damage") && area.owner.is_in_group("player"):
 		area.owner.take_damage(10))
 
-func create_navmesh() -> void:
+func create_navmesh() -> NavigationRegion3D:
 	nav_region = NavigationRegion3D.new()
-	var nav_mesh = NavigationMesh.new()
-	var half_size = 2.0
-	var vertices = PackedVector3Array([
+	var nav_mesh : NavigationMesh = NavigationMesh.new()
+	var half_size : float = 2.0
+	var vertices : PackedVector3Array = PackedVector3Array([
 		Vector3(-half_size, 0, -half_size),
 		Vector3(half_size, 0, -half_size),
 		Vector3(half_size, 0, half_size),
 		Vector3(-half_size, 0, half_size),
 	])
-	var polygons = PackedInt32Array([0, 1, 2, 3])
+	var polygons : PackedInt32Array = PackedInt32Array([0, 1, 2, 3])
 	nav_mesh.vertices = vertices
 	nav_mesh.add_polygon(polygons)
 	nav_region.navmesh = nav_mesh
 	add_child(nav_region)
+	return nav_region
 
-func create_navigation_agent() -> void:
+func create_navigation_agent() -> NavigationAgent3D:
 	navigation_agent = NavigationAgent3D.new()
 	add_child(navigation_agent)
+	return navigation_agent
  
 func create_partrol_points() -> void:
 	var patrol_distance : float = 2.0
-	var left_dir = -global_transform.basis.x.normalized()
-	var right_dir = global_transform.basis.x.normalized()
-	var left_point = global_position + left_dir * patrol_distance
-	var right_point = global_position + right_dir * patrol_distance
+	var left_dir : Vector3 = -global_transform.basis.x.normalized()
+	var right_dir : Vector3 = global_transform.basis.x.normalized()
+	var left_point : Vector3 = global_position + left_dir * patrol_distance
+	var right_point : Vector3 = global_position + right_dir * patrol_distance
 	patrol_points.append(left_point)
 	patrol_points.append(right_point)
  
@@ -281,25 +278,25 @@ func rotate_pivot_toward_target(delta) -> void:
 		if vel.length() == 0:
 			return
 		vel = vel.normalized()
-		var target_angle = atan2(vel.x, vel.z)
+		var target_angle : float = atan2(vel.x, vel.z)
 		var new_basis = Basis(Vector3.UP, target_angle)
 		var new_transform = pivot_node.global_transform
 		new_transform.basis = new_basis
 		pivot_node.global_transform = new_transform
 	else:
-		var direction = player.position - pivot_node.global_position
+		var direction : Vector3 = player.position - pivot_node.global_position
 		direction.y = 0
 		if direction.length() == 0:
 			return  
 		direction = direction.normalized()
-		var current_yaw = pivot_node.rotation.y
-		var target_yaw = atan2(direction.x, direction.z)
+		var current_yaw : float = pivot_node.rotation.y
+		var target_yaw : float = atan2(direction.x, direction.z)
 		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
 
 func teleport() -> void:
 	delay_timer.start()
-	var player_forward = -player.global_transform.basis.x.normalized()
+	var player_forward : Vector3 = -player.global_transform.basis.x.normalized()
 	global_position = player.global_position + player_forward * 3.0
 	pivot_node.look_at(player.global_position, Vector3.UP)
 	is_teleport = true

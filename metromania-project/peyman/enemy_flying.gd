@@ -2,9 +2,6 @@ extends CharacterBody3D
 
 signal death(current_body : Node3D)
 
-@onready var player: Node3D = get_tree().get_first_node_in_group("player")
-@onready var animation_tree: AnimationTree = $AnimationTree
-
 @export var maxhp : int = 1
 @export var attack_cooldown: float = 3.0
 @export var attack_speed: float = 15.0
@@ -14,7 +11,6 @@ signal death(current_body : Node3D)
 @export var knockback_speed : float = 10.0
 @export var knockback_resistance : float = 0.0
 
-var hurt_box: Area3D  
 var hit_box: Area3D
 var upper_state: AnimationNodeStateMachinePlayback
 var attack_timer: float = 0.0
@@ -25,6 +21,9 @@ var stagger_position_target : Vector3
 var delay_retreat: bool
 var hp : int = maxhp
 
+@onready var player: Node3D = get_tree().get_first_node_in_group("player")
+@onready var animation_tree: AnimationTree = $AnimationTree
+@onready var hurt_box: Area3D = create_hurt_box()
 @onready var _stunned_timer: Timer = create_timer(0.1)
 @onready var hover_timer: Timer = create_timer(1.1)
 @onready var slommo_timer: Timer =  create_timer(0.5)
@@ -36,18 +35,14 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	add_child(timer)
 	return timer
 
-func _ready():
-	handle_first_adustments()
-	create_hurt_box()
+func _ready() -> void:
+	axis_lock_linear_z = true  
+	add_to_group("enemy")
+	find_child("RobotArmature").scale = Vector3(0.5, 0.5, 0.5)
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	initial_position = global_transform.origin
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
  
-func handle_first_adustments() -> void:
-	find_child("RobotArmature").scale = Vector3(0.5, 0.5, 0.5)
-	add_to_group("enemy")
-	axis_lock_linear_z = true  
-
 func _physics_process(delta) -> void:
 	if hurt:
 		velocity = stagger_position_target * knockback_speed
@@ -70,7 +65,7 @@ func hover(delta) -> void:
 	var player_position_xz : Vector3 = Vector3(player.global_transform.origin.x, global_transform.origin.y, player.global_transform.origin.z)
 	var distance_to_player : float = player_position_xz.distance_to(global_transform.origin)
 	if distance_to_player > 10:
-		var return_direction = (player_position_xz - global_transform.origin).normalized()
+		var return_direction : Vector3 = (player_position_xz - global_transform.origin).normalized()
 		velocity = return_direction * return_speed
 		move_and_slide()
 
@@ -100,7 +95,7 @@ func die() -> void:
 func attack() -> void:
 	attacking = true
 	attack_timer = attack_cooldown
-	
+ 
 func enemy_slowmo(slowmotion_factor : float = 0.5) -> void:
 	slommo_timer.start()
 	slowmotion_factor = clamp(0.5, 0.0, 1.0)
@@ -135,12 +130,12 @@ func return_to_hover() -> void:
 	await get_tree().create_timer(0.5).timeout
 	initial_position = global_transform.origin
 
-func create_hurt_box() -> void:
+func create_hurt_box() -> Area3D:
 	hurt_box = Area3D.new()
 	hurt_box.collision_layer = 1 << 5
 	hurt_box.collision_mask = 0
-	var collision_shape = CollisionShape3D.new()
-	var capsule_shape = CapsuleShape3D.new()
+	var collision_shape : CollisionShape3D = CollisionShape3D.new()
+	var capsule_shape : CapsuleShape3D = CapsuleShape3D.new()
 	capsule_shape.radius = 0.5 
 	capsule_shape.height = 2.0  
 	collision_shape.shape = capsule_shape
@@ -148,4 +143,5 @@ func create_hurt_box() -> void:
 	hurt_box.monitoring = false
 	hurt_box.position = Vector3(0, 1, 0)
 	add_child(hurt_box)
+	return hurt_box
  
