@@ -35,3 +35,4 @@ res://ui/main_menu/main_menu.tscn
 res://peyman/camera_3d.gd
 res://entities/player/player.gd
 res://peyman/enemy_rigid.gd
+res://scripts/AutoLoads/signalbus_player.gd

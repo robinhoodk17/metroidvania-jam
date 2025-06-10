@@ -289,7 +289,6 @@ func throw_grappling(_x : float, _y : float) -> void:
 	else:
 		var target_position : Vector3 = global_position + (hookshot_range * mesh.global_basis.x.normalized())
 		alice.throw(target_position)
-
 	carrying_child = false
 	set_oneshot_animation("MyckThrow")
 	

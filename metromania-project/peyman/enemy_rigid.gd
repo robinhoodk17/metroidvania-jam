@@ -253,7 +253,10 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 
 func die() -> void:
 	death.emit(self)
-	player.camera_3d.all_camera_moves()
+	SignalbusPlayer.cam_shake.emit()
+	SignalbusPlayer.cam_slomo.emit()
+	SignalbusPlayer.cam_tilt.emit()
+	SignalbusPlayer.cam_zoom_in_out.emit()
 	queue_free()
 
 func rotate_pivot_toward_target(delta) -> void:

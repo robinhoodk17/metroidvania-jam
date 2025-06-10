@@ -14,11 +14,22 @@ var shake_active: bool
 var slowmo_active: bool
 var title_active: bool
 var zoom_active: bool
+var base_y : float = 0.0  
+var vertical_limit : float = 0.5 
+var smoothing_speed : float = 5.0 
 @onready var default_rotation : Vector3 = rotation_degrees
 @onready var default_fov : float = 90
  
 func _ready() -> void:
 	add_to_group("camera")
+	SignalbusPlayer.cam_shake.connect(on_cam_shake)
+	SignalbusPlayer.cam_slomo.connect(on_cam_slomo)
+	SignalbusPlayer.cam_tilt.connect(on_cam_tilt)
+	SignalbusPlayer.cam_zoom_in_out.connect(on_cam_zoom_in_out)
+	
+func switch_player(parent: Node3D) -> void:
+	reparent(parent)
+	player = parent
 
 func _process(delta):
 	match mode:
@@ -26,8 +37,10 @@ func _process(delta):
 			_update_celeste_mode(delta)
 		CameraMode.HOLLOW_KNIGHT:
 			_update_hollow_knight_mode(delta)
-	var new_pos : Vector3 = global_position.move_toward(target_position, 10 * delta)
-	global_position = new_pos
+	var pos : Vector3 = global_position.move_toward(target_position, 10 * delta)
+	var target_y = clamp(pos.y, base_y - vertical_limit, base_y + vertical_limit)
+	pos.y = lerp(pos.y, target_y, smoothing_speed * delta)
+	global_position = pos
 
 func _update_celeste_mode(delta):
 	var player_pos : Vector3 = player.global_position
@@ -51,21 +64,14 @@ func _update_hollow_knight_mode(delta):
 	target_position.x = lerp(target_position.x, player_pos.x, hollow_follow_speed * delta)
 	target_position.y = lerp(target_position.y, player_pos.y, hollow_follow_speed * delta)
  
-func all_camera_moves() -> void:
-	_camera_shake()
-	_camera_tilt()
-	_camera_zoom()
-	await get_tree().create_timer(0.1).timeout
-	_camera_slowmo()
-
-func _camera_shake(duration: float = 0.3) -> void:
+func on_cam_shake(duration: float = 0.3) -> void:
 	if shake_active:
 		return
 	else:
 		shake_active = true
 		handle_camera_shake(duration)
 
-func _camera_slowmo(duration: float = 0.5) -> void:
+func on_cam_slomo(duration: float = 0.5) -> void:
 	if slowmo_active:
 		return 
 	else:
@@ -73,7 +79,7 @@ func _camera_slowmo(duration: float = 0.5) -> void:
 		await handle_cam_slowmo(duration)
 		slowmo_active = false
  
-func _camera_tilt(duration: float = 0.15) -> void:
+func on_cam_tilt(duration: float = 0.15) -> void:
 	if title_active:
 		return
 	else:
@@ -81,7 +87,7 @@ func _camera_tilt(duration: float = 0.15) -> void:
 		await handle_camera_tilt(duration)
 		title_active = false
 		
-func _camera_zoom(duration: float = 0.15) -> void:
+func on_cam_zoom_in_out(duration: float = 0.15) -> void:
 	if zoom_active:
 		return
 	else:
@@ -128,4 +134,3 @@ func handle_camera_zoom(duration: float) -> Signal:
 	tween.tween_property(self, "fov", target_fov, duration)
 	tween.tween_property(self, "fov", default_fov, duration)
 	return tween.finished 
- 
