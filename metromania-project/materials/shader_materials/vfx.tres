@@ -1,0 +1,63 @@
+[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://qwwjdbl082b6"]
+
+[ext_resource type="Shader" uid="uid://3h5we00urd6n" path="res://materials/shaders/slash_shader.res" id="1_m75fo"]
+
+[sub_resource type="Gradient" id="Gradient_ux8g3"]
+colors = PackedColorArray(1, 0.101961, 0.568627, 1, 1, 0.101961, 0.568627, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5k721"]
+gradient = SubResource("Gradient_ux8g3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_40ce4"]
+render_priority = 2
+shader = ExtResource("1_m75fo")
+shader_parameter/Vertex_Offset = 0.02
+shader_parameter/Texture = SubResource("GradientTexture1D_5k721")
+shader_parameter/Overall_Threshold = 0.3
+shader_parameter/Overall_Tolerance = 0.0
+shader_parameter/Noise_Stretch = Vector2(0.25, 1)
+shader_parameter/Noise_Offset = 0.0
+shader_parameter/Noise_Scale = 10.0
+shader_parameter/Base_Position = Vector2(0.25, -0.25)
+shader_parameter/Base_Scale = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_liwsv"]
+colors = PackedColorArray(0.996079, 0.949019, 0.321567, 1, 1, 100, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_y12in"]
+gradient = SubResource("Gradient_liwsv")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bni7j"]
+render_priority = 1
+next_pass = SubResource("ShaderMaterial_40ce4")
+shader = ExtResource("1_m75fo")
+shader_parameter/Vertex_Offset = 0.01
+shader_parameter/Texture = SubResource("GradientTexture1D_y12in")
+shader_parameter/Overall_Threshold = 0.25
+shader_parameter/Overall_Tolerance = 0.0
+shader_parameter/Noise_Stretch = Vector2(1.02, 2.86)
+shader_parameter/Noise_Offset = 0.0
+shader_parameter/Noise_Scale = 6.08
+shader_parameter/Base_Position = Vector2(0.25, 0)
+shader_parameter/Base_Scale = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_ffgsm"]
+offsets = PackedFloat32Array(0, 0.998525)
+colors = PackedColorArray(0.282353, 0.988235, 0.976471, 1, 0.282353, 0.988235, 0.976471, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0d0mn"]
+gradient = SubResource("Gradient_ffgsm")
+
+[resource]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_bni7j")
+shader = ExtResource("1_m75fo")
+shader_parameter/Vertex_Offset = 0.0
+shader_parameter/Texture = SubResource("GradientTexture1D_0d0mn")
+shader_parameter/Overall_Threshold = 0.25
+shader_parameter/Overall_Tolerance = 0.0
+shader_parameter/Noise_Stretch = Vector2(0.25, 1)
+shader_parameter/Noise_Offset = 0.0
+shader_parameter/Noise_Scale = 10.0
+shader_parameter/Base_Position = Vector2(0.25, 0)
+shader_parameter/Base_Scale = Vector2(1, 0.5)

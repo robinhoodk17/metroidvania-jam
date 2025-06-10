@@ -47,8 +47,8 @@ signal break_interaction
 @export var max_combo : int = 3
 @export var stagger_speed : float = 20.0
 @export var hitbox_start_position : Vector3 = Vector3(0,0.75,0)
-@export var hitbox_vertical_offset : float = 3.0
-@export var hitbox_horizontal_offset : float = 2.5
+@export var hitbox_vertical_offset : float = 2
+@export var hitbox_horizontal_offset : float = 1.5
 @export var self_stagger_distance : float = 2.0
 @export var self_stagger_speed : float = 7.5
 
@@ -64,8 +64,8 @@ signal break_interaction
 
 @export_group("Nodes")
 @export var mesh : Marker3D
-@export var VFX : Node3D
-@export var animation_player : AnimationPlayer
+@export var VFX_anim_player : AnimationPlayer
+@export var Hit_VFX : Node3D
 @export var left_right : GUIDEAction
 @export var up_down : GUIDEAction
 @export var jump_action : GUIDEAction
@@ -84,10 +84,9 @@ signal break_interaction
 @onready var grappling_hook : Node3D = $GrapplingHookParent
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
-@onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
+@onready var check_collisions: ShapeCast3D = $MeshParent/LedgeGrab/CheckCollisions
 @onready var spike_hurtbox = $MeshParent/SpikeHurtbox
 @onready var checkpoint_box = $MeshParent/Checkpoint
-@onready var bone_attachment_3d: BoneAttachment3D = $BoneAttachment3D
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -141,9 +140,6 @@ var oneshot_animation : AnimationNode
 func _ready() -> void:
 #region Setting up combat
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
-	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
-	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
-	#add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
 	
@@ -232,14 +228,21 @@ func position_camera(delta: float) -> void:
 	for i : float in dampened_y_array:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
-	var target_position = (Vector3(global_position.x, averaged_y, global_position.z) + alice.global_position)/2
+	var target_position : Vector3
+	var target_z : float
+	if alice.captured:
+		target_position = Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z)
+		target_z = camera_zoom_min
+	else:
+		target_position = (Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z) + alice.global_position)/2
+		target_z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
+	target_position = Vector3(target_position.x, target_position.y, target_z)
 	if is_on_floor():
 		lerp_power = lerp(lerp_power, 5.0, delta * 10)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
 		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
-	camera_3d.global_position.z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
 
 func manage_action_inputs() -> void:
 	return
@@ -277,7 +280,7 @@ func throw_grappling(_x : float, _y : float) -> void:
 		alice.throw(target_position)
 
 	carrying_child = false
-	set_oneshot_animation("Robot_Wave")
+	set_oneshot_animation("MyckThrow")
 	
 	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
@@ -336,6 +339,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
+			set_oneshot_animation("Myck_Land")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
 			SignalbusPlayer.landed.emit()
@@ -375,7 +379,7 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Robot_Jump")
+	set_oneshot_animation("Myck_Jump")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	velocity += get_platform_velocity()/4.0
@@ -415,6 +419,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
+	set_oneshot_animation("Myck_Dash")
 	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
@@ -468,8 +473,9 @@ func run_state_machine(delta: float) -> void:
 		run_state.IDLE:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
-			if !animating:
 				run_animation.travel("idle")
+			else:
+				run_animation.travel("Myck_Air")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -486,8 +492,10 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
 			else:
 				velocity.x = abs(velocity.x) * run_direction
-			if !animating:
+			if is_on_floor():
 				run_animation.travel("walk")
+			else:
+				run_animation.travel("Myck_Air")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				SignalbusPlayer.braked.emit()
 				current_run_state = run_state.IDLE
@@ -499,8 +507,10 @@ func run_state_machine(delta: float) -> void:
 		run_state.RUNNING:
 			if !is_on_floor() or !landing_timer.is_stopped():
 				current_run_state = run_state.WALKING
-			if !animating:
+			if is_on_floor():
 				run_animation.travel("run")
+			else:
+				run_animation.travel("Myck_Air")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
 				braking_time = 0.0
@@ -623,24 +633,34 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
-	set_oneshot_animation("Robot_Punch")
 	var centered = 1
 	_x = looking
-		
 	if abs(_y) < 0.5:
 		_y = 0
+		set_oneshot_animation("Myck_AttackFront")
+		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
+		if _y > 0:
+			hit_box.rotation = Vector3(0,0,PI/2)
+			set_oneshot_animation("Myck_AttackUp")
+		else :
+			hit_box.rotation = Vector3(0,0,-PI/2)
+			set_oneshot_animation("Myck_AttackBelow")
+			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
-	VFX.show()
 	attack_direction = Vector2(_x,_y)
-	enable_hit_box(0.1)
-
+	enable_hit_box(1.0)
+	hit_box.show()
+	VFX_anim_player.play("slash1")
+	await get_tree().create_timer(1.0).timeout
+	hit_box.hide()
 
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	print("player takes damage")
 	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
@@ -665,25 +685,27 @@ func deal_damage(area : Area3D) -> void:
 #region hit_hurt
 @export var hit_box : Area3D 
 @export var hurt_box: Area3D 
-var _damage := 10
+var _damage := 1
 
 func on_hit_box_entered(area: Area3D) -> void:
-
+	dash_spent = false
+	second_jump = false
 	traveled_stagger_distance = 0
 	current_run_state = run_state.STAGGERING
 	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
 	staggering_distance = self_stagger_distance
-
+	Hit_VFX.show()
 	var parent: Node3D = area.get_parent()
 	print_debug(parent)
 	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
 		parent.take_damage(_damage, knockback_of_attack, global_position)
+	await get_tree().create_timer(0.25).timeout
+	Hit_VFX.hide()
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true
 	await get_tree().create_timer(time_sec).timeout
 	hit_box.monitoring = false
-	VFX.hide()
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
 	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
