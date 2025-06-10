@@ -27,7 +27,8 @@ var hp : int = maxhp
 
 @onready var _stunned_timer: Timer = create_timer(0.1)
 @onready var hover_timer: Timer = create_timer(1.1)
-
+@onready var slommo_timer: Timer =  create_timer(0.5)
+ 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
@@ -101,8 +102,11 @@ func attack() -> void:
 	attack_timer = attack_cooldown
 	
 func enemy_slowmo(slowmotion_factor : float = 0.5) -> void:
+	slommo_timer.start()
 	slowmotion_factor = clamp(0.5, 0.0, 1.0)
 	animation_tree.set("parameters/TimeScale/scale", slowmotion_factor)
+	await slommo_timer.timeout
+	animation_tree.set("parameters/TimeScale/scale", 1.0)
 
 func move_towards_player(delta) -> void:
 	var direction : Vector3 = (player.global_transform.origin - global_transform.origin).normalized()

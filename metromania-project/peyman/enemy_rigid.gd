@@ -33,7 +33,7 @@ var hurt: bool
 @onready var _stunned_timer: Timer =  create_timer(0.08)
 @onready var call_method_timer: Timer =  create_timer(0.26)
 @onready var delay_timer: Timer =  create_timer(0.3)
-
+@onready var slommo_timer: Timer =  create_timer(0.5)
 var delay_rotation: bool 
 var hp = maxhp
 var can_teleport: bool = true
@@ -264,8 +264,11 @@ func die() -> void:
 	queue_free()
 
 func enemy_slowmo(slowmotion_factor : float = 0.5) -> void:
+	slommo_timer.start()
 	slowmotion_factor = clamp(0.5, 0.0, 1.0)
 	animation_tree.set("parameters/TimeScale/scale", slowmotion_factor)
+	await slommo_timer.timeout
+	animation_tree.set("parameters/TimeScale/scale", 1.0)
 
 func rotate_pivot_toward_target(delta) -> void:
 	if delay_rotation or hurt:
