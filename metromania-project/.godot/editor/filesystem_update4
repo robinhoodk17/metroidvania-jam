@@ -32,3 +32,4 @@ res://scenes/world/game_events/events/spawn_enemies/spawn_enemies.tscn
 res://aa&&root/main.tscn
 res://peyman/enemy_rigid.gd
 res://entities/player/alice.gd
+res://entities/player/alice.tscn
