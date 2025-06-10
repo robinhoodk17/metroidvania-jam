@@ -287,5 +287,5 @@ func teleport() -> void:
 	global_position = player.global_position + player_forward * 3.0
 	pivot_node.look_at(player.global_position, Vector3.UP)
 	can_teleport = false
-	await get_tree().create_timer(4).timeout
+	await get_tree().create_timer(5).timeout
 	can_teleport = true

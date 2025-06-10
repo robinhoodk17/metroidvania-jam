@@ -76,7 +76,6 @@ signal break_interaction
 @onready var camera_3d: Camera3D = $CameraPivot/Camera3D
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var animation_tree: AnimationTree = $AnimationTree
-@onready var grappling_hook : Node3D = $GrapplingHookParent
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: ShapeCast3D = $MeshParent/LedgeGrab/CheckCollisions
@@ -84,7 +83,6 @@ signal break_interaction
 @onready var checkpoint_box = $MeshParent/Checkpoint
 
 """child interaction"""
-@onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
 @onready var pick_child: Area3D = $MeshParent/PickChild
 @onready var auto_aim: Area3D = $MeshParent/AutoAim
 
@@ -137,6 +135,7 @@ var oneshot_animation : AnimationNode
 @onready var dash_reset_timer: Timer = create_timer()
 @onready var queue_timer: Timer = create_timer()
 @onready var landing_timer: Timer = create_timer()
+@onready var alice: CharacterBody3D = instantiate_child("res://entities/player/alice.tscn")
 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
@@ -144,7 +143,16 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	timer.one_shot = one_shot
 	add_child(timer)
 	return timer
-	
+
+func instantiate_child(scene_path: String) -> Node:
+	var scene = load(scene_path) as PackedScene
+	if scene == null:
+		push_error("Failed to load Alice: " + scene_path)
+		return null
+	var instance = scene.instantiate()
+	$MeshParent/ChildContainer.add_child(instance)
+	return instance
+
 func _ready() -> void:
 #region Setting up combat
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)

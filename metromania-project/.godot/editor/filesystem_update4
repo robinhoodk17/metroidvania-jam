@@ -35,3 +35,4 @@ res://entities/player/alice.gd
 res://entities/player/alice.tscn
 res://peyman/enemy_flying.gd
 res://entities/player/hookshot.tscn
+res://ui/main_menu/main_menu.tscn
