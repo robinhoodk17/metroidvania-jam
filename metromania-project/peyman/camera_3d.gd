@@ -14,14 +14,10 @@ var shake_active: bool
 var slowmo_active: bool
 var title_active: bool
 var zoom_active: bool
-var base_y : float = 0.0  
-var vertical_limit : float = 0.5 
-var smoothing_speed : float = 5.0 
 @onready var default_rotation : Vector3 = rotation_degrees
-@onready var default_fov : float = 90
+@onready var default_fov : float = fov
  
 func _ready() -> void:
-	add_to_group("camera")
 	SignalbusPlayer.cam_shake.connect(on_cam_shake)
 	SignalbusPlayer.cam_slomo.connect(on_cam_slomo)
 	SignalbusPlayer.cam_tilt.connect(on_cam_tilt)
@@ -30,39 +26,6 @@ func _ready() -> void:
 func switch_player(parent: Node3D) -> void:
 	reparent(parent)
 	player = parent
-
-func _process(delta):
-	match mode:
-		CameraMode.CELESTE:
-			_update_celeste_mode(delta)
-		CameraMode.HOLLOW_KNIGHT:
-			_update_hollow_knight_mode(delta)
-	var pos : Vector3 = global_position.move_toward(target_position, 10 * delta)
-	var target_y = clamp(pos.y, base_y - vertical_limit, base_y + vertical_limit)
-	pos.y = lerp(pos.y, target_y, smoothing_speed * delta)
-	global_position = pos
-
-func _update_celeste_mode(delta):
-	var player_pos : Vector3 = player.global_position
-	var cam_pos : Vector3 = global_position
-	var offset : Vector2 = Vector2(player_pos.x - cam_pos.x, player_pos.y - cam_pos.y)
-	var move_camera : Vector3 = Vector3.ZERO
-	if abs(offset.x) > celeste_edge_margin.x:
-		var direction_x = sign(offset.x)
-		move_camera.x = direction_x * celeste_slow_follow_speed * delta
-	if abs(offset.y) > celeste_edge_margin.y:
-		var direction_y = sign(offset.y)
-		move_camera.y = direction_y * celeste_slow_follow_speed * delta
-	target_position += move_camera
-	if player_pos.distance_to(last_area_position) > celeste_area_threshold:
-		target_position.x = lerp(target_position.x, player_pos.x, min(1, celeste_fast_move_speed * delta))
-		target_position.y = lerp(target_position.y, player_pos.y, min(1, celeste_fast_move_speed * delta))
-		last_area_position = player_pos
- 
-func _update_hollow_knight_mode(delta):
-	var player_pos : Vector3 = player.global_position
-	target_position.x = lerp(target_position.x, player_pos.x, hollow_follow_speed * delta)
-	target_position.y = lerp(target_position.y, player_pos.y, hollow_follow_speed * delta)
  
 func on_cam_shake(duration: float = 0.3) -> void:
 	if shake_active:
@@ -134,3 +97,36 @@ func handle_camera_zoom(duration: float) -> Signal:
 	tween.tween_property(self, "fov", target_fov, duration)
 	tween.tween_property(self, "fov", default_fov, duration)
 	return tween.finished 
+ 
+func set_mode(new_mode) -> void:
+	mode = new_mode
+	target_position = global_transform.origin
+	last_area_position = target_position
+
+func _physics_process(delta: float):
+	match mode:
+		CameraMode.CELESTE:
+			_update_celeste_mode(delta)
+		CameraMode.HOLLOW_KNIGHT:
+			_update_hollow_knight_mode(delta)
+	global_transform.origin = global_transform.origin.move_toward(target_position, 10 * delta)
+
+func _update_celeste_mode(delta):
+	var player_pos : Vector3 = player.global_transform.origin
+	var cam_pos : Vector3 = global_transform.origin
+	var offset : Vector2 = Vector2(player_pos.x - cam_pos.x, player_pos.y - cam_pos.y)
+	var move_camera : Vector3 = Vector3.ZERO
+	if abs(offset.x) > celeste_edge_margin.x:
+		move_camera.x = sign(offset.x) * celeste_slow_follow_speed * delta
+	if abs(offset.y) > celeste_edge_margin.y:
+		move_camera.y = sign(offset.y) * celeste_slow_follow_speed * delta
+	target_position += move_camera
+	if player_pos.distance_to(last_area_position) > celeste_area_threshold:
+		target_position.x = lerp(target_position.x, player_pos.x, min(1, celeste_fast_move_speed * delta))
+		target_position.y = lerp(target_position.y, player_pos.y, min(1, celeste_fast_move_speed * delta))
+		last_area_position = player_pos
+
+func _update_hollow_knight_mode(delta):
+	var player_pos = player.global_transform.origin
+	target_position.x = lerp(target_position.x, player_pos.x, hollow_follow_speed * delta)
+	target_position.y = lerp(target_position.y, player_pos.y, hollow_follow_speed * delta)
