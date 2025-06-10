@@ -93,10 +93,10 @@ func _physics_process(delta) -> void:
 				state = "attack"
 				attack_timer = 0.0
 			elif distance_to_player > chase_distance:
-				if can_teleport && is_teleport == false:
-					teleport()
 				state = "patrol"
 				set_patrol_target()
+				if can_teleport && is_teleport == false:
+					teleport()
 			else:
 				chase_behavior(delta)
 		"attack":
@@ -252,14 +252,20 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 	delay_timer.start()
 	await delay_timer.timeout
 	delay_rotation = false
+   
 
 func die() -> void:
 	death.emit(self)
 	SignalbusPlayer.cam_shake.emit()
-	SignalbusPlayer.cam_slomo.emit()
 	SignalbusPlayer.cam_tilt.emit()
 	SignalbusPlayer.cam_zoom_in_out.emit()
+	enemy_slowmo(0.7)
+	await get_tree().create_timer(1).timeout
 	queue_free()
+
+func enemy_slowmo(slowmotion_factor : float = 0.5) -> void:
+	slowmotion_factor = clamp(0.5, 0.0, 1.0)
+	animation_tree.set("parameters/TimeScale/scale", slowmotion_factor)
 
 func rotate_pivot_toward_target(delta) -> void:
 	if delay_rotation or hurt:

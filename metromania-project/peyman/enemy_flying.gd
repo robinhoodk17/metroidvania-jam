@@ -89,11 +89,20 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 
 func die() -> void:
 	death.emit(self)
+	SignalbusPlayer.cam_shake.emit()
+	SignalbusPlayer.cam_tilt.emit()
+	SignalbusPlayer.cam_zoom_in_out.emit()
+	enemy_slowmo(0.7)
+	await get_tree().create_timer(1).timeout
 	queue_free()
 
 func attack() -> void:
 	attacking = true
 	attack_timer = attack_cooldown
+	
+func enemy_slowmo(slowmotion_factor : float = 0.5) -> void:
+	slowmotion_factor = clamp(0.5, 0.0, 1.0)
+	animation_tree.set("parameters/TimeScale/scale", slowmotion_factor)
 
 func move_towards_player(delta) -> void:
 	var direction : Vector3 = (player.global_transform.origin - global_transform.origin).normalized()
