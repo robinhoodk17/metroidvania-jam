@@ -104,6 +104,8 @@ func handle_camera_shake(duration : float) -> void:
 	shake_active = false
  
 func handle_cam_slowmo(duration : float) -> Signal:
+	if slowmo_tween && slowmo_tween.is_running():
+		slowmo_tween.kill()
 	slowmo_tween = get_tree().create_tween()
 	slowmo_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
 	slowmo_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
