@@ -59,7 +59,7 @@ signal break_interaction
 
 @export_group("Camera")
 @export var dampen_frames : int = 20
-@export var camera_zoom_min : float = 15
+@export var camera_zoom_min : float = 10
 @export var camera_zoom_max : float = 25
 
 @export_group("Nodes")
@@ -254,10 +254,10 @@ func position_camera(delta: float) -> void:
 		target_z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
 	target_position = Vector3(target_position.x, target_position.y, target_z)
 	if is_on_floor():
-		lerp_power = lerp(lerp_power, 5.0, delta * 10)
+		lerp_power = lerp(lerp_power, 7.5, delta * 10)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
-		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
+		lerp_power = lerp(lerp_power, velocity.length() / 2.0, delta * 10)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 
 func manage_action_inputs() -> void:
@@ -296,7 +296,7 @@ func throw_grappling(_x : float, _y : float) -> void:
 		alice.throw(target_position)
 
 	carrying_child = false
-	set_oneshot_animation("MyckThrow")
+	set_oneshot_animation("Myck_Throw_12")
 	
 	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
@@ -355,7 +355,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
-			set_oneshot_animation("Myck_Land")
+			set_oneshot_animation("Myck_Land_12")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
 			SignalbusPlayer.landed.emit()
@@ -395,9 +395,11 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Myck_Jump")
+	set_oneshot_animation("Myck_Jump_12")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
+	if current_run_state == run_state.LEDGE_GRABBING:
+		velocity.y = jump_velocity * 1.3
 	velocity += get_platform_velocity()/4.0
 	if abs(velocity.x) > speed:
 		running_time = acceleration
@@ -435,7 +437,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
-	set_oneshot_animation("Myck_Dash")
+	set_oneshot_animation("Myck_Dash_12")
 	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
@@ -550,6 +552,7 @@ func run_state_machine(delta: float) -> void:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
+			#animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
 			run_animation.travel("Ledge_Grab")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
@@ -653,17 +656,17 @@ func attack(_x : float, _y : float) -> void:
 	_x = looking
 	if abs(_y) < 0.5:
 		_y = 0
-		set_oneshot_animation("Myck_AttackFront")
+		set_oneshot_animation("Myck_HoriAttack_24")
 		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
 		if _y > 0:
 			hit_box.rotation = Vector3(0,0,PI/2)
-			set_oneshot_animation("Myck_AttackUp")
+			set_oneshot_animation("Myck_UpAttack_12")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
-			set_oneshot_animation("Myck_AttackBelow")
+			set_oneshot_animation("Myck_DownAttack_12")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
@@ -798,7 +801,7 @@ func handle_camera_shake(duration : float) -> void:
 		)
 		camera_3d.transform.origin = initial_transform.origin + offset
 		elapsed_time += get_process_delta_time()
-		await get_tree().process_frame
+		#await get_tree().process_frame
 	camera_3d.transform = initial_transform
 	shake_active = false
  

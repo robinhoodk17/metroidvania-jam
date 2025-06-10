@@ -1,13 +1,14 @@
-res://entities/player/alice.tscn
+res://aa&&root/player.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
+res://entities/Myck/Myck_Animations/Myck_AttackBelow.res
 res://entities/Myck/Myck_Animations/animation_tree.tres
 res://materials/shader_materials/vfx.tres
 res://peyman/enemy_tree.tres
 res://entities/player/animation_tree.tres
+res://entities/player/player.gd
 res://scenes/master.tscn
-res://aa&&root/player.tscn
 res://peyman/enemy_rigid.tscn
 res://scenes/world/prompt.tscn
 res://scenes/world/game_events/triggers/lever/lever.tscn
@@ -17,5 +18,6 @@ res://scenes/beginning_area/tutorial/tutorial.tscn
 res://scenes/beginning_area/combat_tutorial/combat_tutorial.tscn
 res://scenes/world/game_events/events/spawn_enemies/spawn_enemies.tscn
 res://aa&&root/main.tscn
+res://entities/player/alice.tscn
 res://entities/player/hookshot.tscn
 res://ui/main_menu/main_menu.tscn
