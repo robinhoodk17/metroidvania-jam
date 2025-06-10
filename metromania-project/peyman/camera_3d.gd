@@ -1,22 +1,21 @@
 extends Camera3D
-
 @onready var player : Node3D = get_parent()
 @onready var mode : CameraMode = CameraMode.CELESTE 
 @onready var target_position : Vector3 = global_position
 @onready var last_area_position : Vector3 = target_position
-var celeste_edge_margin := Vector2(3.0, 1.5) 
-var celeste_slow_follow_speed := 2.0         
-var celeste_fast_move_speed := 15.0         
-var celeste_area_threshold := 5.0           
-var hollow_follow_speed := 7.0               
+@onready var default_rotation : Vector3 = rotation_degrees
+@onready var default_fov : float = fov 
+@export var smoothing_frame_count : int = 20  
+var celeste_edge_margin :  Vector2 = Vector2(3.0, 1.5) 
+var celeste_slow_follow_speed : float = 2.0         
+var celeste_fast_move_speed : float = 15.0         
+var celeste_area_threshold : float = 5.0           
+var hollow_follow_speed : float = 7.0               
 enum CameraMode { CELESTE, HOLLOW_KNIGHT }
 var shake_active: bool
 var slowmo_active: bool
 var title_active: bool
 var zoom_active: bool
-@onready var default_rotation : Vector3 = rotation_degrees
-@onready var default_fov : float = fov 
-@export var smoothing_frame_count : int = 20  
 var recent_y_positions : PackedFloat32Array = PackedFloat32Array()
  
 func _ready() -> void:
