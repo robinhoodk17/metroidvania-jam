@@ -1,8 +1,9 @@
 shader_type spatial;
-render_mode cull_disabled;
+render_mode cull_back;
 
 group_uniforms Basic;
-uniform sampler2D base_texture; 
+uniform vec4 base_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform sampler2D base_texture: filter_nearest; 
 
 group_uniforms CelShading;
 uniform vec4 lit_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
@@ -11,7 +12,7 @@ uniform float cel_threshold: hint_range(0.0, 1.0) = 0.5;
 uniform float cel_sharpness: hint_range(0.0, 1.0) = 0.0;
 
 void fragment() {
-	ALBEDO = texture(base_texture, UV).rgb;
+	ALBEDO = texture(base_texture, UV).rgb * base_color.rgb;
 }
 
 void light() {

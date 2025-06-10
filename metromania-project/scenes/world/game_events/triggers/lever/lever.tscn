@@ -1,0 +1,80 @@
+[gd_scene load_steps=7 format=3 uid="uid://62blrovmjyqf"]
+
+[ext_resource type="Script" uid="uid://bssudkbbj1j31" path="res://scenes/world/game_events/triggers/lever/lever.gd" id="1_j78vh"]
+[ext_resource type="PackedScene" uid="uid://eqjp8tbfi6vs" path="res://scenes/world/game_events/triggers/lever/lever.blend" id="2_q7vxq"]
+[ext_resource type="Texture2D" uid="uid://ct3ukhn1lrh44" path="res://ui/assets/icons/finger-point-right.png" id="3_wu3d1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q7vxq"]
+size = Vector3(1, 1.099, 1.02695)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_q7vxq"]
+viewport_path = NodePath("Sprite3D/SubViewport")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7vxq"]
+bg_color = Color(0.278431, 0.278431, 0.278431, 0.137255)
+
+[node name="Lever" type="Area3D" node_paths=PackedStringArray("animation_player")]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_j78vh")
+animation_player = NodePath("lever/AnimationPlayer")
+
+[node name="lever" parent="." instance=ExtResource("2_q7vxq")]
+
+[node name="Cube_001" parent="lever" index="1"]
+transform = Transform3D(0.130998, 1.1856e-17, -2.21335e-17, -1.50891e-17, 0.0879973, -0.356435, -4.21982e-18, 0.0533947, 0.587424, 7.92035e-17, 0.356701, -0.494998)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425827, 0)
+shape = SubResource("BoxShape3D_q7vxq")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2126, 0)
+billboard = 1
+texture = SubResource("ViewportTexture_q7vxq")
+
+[node name="SubViewport" type="SubViewport" parent="Sprite3D"]
+transparent_bg = true
+size = Vector2i(175, 175)
+
+[node name="Panel" type="Panel" parent="Sprite3D/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q7vxq")
+
+[node name="Label" type="Label" parent="Sprite3D/SubViewport/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 150
+text = "10"
+
+[node name="Directions" type="Node3D" parent="Sprite3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35426, 0)
+
+[node name="Right" type="Sprite3D" parent="Sprite3D/Directions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -1.5, -2.3)
+pixel_size = 0.15
+billboard = 1
+texture = ExtResource("3_wu3d1")
+
+[node name="Left" type="Sprite3D" parent="Sprite3D/Directions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1.5, 2.3)
+flip_h = true
+pixel_size = 0.15
+billboard = 1
+texture = ExtResource("3_wu3d1")
+
+[editable path="lever"]

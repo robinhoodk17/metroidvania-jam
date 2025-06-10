@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://buglwrfsemxbe"]
+
+[ext_resource type="Script" uid="uid://c02xn1w16ggmr" path="res://scenes/world/game_events/events/self_free/self_free.gd" id="1_kra1a"]
+
+[node name="SelfFree" type="Node3D"]
+script = ExtResource("1_kra1a")

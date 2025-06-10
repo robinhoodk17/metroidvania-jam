@@ -47,22 +47,29 @@ switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_66dil"]
+xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fowm0"]
+xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hv4gf"]
+xfade_time = 0.3
 switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b005u"]
+xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o1rvb"]
+xfade_time = 0.3
 switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hvy0c"]
+xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_igwd3"]
+xfade_time = 0.3
 switch_mode = 2
 advance_mode = 2
 
@@ -79,12 +86,12 @@ states/jump/position = Vector2(427, -55)
 states/locomotion/node = SubResource("AnimationNodeStateMachine_kmjeu")
 states/locomotion/position = Vector2(427, 111.333)
 transitions = ["Start", "locomotion", SubResource("AnimationNodeStateMachineTransition_ftwnj"), "jump", "locomotion", SubResource("AnimationNodeStateMachineTransition_05bod"), "locomotion", "jump", SubResource("AnimationNodeStateMachineTransition_66dil"), "locomotion", "Robot_Punch", SubResource("AnimationNodeStateMachineTransition_fowm0"), "Robot_Punch", "locomotion", SubResource("AnimationNodeStateMachineTransition_hv4gf"), "locomotion", "Robot_Wave", SubResource("AnimationNodeStateMachineTransition_b005u"), "Robot_Wave", "locomotion", SubResource("AnimationNodeStateMachineTransition_o1rvb"), "locomotion", "Robot_No", SubResource("AnimationNodeStateMachineTransition_hvy0c"), "Robot_No", "locomotion", SubResource("AnimationNodeStateMachineTransition_igwd3")]
-graph_offset = Vector2(92, -1)
+graph_offset = Vector2(-52, -67)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
 
 [resource]
-graph_offset = Vector2(-467.3, 121.4)
+graph_offset = Vector2(-586, 250)
 nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
 nodes/OneShotAnimation/position = Vector2(-400, 300)
 nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_ftwnj")

@@ -1,0 +1,34 @@
+[gd_scene load_steps=8 format=3 uid="uid://cskc4trs2sigm"]
+
+[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_uw1b6"]
+[ext_resource type="PackedScene" uid="uid://mwee8d8oejbe" path="res://scenes/beginning_area/combat_scene/combat_scene.blend" id="2_a533q"]
+[ext_resource type="PackedScene" uid="uid://buglwrfsemxbe" path="res://scenes/world/game_events/events/self_free/self_free.tscn" id="4_hcfm3"]
+[ext_resource type="PackedScene" uid="uid://62blrovmjyqf" path="res://scenes/world/game_events/triggers/lever/lever.tscn" id="4_ry0gu"]
+[ext_resource type="PackedScene" uid="uid://bk4hxejv0l7ap" path="res://peyman/enemy_rigid.tscn" id="6_3wvfj"]
+[ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="6_vxc8r"]
+[ext_resource type="PackedScene" uid="uid://x08nn6lsnink" path="res://peyman/enemy_flying.tscn" id="7_3wvfj"]
+
+[node name="Node" instance=ExtResource("1_uw1b6")]
+
+[node name="combat_scene" parent="Map" index="0" instance=ExtResource("2_a533q")]
+
+[node name="SelfFree" parent="Map" index="1" node_paths=PackedStringArray("triggers") instance=ExtResource("4_hcfm3")]
+triggers = [NodePath("Lever")]
+
+[node name="Lever" parent="Map/SelfFree" index="0" instance=ExtResource("4_ry0gu")]
+transform = Transform3D(-1.74846e-08, 0, 0.4, 0, 0.4, 0, -0.4, 0, -1.74846e-08, 1.83899, -14.6467, 0)
+
+[node name="Entrance" type="Node3D" parent="Interactables(not_in_blender)" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9165, 0)
+script = ExtResource("6_vxc8r")
+entrance_number = 1
+
+[node name="Entrance2" type="Node3D" parent="Interactables(not_in_blender)" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9165, 0)
+script = ExtResource("6_vxc8r")
+
+[node name="enemy_rigid" parent="." index="6" instance=ExtResource("6_3wvfj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6708, -13.29, 0)
+
+[node name="CharacterBody3D" parent="." index="7" instance=ExtResource("7_3wvfj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.175, -3.587, 0)

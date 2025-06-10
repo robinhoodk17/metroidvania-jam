@@ -2,64 +2,91 @@ extends CharacterBody3D
 class_name PlayerController
 
 enum run_state {IDLE, WALKING, RUNNING, BRAKING, WALL_SLIDING, STAGGERING, LEDGE_GRABBING}
-enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, HOOKED, JUMPING, BLOCKED, DASHING}
+enum action_state{IDLE_ACTION, ATTACKING, LANDING, GRAPPLING, FLYINGTOGRAPPLE, HOOKED, JUMPING, BLOCKED, DASHING, INTERACTING}
 enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
+
+signal interacted
+signal break_interaction
 
 @export var slow_time : bool = false
 @export_group("Player Movement")
 ##how long an action remains queued before it gets deleted
 ##for example, when a player jumps before reaching the ground
-@export var queue_time : float = 0.35
+@export var queue_time : float = 0.15
 @export var queue_time_for_attacks : float = 1.0
+@export var landing_time : float = .5
 @export_subgroup("running")
 ##player max speed
-@export var speed : float = 0.5
+@export var speed : float = 20.0
 ##how accelerating from 0 to max speed looks like
 @export var acceleration_curve : Curve
 @export var deceleration_curve : Curve
 ##the number of seconds required to accelerate from 0 to max speed
-@export var acceleration : float = 0.7
+@export var acceleration : float = 3.0
 ##the number of seconds required to brake from max to 0
-@export var deceleration : float = .15
+@export var deceleration : float = .35
 @export_subgroup("jump")
-@export var jump_velocity : float = 15.0
+@export var jump_velocity : float = 13.0
 @export var jump_floatiness : float = 0.15
 ##how big is gravity
 @export var going_down_speed : float = 3.0
 @export_subgroup("wall jump")
 ##the velocity in x repulsing the player from the wall
-@export var wall_jump_repulsion : float = 10.0
-@export var wall_jump_time : float = 0.25
+@export var wall_jump_repulsion : float = 12.5
+@export var wall_jump_time : float = 0.375
 ##when the player is pressing against a wall, how much it stops falling
-@export var wall_slide_gravity : float = 0.2
+@export var wall_slide_gravity : float = 0.85
 @export var dash_velocity : float = 30.0
-@export var dash_duration : float = 0.5
-@export var coyote_time : float = 0.1
-@export var ledge_grab_offset : float = -.35
+@export var dash_duration : float = 0.25
+@export var coyote_time : float = 0.25
+@export var ledge_grab_offset : float = -.15
+
 @export_group("Combat")
 @export var combo_reset : float = 1.5
+@export var knockback_of_attack : float = 0.75
 @export var max_combo : int = 3
 @export var stagger_speed : float = 20.0
+@export var hitbox_start_position : Vector3 = Vector3(0,0.75,0)
+@export var hitbox_vertical_offset : float = 2
+@export var hitbox_horizontal_offset : float = 1.5
+@export var self_stagger_distance : float = 2.0
+@export var self_stagger_speed : float = 7.5
+
 @export_group("Hookshot")
 @export var hookshot_range : float = 10.0
 @export var movement_to_grapple_speed : float = 40.0
 @export var gravity_damp_while_hooking : float = 0.25
+
 @export_group("Camera")
 @export var dampen_frames : int = 20
+@export var camera_zoom_min : float = 15
+@export var camera_zoom_max : float = 25
+
 @export_group("Nodes")
 @export var mesh : Marker3D
-@export var animation_player : AnimationPlayer
+@export var VFX_anim_player : AnimationPlayer
+@export var Hit_VFX : Node3D
+@export var left_right : GUIDEAction
+@export var up_down : GUIDEAction
+@export var jump_action : GUIDEAction
+@export var dash_action : GUIDEAction
+@export var throw_action : GUIDEAction
+@export var attack_action : GUIDEAction
 
+@onready var camera_3d: Camera3D = $CameraPivot/Camera3D
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var combo_reset_timer: Timer = $ComboResetTimer
 @onready var dash_reset_timer: Timer = $DashResetTimer
 @onready var queue_timer: Timer = $QueueTimer
+@onready var landing_timer: Timer = $LandingTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var grappling_hook : Node3D = $GrapplingHookParent
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
-@onready var check_collisions: RayCast3D = $MeshParent/LedgeGrab/CheckCollisions
+@onready var check_collisions: ShapeCast3D = $MeshParent/LedgeGrab/CheckCollisions
+@onready var spike_hurtbox = $MeshParent/SpikeHurtbox
+@onready var checkpoint_box = $MeshParent/Checkpoint
 
 """child interaction"""
 @onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
@@ -68,10 +95,19 @@ enum inputs{JUMP, ATTACK, THROW_CHILD, DASH, NONE}
 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
-var current_action_state : action_state = action_state.IDLE_ACTION
+var current_action_state : action_state = action_state.IDLE_ACTION : 
+	set(value):
+		if current_action_state == action_state.INTERACTING:
+			break_interaction.emit()
+		current_action_state = value
+
+var last_interaction : float = -1.0
+
+var checkpoint : Vector3
 
 var carrying_child : bool = true
 var direction_x : float = 0.0
+var looking : int = 1
 var running_time : float = 0.0
 var braking_time : float = 0.0
 var jumping_time : float = 0.0
@@ -80,40 +116,43 @@ var dash_spent : bool = false
 var input_queued : inputs = inputs.NONE
 var hookshot_position : Vector3
 var animating : bool = false
+var airborne : bool = false
 var current_gravity_force : float = 1.0
 
 var combo_number : int = 0
 var staggering_towards : Vector3
 var staggering_distance : float
 var traveled_stagger_distance : float
+var attack_direction : Vector2
 
 """camera"""
 var dampened_y_array : Array[float]
 var averaged_y : float
 var current_y : int = 0
 var screen_middle : Vector2
+var lerp_power : float = 2.5
 
 """animation"""
 var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
-
-"""new_variables"""
-var skeleton : Skeleton3D
-var hit_box : Area3D
-var hurt_box : Area3D
-var bone_attachment = BoneAttachment3D
-var _damage := 10
-
+  
 func _ready() -> void:
 #region Setting up combat
-	handle_the_node()
-	var attack_length = add_call_method_to_animation("Robot_Punch", "change_action_state", 0.0, [action_state.ATTACKING])
-	add_call_method_to_animation("Robot_Punch", "change_action_state", attack_length, [action_state.IDLE_ACTION])
-	add_call_method_to_animation("Robot_Punch", "play", 0.0, ["Attack1"], $MeshParent/Robot/VFX.get_path())
+	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
+	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
 	
 #endregion
+	
+	jump_action.triggered.connect(queue_jump)
+	attack_action.triggered.connect(queue_attack)
+	throw_action.triggered.connect(queue_throw)
+	dash_action.triggered.connect(queue_dash)
+
+	checkpoint = global_position
+	checkpoint_box.area_entered.connect(store_checkpoint)
+	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
 	camera_pivot.top_level = true
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
@@ -129,6 +168,29 @@ func _ready() -> void:
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
 
+func queue_dash() -> void:
+	input_queued = inputs.DASH
+	queue_timer.start(queue_time)
+
+func queue_throw() -> void:
+	input_queued = inputs.THROW_CHILD
+	queue_timer.start(queue_time)
+
+func queue_attack() -> void:
+	input_queued = inputs.ATTACK
+	queue_timer.start(queue_time_for_attacks)
+
+func queue_jump() -> void:
+	input_queued = inputs.JUMP
+	queue_timer.start(queue_time)
+	
+
+func store_checkpoint(body : Node3D = null, _position : Vector3 = Vector3.ZERO):
+	if body != null:
+		checkpoint = body.global_position
+	if _position != Vector3.ZERO:
+		checkpoint = _position
+
 func pick_up_child(_body : Node3D = null):
 	if carrying_child:
 		return
@@ -136,19 +198,28 @@ func pick_up_child(_body : Node3D = null):
 		carrying_child = true
 		return
 		
-	if _body.is_in_group("player"):
-		_body.turn_off()
-		carrying_child = true
+	#if _body.is_in_group("player"):
+		#_body.turn_off()
+		#carrying_child = true
 
 func _physics_process(delta: float) -> void:
 	if slow_time:
 		Engine.time_scale = 0.25
+	if queue_timer.is_stopped():
+		input_queued = inputs.NONE
 	position_camera(delta)
+	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
-	handle_gravity(delta)
 
 	move_and_slide()
+
+func attach_camera() -> void:
+	for i : int in range(dampen_frames):
+		dampened_y_array.append(global_position.y)
+		averaged_y = global_position.y
+	camera_pivot.global_position = global_position
+	
 
 func position_camera(delta: float) -> void:
 	current_y = (current_y + 1) % dampened_y_array.size()
@@ -157,23 +228,28 @@ func position_camera(delta: float) -> void:
 	for i : float in dampened_y_array:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
+	var target_position = (Vector3(global_position.x, averaged_y, global_position.z) + alice.global_position)/2
 	if is_on_floor():
-		camera_pivot.global_position = lerp(camera_pivot.global_position, global_position, 5.0 * delta)
+		lerp_power = lerp(lerp_power, 5.0, delta * 10)
+		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
-		var target_position = Vector3(global_position.x, averaged_y, global_position.z)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, 2.5 * delta)
+		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
+		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
+	camera_3d.global_position.z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
 
 func manage_action_inputs() -> void:
-	if Input.is_action_just_pressed("Space"):
+	return
+	if jump_action.is_triggered():
 		input_queued = inputs.JUMP
 		queue_timer.start(queue_time)
-	if Input.is_action_just_pressed("LMB"):
+	#if attack_action.is_triggered():
+	if attack_action.is_triggered():
 		input_queued = inputs.ATTACK
 		queue_timer.start(queue_time_for_attacks)
-	if Input.is_action_just_pressed("RMB"):
+	if throw_action.is_triggered():
 		input_queued = inputs.THROW_CHILD
 		queue_timer.start(queue_time)
-	if Input.is_action_just_pressed("Shift"):
+	if dash_action.is_triggered():
 		input_queued = inputs.DASH
 		queue_timer.start(queue_time)
 	if queue_timer.is_stopped():
@@ -183,17 +259,12 @@ func throw_grappling(_x : float, _y : float) -> void:
 	if !carrying_child:
 		alice.retract()
 		return
+	SignalbusPlayer.yeeted_child.emit()
 	current_gravity_force = gravity_damp_while_hooking
 	var target : Node3D = null
 	
-	if auto_aim.has_overlapping_bodies():
-		var target_distance : float = 1000
-		for i : Node3D in auto_aim.get_overlapping_bodies():
-			var candidate_position : Vector3 = i.global_position
-			var candidate_distance : float = candidate_position.distance_squared_to(global_position)
-			if candidate_distance < target_distance:
-				target = i
-				target_distance = candidate_distance
+	if auto_aim.showing_which != null:
+		target = auto_aim.showing_which
 	alice.global_position = 2.0 * mesh.global_basis.x + global_position
 	if target != null:
 		alice.throw(target.global_position)
@@ -202,7 +273,7 @@ func throw_grappling(_x : float, _y : float) -> void:
 		alice.throw(target_position)
 
 	carrying_child = false
-	set_oneshot_animation("Robot_Wave")
+	set_oneshot_animation("MyckThrow")
 	
 	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
@@ -248,35 +319,60 @@ func handle_gravity(delta: float) -> void:
 			if velocity.y <= 0.0:
 				current_gravity_force = wall_slide_gravity
 				jumping_time = jump_floatiness
-
+	
 	if current_action_state == action_state.HOOKED:
 		current_gravity_force = 0.0
 	if jumping_time < jump_floatiness:
 		jumping_time += delta
-		if Input.is_action_pressed("Space"):
+		if jump_action.value_bool:
 			velocity.y = jump_velocity
+	if up_down.value_axis_1d < -0.8:
+		current_gravity_force *= 2.0
 	if is_on_floor():
 		second_jump = false
 		dash_spent = false
+		if airborne:
+			set_oneshot_animation("Myck_Land")
+			landing_timer.start(landing_time)
+			velocity.x *= 0.9
+			SignalbusPlayer.landed.emit()
+			#if abs(get_platform_velocity().length_squared()) > 1.0:
+				#current_run_state = run_state.WALKING
+				#running_time = acceleration * 0.5
+				#velocity = get_platform_velocity()
+		airborne = false
 		coyote_timer.start(coyote_time)
 	else:
+		airborne = true
 		if velocity.y < 0:
 			velocity += get_gravity() * going_down_speed * 1.15 * delta * current_gravity_force
 		else:
 			velocity += get_gravity() * going_down_speed * 3.0 * delta * current_gravity_force
-
-	if velocity.x < 0:
-		mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
-	if  velocity.x > 0:
-		mesh.basis = Basis.IDENTITY
+	if current_run_state == run_state.WALKING or current_action_state == action_state.BLOCKED:
+		if direction_x < 0.0:
+			mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
+			looking = -1
+		if direction_x > 0.0:
+			mesh.basis = Basis.IDENTITY
+			looking = 1
+		return
+	if current_run_state != run_state.STAGGERING and current_run_state != run_state.WALL_SLIDING:
+		if velocity.x < 0:
+			mesh.basis = Basis.IDENTITY.rotated(mesh.basis.y,PI)
+			looking = -1
+		if  velocity.x > 0:
+			mesh.basis = Basis.IDENTITY
+			looking = 1
 
 func jump() -> void:
+	if coyote_timer.is_stopped() and !carrying_child:
+		return
 	if !second_jump or current_run_state == run_state.WALL_SLIDING:
 		input_queued = inputs.NONE
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Robot_Jump")
+	set_oneshot_animation("Myck_Jump")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	velocity += get_platform_velocity()/4.0
@@ -290,6 +386,8 @@ func jump() -> void:
 			do_wall_jump()
 			return
 		second_jump = true
+	SignalbusPlayer.jumped.emit()
+	coyote_timer.stop()
 
 func do_wall_jump() -> void:
 	current_action_state = action_state.BLOCKED
@@ -298,23 +396,28 @@ func do_wall_jump() -> void:
 	if mesh.basis == Basis.IDENTITY:
 		_sign = -1
 	velocity.x = wall_jump_repulsion * _sign
+	direction_x = _sign
+	running_time = 0.5
 	dash_reset_timer.start(wall_jump_time)
+	SignalbusPlayer.wall_jumped.emit()
 
 func dash(horizontal_direction : float, vertical_direction : float) -> void:
+	if !carrying_child:
+		return
 	if horizontal_direction == 0.0 and vertical_direction == 0.0:
 		horizontal_direction = mesh.global_basis.z.z
 	dash_spent = true
 	velocity = Vector3(horizontal_direction, vertical_direction, 0).normalized() * dash_velocity
 	current_action_state = action_state.DASHING
+	current_run_state = run_state.RUNNING
+	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
+	set_oneshot_animation("Myck_Dash")
+	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
 func run_state_machine(delta: float) -> void:
-	if current_run_state == run_state.STAGGERING:
-		velocity = staggering_towards * stagger_speed
-		traveled_stagger_distance += stagger_speed * delta
-		if traveled_stagger_distance > staggering_distance:
-			current_run_state = run_state.IDLE
+	if current_action_state == action_state.INTERACTING:
 		return
 	
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
@@ -327,7 +430,8 @@ func run_state_machine(delta: float) -> void:
 		run_animation.travel("idle")
 		return
 		
-	var run_direction = Input.get_axis("move_left", "move_right")
+	var run_direction = left_right.value_axis_1d
+	var vertical_direction = up_down.value_axis_1d
 	var aiming_for_wall : bool = false
 	if ledge_grab.is_colliding() and !check_collisions.is_colliding():
 		if velocity.y < 0:
@@ -340,10 +444,11 @@ func run_state_machine(delta: float) -> void:
 					global_position.y = collision_point.y + ledge_grab_offset
 					second_jump = false
 					dash_spent = false
+					SignalbusPlayer.grabbed_ledge.emit()
 					return
 	
 	if wall_jump.is_colliding() and !current_run_state == run_state.LEDGE_GRABBING:
-		aiming_for_wall = run_direction * mesh.global_basis.z.z > 0
+		aiming_for_wall = direction_x * mesh.global_basis.z.z > 0
 		#print_debug("overlapping bodies and not ledge grab ", current_action_state)
 		if aiming_for_wall and !is_on_floor():
 			#print_debug("facing and pressing button")
@@ -361,8 +466,9 @@ func run_state_machine(delta: float) -> void:
 		run_state.IDLE:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
-			if !animating:
 				run_animation.travel("idle")
+			else:
+				run_animation.travel("Myck_Air")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -379,25 +485,30 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
 			else:
 				velocity.x = abs(velocity.x) * run_direction
-			if !animating:
+			if is_on_floor():
 				run_animation.travel("walk")
+			else:
+				run_animation.travel("Myck_Air")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
+				SignalbusPlayer.braked.emit()
 				current_run_state = run_state.IDLE
 				running_time = 0.0
-			if running_time >= acceleration and is_on_floor():
+			if running_time >= acceleration and is_on_floor() and landing_timer.is_stopped():
 				current_run_state = run_state.RUNNING
+				SignalbusPlayer.accelerated_to_full_speed.emit()
 
 		run_state.RUNNING:
-			if !is_on_floor():
+			if !is_on_floor() or !landing_timer.is_stopped():
 				current_run_state = run_state.WALKING
-			if !animating:
+			if is_on_floor():
 				run_animation.travel("run")
+			else:
+				run_animation.travel("Myck_Air")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
-				if current_run_state == run_state.RUNNING:
-					braking_time = 0.0
-					current_run_state = run_state.BRAKING
-					return
+				braking_time = 0.0
+				current_run_state = run_state.BRAKING
+				return
 			if abs(velocity.x) < speed:
 				velocity.x = run_direction * speed
 			else:
@@ -412,7 +523,7 @@ func run_state_machine(delta: float) -> void:
 				running_time = deceleration
 
 		run_state.WALL_SLIDING:
-			if !wall_jump.is_colliding() or is_on_floor() or !aiming_for_wall:
+			if !wall_jump.is_colliding() or is_on_floor() or vertical_direction < -0.8:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
@@ -420,11 +531,20 @@ func run_state_machine(delta: float) -> void:
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE
+	
+		run_state.STAGGERING:
+			traveled_stagger_distance += stagger_speed * delta
+			if traveled_stagger_distance > staggering_distance:
+				current_run_state = run_state.WALKING
+				running_time = 0
+				velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
+				return
+			velocity = staggering_towards * stagger_speed
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
-	var horizontal_direction : float = Input.get_axis("move_left", "move_right")
-	var vertical_direction = Input.get_axis("move_backward", "move_forward")
+	var horizontal_direction : float = left_right.value_axis_1d
+	var vertical_direction : float = up_down.value_axis_1d
 
 	manage_action_inputs()
 	if current_run_state == run_state.STAGGERING:
@@ -480,6 +600,11 @@ func action_state_machine(_delta: float) -> void:
 		action_state.DASHING:
 			if is_on_floor():
 				current_action_state = action_state.IDLE_ACTION
+		
+		action_state.INTERACTING:
+			if horizontal_direction * last_interaction < 0.0:
+				last_interaction = horizontal_direction
+				interacted.emit(horizontal_direction)
 
 func set_oneshot_animation(animation_name : String, time_scale : float = 1.0, _blend : float = 1.0):
 	animation_tree.set("parameters/TimeScale/scale", time_scale)
@@ -501,78 +626,81 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
-	var _attack_string : String = str("attack", combo_number)
-	set_oneshot_animation("Robot_Punch")
-	#set_oneshot_animation("Robot_Punch")
-	combo_number = (combo_number + 1) % max_combo
+	var centered = 1
+	_x = looking
+	if abs(_y) < 0.5:
+		_y = 0
+		set_oneshot_animation("Myck_AttackFront")
+		hit_box.rotation = Vector3.ZERO
+	else:
+		_y = sign(_y)
+		centered = 0
+		if _y > 0:
+			hit_box.rotation = Vector3(0,0,PI/2)
+			set_oneshot_animation("Myck_AttackUp")
+		else :
+			hit_box.rotation = Vector3(0,0,-PI/2)
+			set_oneshot_animation("Myck_AttackBelow")
+			
+	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
+	 _y * hitbox_vertical_offset, 0)
+	attack_direction = Vector2(_x,_y)
+	enable_hit_box(1.0)
+	hit_box.show()
+	VFX_anim_player.play("slash1")
+	await get_tree().create_timer(1.0).timeout
+	hit_box.hide()
+
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
+	print("player takes damage")
+	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
 		staggering_towards = global_position - _position
+		staggering_distance = knockback
 		GlobalsPlayer.current_hp -= amount
 		SignalbusPlayer.took_damage.emit(amount, knockback)
+
+func take_damage_and_respawn(amount : int = 0) -> void:
+	await Ui.fade_to_black(0.25)
+	current_action_state = action_state.BLOCKED
+	current_run_state = run_state.IDLE
+	GlobalsPlayer.current_hp -= amount
+	global_position = checkpoint
+	await Ui.fade_to_clear(0.25)
+	current_action_state = action_state.IDLE_ACTION
+
+func deal_damage(area : Area3D) -> void:
+	print_debug("dealing damage")
 #endregion
 
-#region create_nodes
-func handle_the_node() -> void:
-	create_bone_attachment()
-	create_hit_box()
-	create_hurt_box()
-	
-func create_bone_attachment() -> void:
-	skeleton = find_child("Skeleton3D") 
-	if not skeleton:
-		push_error("Skeleton3D node not found!")
-		return
-	bone_attachment = BoneAttachment3D.new()
-	skeleton.add_child(bone_attachment)
-
-func create_hit_box():
-	hit_box = Area3D.new()
-	hit_box.name = "hit_box"
-	hit_box.collision_layer = 0
-	hit_box.collision_mask = 1 << 5
-	hit_box.monitorable = false
-	hit_box.monitoring = false
-	var collision_shape := CollisionShape3D.new()
-	var sphere_shape := SphereShape3D.new()
-	sphere_shape.radius = 0.5  
-	collision_shape.shape = sphere_shape
-	hit_box.add_child(collision_shape)
-	bone_attachment.add_child(hit_box)
-	hit_box.area_entered.connect(on_hit_box_entered)
+#region hit_hurt
+@export var hit_box : Area3D 
+@export var hurt_box: Area3D 
+var _damage := 10
 
 func on_hit_box_entered(area: Area3D) -> void:
+
+	traveled_stagger_distance = 0
+	current_run_state = run_state.STAGGERING
+	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
+	staggering_distance = self_stagger_distance
+	Hit_VFX.show()
 	var parent: Node3D = area.get_parent()
-	if parent && parent.has_method("take_damage"):
-		parent.take_damage(_damage)
+	print_debug(parent)
+	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
+		parent.take_damage(_damage, knockback_of_attack, global_position)
+	await get_tree().create_timer(0.25).timeout
+	Hit_VFX.hide()
 
-func create_hurt_box() -> void:
-	hurt_box = Area3D.new()
-	hurt_box.collision_layer = 1 << 4
-	hurt_box.collision_mask = 0
-	var collision_shape := CollisionShape3D.new()
-	var capsule_shape := CapsuleShape3D.new()
-	capsule_shape.radius = 0.5 - 0.1
-	capsule_shape.height = 2.0 - 0.4
-	collision_shape.shape = capsule_shape
-	hurt_box.add_child(collision_shape)
-	hurt_box.monitoring = false
-	add_child(hurt_box)
-
-func enable_hit_box(bone_name: String = "Palm1.R", time_sec: float = 2) -> void:
-	var bone_node := skeleton.get_node_or_null(bone_name)
-	if not bone_node:
-		push_error("Bone node '%s' not found!" % bone_name)
-		return
-	bone_attachment.bone_name = "Palm1.R"
+func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true
 	await get_tree().create_timer(time_sec).timeout
 	hit_box.monitoring = false
 
-func add_call_method_to_animation(animation_name : String = "attack1", method_name : String = "toggle_lock", time_sec : float = 0.0, args : Array = [1.3], relative_path : String = "none") -> float:
-	var animation : Animation = animation_player.get_animation(animation_name)
+func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
+	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
 	if animation == null:
 		push_error("Animation % not found!" % animation_name)
 		return 0.0
@@ -583,4 +711,9 @@ func add_call_method_to_animation(animation_name : String = "attack1", method_na
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("g"):
+		set_oneshot_animation("Robot_Punch")
+		await get_tree().create_timer(0.25).timeout
+		enable_hit_box(0.2)
 #endregion 

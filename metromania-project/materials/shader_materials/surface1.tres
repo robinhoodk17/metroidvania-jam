@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bc1xo71qbof0p"]
+
+[ext_resource type="Shader" uid="uid://1ubhfq3bbpak" path="res://materials/shaders/toon_shader.gdshader" id="1_kd6a7"]
+[ext_resource type="Texture2D" uid="uid://dl87f6gsd2lxx" path="res://entities/Myck/Myck_Textures/Myck_Diffuse.png" id="2_q84m1"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_kd6a7")
+shader_parameter/base_color = Color(1, 1, 1, 1)
+shader_parameter/base_texture = ExtResource("2_q84m1")
+shader_parameter/lit_color = Color(1, 1, 1, 1)
+shader_parameter/unlit_color = Color(1, 1, 1, 1)
+shader_parameter/cel_threshold = 0.5
+shader_parameter/cel_sharpness = 0.0

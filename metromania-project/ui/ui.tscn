@@ -1,0 +1,56 @@
+[gd_scene load_steps=17 format=3 uid="uid://u1vgfeia861q"]
+
+[ext_resource type="PackedScene" uid="uid://cc37235kj4384" path="res://addons/maaacks_ui_sound_controller/base/scenes/Autoloads/ProjectUISoundController.tscn" id="1_v2lrn"]
+[ext_resource type="Script" uid="uid://6bdc8qcu5soa" path="res://ui/ui.gd" id="1_yeoin"]
+[ext_resource type="PackedScene" uid="uid://2vrf5v6tmuk7" path="res://ui/main_menu/main_menu.tscn" id="2_7jndn"]
+[ext_resource type="Script" uid="uid://bxl2p20uj1xj7" path="res://addons/guide/guide_mapping_context.gd" id="2_mf2ns"]
+[ext_resource type="Resource" uid="uid://cgnhvrdl0qj0u" path="res://input/controller.tres" id="2_x7jpl"]
+[ext_resource type="AudioStream" uid="uid://5kc55ftsdrvt" path="res://ui/assets/audio/rollover5.ogg" id="2_xhe7v"]
+[ext_resource type="Resource" uid="uid://ds6itq18nl0pp" path="res://input/keyboard.tres" id="4_ju45i"]
+[ext_resource type="Resource" uid="uid://dfwycry27dvsb" path="res://input/change_mapping.tres" id="5_74toj"]
+[ext_resource type="PackedScene" uid="uid://dekllill0y50r" path="res://ui/credits/credits.tscn" id="5_hqkqk"]
+[ext_resource type="Script" uid="uid://dk4fb7vonrejw" path="res://ui/overlay.gd" id="5_n6lj8"]
+[ext_resource type="PackedScene" uid="uid://3s7lo7jd53un" path="res://ui/pause_menu/pause_menu.tscn" id="6_2pasj"]
+[ext_resource type="PackedScene" uid="uid://bojsla6nqcf03" path="res://ui/game/game_ui.tscn" id="8_62oa5"]
+[ext_resource type="PackedScene" uid="uid://dfgowfkuko4ne" path="res://ui/how_to_play/how_to_play.tscn" id="8_y2e8e"]
+[ext_resource type="PackedScene" uid="uid://c31bw3nk5ujvg" path="res://ui/settings/settings.tscn" id="9_jqbk6"]
+[ext_resource type="PackedScene" uid="uid://mwbv2jh1ugjq" path="res://ui/controls/controls.tscn" id="11_w3b35"]
+[ext_resource type="PackedScene" uid="uid://dtrluvg5ox2vb" path="res://ui/notifications/message_board.tscn" id="12_hlgii"]
+
+[node name="UI" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_yeoin")
+mapping_contexts = Array[ExtResource("2_mf2ns")]([ExtResource("2_x7jpl"), ExtResource("4_ju45i")])
+change_mapping = ExtResource("5_74toj")
+
+[node name="ProjectUISoundController" parent="." instance=ExtResource("1_v2lrn")]
+button_hovered = ExtResource("2_xhe7v")
+button_focused = ExtResource("2_xhe7v")
+button_pressed = ExtResource("2_xhe7v")
+
+[node name="InGameMenuOverlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+script = ExtResource("5_n6lj8")
+
+[node name="Credits" parent="." instance=ExtResource("5_hqkqk")]
+
+[node name="HowToPlay" parent="." instance=ExtResource("8_y2e8e")]
+
+[node name="Settings" parent="." instance=ExtResource("9_jqbk6")]
+
+[node name="Controls" parent="." instance=ExtResource("11_w3b35")]
+
+[node name="MainMenu" parent="." instance=ExtResource("2_7jndn")]
+
+[node name="Game" parent="." instance=ExtResource("8_62oa5")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_2pasj")]
+process_mode = 0
+pause_action = null
+
+[node name="MessageBoard" parent="." instance=ExtResource("12_hlgii")]

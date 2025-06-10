@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://t0vesgyvqqj"]
+
+[ext_resource type="Script" uid="uid://dhewa47oo1hi" path="res://scenes/world/game_events/events/start_animation/start_animation.gd" id="1_u4ej4"]
+
+[node name="StartAnimation" type="Node3D"]
+script = ExtResource("1_u4ej4")

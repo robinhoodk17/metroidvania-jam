@@ -1,0 +1,359 @@
+[gd_scene load_steps=40 format=3 uid="uid://dqu1x7e4qyyv"]
+
+[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_sbt6m"]
+[ext_resource type="PackedScene" uid="uid://doxjfrb6rmcek" path="res://scenes/beginning_area/tutorial/tutorial.glb" id="3_cy5y7"]
+[ext_resource type="PackedScene" uid="uid://buglwrfsemxbe" path="res://scenes/world/game_events/events/self_free/self_free.tscn" id="4_cy5y7"]
+[ext_resource type="PackedScene" uid="uid://62blrovmjyqf" path="res://scenes/world/game_events/triggers/lever/lever.tscn" id="4_kscy4"]
+[ext_resource type="PackedScene" uid="uid://t0vesgyvqqj" path="res://scenes/world/game_events/events/start_animation/start_animation.tscn" id="6_lvptp"]
+[ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="7_ffs1a"]
+[ext_resource type="PackedScene" uid="uid://cnjw54m0awi81" path="res://scenes/world/prompt.tscn" id="7_lvptp"]
+[ext_resource type="PackedScene" uid="uid://08b8jxbryx21" path="res://scenes/world/game_events/triggers/area_entered/area_entered.tscn" id="8_m2nt4"]
+[ext_resource type="Resource" uid="uid://d0781vuxbhofs" path="res://input/left_right.tres" id="8_tqki5"]
+[ext_resource type="Script" uid="uid://d4fxkswdr5bxp" path="res://scenes/world/game_events/events/change_scene/change_scene_event.gd" id="9_5qgyi"]
+[ext_resource type="Resource" uid="uid://dn7xm7551du3c" path="res://input/throw.tres" id="9_espid"]
+[ext_resource type="Resource" uid="uid://mon2mvh3sfir" path="res://input/jump_alice.tres" id="9_uqtx1"]
+[ext_resource type="Texture2D" uid="uid://ct3ukhn1lrh44" path="res://ui/assets/icons/finger-point-right.png" id="9_y4ogp"]
+[ext_resource type="Resource" uid="uid://bwv7mx7ef41bo" path="res://input/left_right_alice.tres" id="10_dbb2v"]
+[ext_resource type="Resource" uid="uid://djbmv3glvtkcn" path="res://input/dash.tres" id="11_yeacc"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_y4ogp"]
+data = PackedVector3Array(-0.5, -2.41101, 0.5, -0.5, -2.41101, -0.5, -0.5, 2.41101, -0.5, 0.5, -2.41101, -0.5, -0.5, -2.41101, -0.5, -0.5, -2.41101, 0.5, -0.5, 2.41101, -0.5, -0.5, -2.41101, -0.5, 0.5, -2.41101, -0.5, -0.5, 2.41101, -0.5, -0.5, 2.41101, 0.5, -0.5, -2.41101, 0.5, -0.5, -2.41101, 0.5, -0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, -0.5, 2.41101, 0.5, -0.5, 2.41101, -0.5, -0.5, -2.41101, 0.5, 0.5, -2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, 2.41101, 0.5, 0.5, -2.41101, 0.5, -0.5, -2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, -2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, 2.41101, -0.5, -0.5, 2.41101, -0.5, -0.5, 2.41101, -0.5, 0.5, 2.41101, -0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, -0.5, 0.5, -2.41101, -0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lvptp"]
+size = Vector3(9.565, 1, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tqki5"]
+data = PackedVector3Array(-4.7825, 0.5, 0.5, 4.7825, 0.5, 0.5, -4.7825, -0.5, 0.5, 4.7825, 0.5, 0.5, 4.7825, -0.5, 0.5, -4.7825, -0.5, 0.5, 4.7825, 0.5, -0.5, -4.7825, 0.5, -0.5, 4.7825, -0.5, -0.5, -4.7825, 0.5, -0.5, -4.7825, -0.5, -0.5, 4.7825, -0.5, -0.5, 4.7825, 0.5, 0.5, 4.7825, 0.5, -0.5, 4.7825, -0.5, 0.5, 4.7825, 0.5, -0.5, 4.7825, -0.5, -0.5, 4.7825, -0.5, 0.5, -4.7825, 0.5, -0.5, -4.7825, 0.5, 0.5, -4.7825, -0.5, -0.5, -4.7825, 0.5, 0.5, -4.7825, -0.5, 0.5, -4.7825, -0.5, -0.5, 4.7825, 0.5, 0.5, -4.7825, 0.5, 0.5, 4.7825, 0.5, -0.5, -4.7825, 0.5, 0.5, -4.7825, 0.5, -0.5, 4.7825, 0.5, -0.5, -4.7825, -0.5, 0.5, 4.7825, -0.5, 0.5, -4.7825, -0.5, -0.5, 4.7825, -0.5, 0.5, 4.7825, -0.5, -0.5, -4.7825, -0.5, -0.5)
+
+[sub_resource type="Animation" id="Animation_lvptp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(177, -37.601, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_espid"]
+resource_name = "new_animation"
+length = 7.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3.7, 5.56667, 7.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(177, -37.601, 0), Vector3(208.812, -37.601, 0), Vector3(218.888, -37.601, 0), Vector3(231.76, -37.601, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dbb2v"]
+_data = {
+&"RESET": SubResource("Animation_lvptp"),
+&"new_animation": SubResource("Animation_espid")
+}
+
+[sub_resource type="Animation" id="Animation_km1px"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_ffs1a"]
+resource_name = "new_animation"
+length = 5.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(361.099, -45.466, 0), Vector3(332.456, -27.864, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m2nt4"]
+_data = {
+&"RESET": SubResource("Animation_km1px"),
+&"new_animation": SubResource("Animation_ffs1a")
+}
+
+[sub_resource type="Animation" id="Animation_y4ogp"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_uqtx1"]
+resource_name = "new_animation"
+length = 5.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 4.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(380.554, -99.681, 0), Vector3(380.554, -88.61, 0), Vector3(380.554, -88.61, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ffs1a"]
+_data = {
+&"RESET": SubResource("Animation_y4ogp"),
+&"new_animation": SubResource("Animation_uqtx1")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_km1px"]
+size = Vector3(8.68164, 5.36621, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tqki5"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_espid"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_y4ogp"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_km1px"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_m2nt4"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_yeacc"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dbb2v"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_uqtx1"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ffs1a"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5qgyi"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_qk7on"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Node" instance=ExtResource("1_sbt6m")]
+
+[node name="tutorial" parent="Map" index="0" instance=ExtResource("3_cy5y7")]
+
+[node name="SelfFree" parent="Interactables(not_in_blender)" index="0" node_paths=PackedStringArray("triggers") instance=ExtResource("4_cy5y7")]
+triggers = [NodePath("Lever")]
+
+[node name="Lever" parent="Interactables(not_in_blender)/SelfFree" index="0" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 54.5041, 0.168, 0)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Interactables(not_in_blender)/SelfFree" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 59.4514, 2.52519, 0)
+size = Vector3(1, 4.82202, 1)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Interactables(not_in_blender)/SelfFree/CSGBox3D" index="0"]
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/SelfFree/CSGBox3D/StaticBody3D" index="0"]
+shape = SubResource("ConcavePolygonShape3D_y4ogp")
+
+[node name="SelfFree2" parent="Interactables(not_in_blender)" index="1" node_paths=PackedStringArray("triggers") instance=ExtResource("4_cy5y7")]
+triggers = [NodePath("Lever")]
+
+[node name="Lever" parent="Interactables(not_in_blender)/SelfFree2" index="0" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 163.37, 7.53032, 0)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Interactables(not_in_blender)/SelfFree2" index="1"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 149.438, -0.673007, 0)
+size = Vector3(1, 4.82202, 1)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Interactables(not_in_blender)/SelfFree2/CSGBox3D2" index="0"]
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/SelfFree2/CSGBox3D2/StaticBody3D" index="0"]
+shape = SubResource("ConcavePolygonShape3D_y4ogp")
+
+[node name="MovingPlatform" parent="Interactables(not_in_blender)" index="2" node_paths=PackedStringArray("animationplayer", "triggers") instance=ExtResource("6_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -27.768, 0)
+animationplayer = NodePath("MovingPlatform/AnimationPlayer")
+triggers = [NodePath("Lever")]
+
+[node name="MovingPlatform" type="AnimatableBody3D" parent="Interactables(not_in_blender)/MovingPlatform" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 177, -37.601, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables(not_in_blender)/MovingPlatform/MovingPlatform" index="0"]
+mesh = SubResource("BoxMesh_lvptp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/MovingPlatform/MovingPlatform" index="1"]
+shape = SubResource("ConcavePolygonShape3D_tqki5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interactables(not_in_blender)/MovingPlatform/MovingPlatform" index="2"]
+libraries = {
+&"": SubResource("AnimationLibrary_dbb2v")
+}
+
+[node name="Lever" parent="Interactables(not_in_blender)/MovingPlatform" index="1" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 240.162, -40.4469, 0)
+progression_needed = 20
+
+[node name="SelfFree" parent="Interactables(not_in_blender)/MovingPlatform" index="2" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
+free_others = [NodePath("../Lever")]
+triggers = [NodePath("../Lever")]
+
+[node name="MovingPlatform2" parent="Interactables(not_in_blender)" index="3" node_paths=PackedStringArray("animationplayer", "triggers") instance=ExtResource("6_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -27.768, 0)
+animationplayer = NodePath("MovingPlatform/AnimationPlayer")
+delay = 2.0
+triggers = [NodePath("Lever")]
+
+[node name="MovingPlatform" type="AnimatableBody3D" parent="Interactables(not_in_blender)/MovingPlatform2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 361.099, -45.466, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables(not_in_blender)/MovingPlatform2/MovingPlatform" index="0"]
+mesh = SubResource("BoxMesh_lvptp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/MovingPlatform2/MovingPlatform" index="1"]
+shape = SubResource("ConcavePolygonShape3D_tqki5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interactables(not_in_blender)/MovingPlatform2/MovingPlatform" index="2"]
+libraries = {
+&"": SubResource("AnimationLibrary_m2nt4")
+}
+
+[node name="Lever" parent="Interactables(not_in_blender)/MovingPlatform2" index="1" instance=ExtResource("4_kscy4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 369.573, -52.79, 0)
+progression_needed = 20
+
+[node name="SelfFree" parent="Interactables(not_in_blender)/MovingPlatform2" index="2" node_paths=PackedStringArray("free_others", "triggers") instance=ExtResource("4_cy5y7")]
+free_others = [NodePath("../Lever")]
+triggers = [NodePath("../Lever")]
+
+[node name="MovingPlatform_Playground" type="AnimatableBody3D" parent="Interactables(not_in_blender)" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380.554, -99.681, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables(not_in_blender)/MovingPlatform_Playground" index="0"]
+mesh = SubResource("BoxMesh_lvptp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/MovingPlatform_Playground" index="1"]
+shape = SubResource("ConcavePolygonShape3D_tqki5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interactables(not_in_blender)/MovingPlatform_Playground" index="2"]
+libraries = {
+&"": SubResource("AnimationLibrary_ffs1a")
+}
+autoplay = "new_animation"
+
+[node name="Entrance1" type="Node3D" parent="Interactables(not_in_blender)" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 440.014, -100.104, 0)
+script = ExtResource("7_ffs1a")
+entrance_number = 1
+
+[node name="Entrance0" type="Node3D" parent="Interactables(not_in_blender)" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78.7224, 1.25095, 0)
+script = ExtResource("7_ffs1a")
+
+[node name="Change_scene" parent="Interactables(not_in_blender)" index="7" instance=ExtResource("8_m2nt4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 442.132, -98.4956, 0)
+monitorable = true
+
+[node name="ChangeSceneEvent" type="Node3D" parent="Interactables(not_in_blender)/Change_scene" index="0" node_paths=PackedStringArray("triggers")]
+script = ExtResource("9_5qgyi")
+new_scene = "uid://vcbogngxcolu"
+entrance_number = 1
+triggers = [NodePath("..")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/Change_scene" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.19043, -2.18311, 0)
+shape = SubResource("BoxShape3D_km1px")
+
+[node name="Move" parent="Messages" index="0" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.9213, 9.56044, 0)
+texture = SubResource("ViewportTexture_tqki5")
+interact_action = ExtResource("8_tqki5")
+message = "Move"
+
+[node name="Jump" parent="Messages" index="1" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.274, 9.56044, 0)
+texture = SubResource("ViewportTexture_espid")
+message = "Double jump"
+
+[node name="WallJump" parent="Messages" index="2" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 149.268, -67.353, 0)
+texture = SubResource("ViewportTexture_y4ogp")
+interact_action = ExtResource("8_tqki5")
+message = "Wall jump"
+
+[node name="WallJump" parent="Messages/WallJump" index="1" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.7601, 0)
+texture = SubResource("ViewportTexture_km1px")
+message = "+"
+
+[node name="Right" type="Sprite3D" parent="Messages" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.043, -76.8477, 0)
+pixel_size = 0.25
+billboard = 1
+texture = ExtResource("9_y4ogp")
+
+[node name="Jump3" parent="Messages" index="4" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 239.714, -75.6647, 0)
+texture = SubResource("ViewportTexture_m2nt4")
+interact_action = ExtResource("9_uqtx1")
+
+[node name="Message" parent="Messages/Jump3/SubViewport/VBoxContainer" index="0"]
+text = "Jump"
+
+[node name="Throw" parent="Messages" index="5" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.2034, 2.73836, 0)
+texture = SubResource("ViewportTexture_yeacc")
+interact_action = ExtResource("9_espid")
+message = "Yeet"
+
+[node name="Move2" parent="Messages" index="6" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.9609, -2.75476, 0)
+texture = SubResource("ViewportTexture_dbb2v")
+interact_action = ExtResource("10_dbb2v")
+message = "Move"
+
+[node name="Dash" parent="Messages" index="7" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 287.506, -101.875, 0)
+texture = SubResource("ViewportTexture_uqtx1")
+interact_action = ExtResource("11_yeacc")
+message = "Dash"
+
+[node name="Playground" parent="Messages" index="8" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 309.569, -96.5766, 0)
+texture = SubResource("ViewportTexture_ffs1a")
+interact_action = null
+message = "The playground"
+
+[node name="Playground2" parent="Messages" index="9" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 325.034, -52.6046, 0)
+texture = SubResource("ViewportTexture_5qgyi")
+interact_action = null
+message = "Heart container"
+
+[node name="Right2" type="Sprite3D" parent="Messages" index="10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 408.293, -99.2002, 0)
+pixel_size = 0.25
+billboard = 1
+texture = ExtResource("9_y4ogp")
+
+[node name="NextLevel" parent="Messages" index="11" instance=ExtResource("7_lvptp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 443.821, -100.198, 0)
+texture = SubResource("ViewportTexture_qk7on")
+interact_action = null
+message = "Next room"
+
+[editable path="Messages/Jump3"]
