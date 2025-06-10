@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://bb7oqyp5pmvds"]
+
+[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_xgn07"]
+[ext_resource type="PackedScene" uid="uid://fxxm2hiee7bo" path="res://scenes/beginning_area/hub/hub_area.blend" id="2_uxkil"]
+[ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="3_shjvc"]
+[ext_resource type="PackedScene" uid="uid://08b8jxbryx21" path="res://scenes/world/game_events/triggers/area_entered/area_entered.tscn" id="4_eoo1u"]
+[ext_resource type="PackedScene" uid="uid://x08nn6lsnink" path="res://peyman/enemy_flying.tscn" id="4_shjvc"]
+
+[node name="Node" instance=ExtResource("1_xgn07")]
+
+[node name="hub_area" parent="Map" index="0" instance=ExtResource("2_uxkil")]
+
+[node name="Entrance0" type="Node3D" parent="Interactables(not_in_blender)" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.6816, 1.6407, 0)
+script = ExtResource("3_shjvc")
+
+[node name="AreaEntered" parent="Interactables(not_in_blender)" index="1" instance=ExtResource("4_eoo1u")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/AreaEntered" index="0"]
+
+[node name="Flying" parent="Enemies" index="0" instance=ExtResource("4_shjvc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, 24.141, 0)
+provoked = false

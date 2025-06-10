@@ -5,6 +5,7 @@ signal death(current_body : Node3D)
 @onready var player: Node3D = get_tree().get_first_node_in_group("player")
 @onready var animation_tree: AnimationTree = $AnimationTree
 
+@export var provoked : bool = true
 @export var maxhp : int = 1
 @export var attack_cooldown: float = 3.0
 @export var attack_speed: float = 15.0
@@ -52,7 +53,10 @@ func _physics_process(delta) -> void:
 		velocity = stagger_position_target * knockback_speed
 		move_and_slide()
 		return
-		
+	
+	if provoked == false:
+		return
+	
 	attack_timer -= delta
 	if not attacking:
 		hover(delta)
