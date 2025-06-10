@@ -6,8 +6,8 @@ res://entities/Myck/Myck_Animations/animation_tree.tres
 res://materials/shader_materials/vfx.tres
 res://peyman/enemy_tree.tres
 res://entities/player/animation_tree.tres
-res://peyman/enemy_flying.gd
 res://peyman/enemy_rigid.gd
+res://peyman/enemy_flying.gd
 res://scenes/master.tscn
 res://aa&&root/player.tscn
 res://scenes/world/prompt.tscn

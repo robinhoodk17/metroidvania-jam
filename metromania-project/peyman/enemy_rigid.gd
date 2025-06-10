@@ -49,17 +49,17 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 func _ready() -> void:  
 	create_hitbox()
 	create_partrol_points()
-	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
-	navigation_agent.max_speed = move_speed
-	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
-	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
-	set_patrol_target()
-	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
 	add_to_group("enemy")
 	axis_lock_angular_x = true
 	axis_lock_angular_z = true
 	axis_lock_angular_y = true
 	axis_lock_linear_z = true
+	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
+	navigation_agent.max_speed = move_speed
+	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
+	locomotion = animation_tree.get("parameters/StateMachine_upper/locomotion/playback")
+	pivot_node.get_child(0).scale = Vector3(0.5, 0.5, 0.5)
+	set_patrol_target()
 
 func _physics_process(delta) -> void:
 	if linear_velocity.length() > 0.1:
@@ -122,17 +122,17 @@ func move_along_path(delta) -> void:
 	if navigation_agent.is_navigation_finished():
 		linear_velocity = Vector3.ZERO
 		return
-	var next_pos = navigation_agent.get_next_path_position()
-	var direction = (next_pos - global_transform.origin)
+	var next_pos : Vector3 = navigation_agent.get_next_path_position()
+	var direction : Vector3 = (next_pos - global_transform.origin)
 	direction.y = 0
 	direction.z = 0
 	if direction.length() > 0:
 		direction = direction.normalized()
 	else:
 		direction = Vector3.ZERO
-	var desired_velocity = direction * move_speed
-	var velocity_change = desired_velocity - linear_velocity
-	var force = velocity_change * mass * 10.0
+	var desired_velocity : Vector3 = direction * move_speed
+	var velocity_change : Vector3 = desired_velocity - linear_velocity
+	var force : Vector3 = velocity_change * mass * 10.0
 	apply_central_force(force)
 
 func set_patrol_target() -> void:
@@ -218,7 +218,6 @@ func enable_hit_box() -> void:
 	_hitbox_timer.start()
 	await _hitbox_timer.timeout
 	hit_box.monitoring = false
-
  
 #endregion
  
@@ -234,7 +233,7 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 		die()
 		return
 	hurt = true
-	var nav_rid = nav_region.get_rid()
+	var nav_rid : RID = nav_region.get_rid()
 	var stagger_position_target : Vector3
 	NavigationServer3D.region_set_enabled(nav_rid, false)
 	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
@@ -279,8 +278,8 @@ func rotate_pivot_toward_target(delta) -> void:
 			return
 		vel = vel.normalized()
 		var target_angle : float = atan2(vel.x, vel.z)
-		var new_basis = Basis(Vector3.UP, target_angle)
-		var new_transform = pivot_node.global_transform
+		var new_basis : Basis = Basis(Vector3.UP, target_angle)
+		var new_transform : Transform3D = pivot_node.global_transform
 		new_transform.basis = new_basis
 		pivot_node.global_transform = new_transform
 	else:
@@ -291,7 +290,7 @@ func rotate_pivot_toward_target(delta) -> void:
 		direction = direction.normalized()
 		var current_yaw : float = pivot_node.rotation.y
 		var target_yaw : float = atan2(direction.x, direction.z)
-		var new_yaw = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
+		var new_yaw : float = lerp_angle(current_yaw, target_yaw, rotation_speed * delta)
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
 
 func teleport() -> void:

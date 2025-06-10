@@ -36,8 +36,8 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	return timer
 
 func _ready() -> void:
-	axis_lock_linear_z = true  
 	add_to_group("enemy")
+	axis_lock_linear_z = true  
 	find_child("RobotArmature").scale = Vector3(0.5, 0.5, 0.5)
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	initial_position = global_transform.origin
