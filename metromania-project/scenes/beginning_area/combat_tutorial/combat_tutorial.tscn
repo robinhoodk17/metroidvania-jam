@@ -21,6 +21,9 @@
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_b8mnj"]
 data = PackedVector3Array(-0.5, -2.41101, 0.5, -0.5, -2.41101, -0.5, -0.5, 2.41101, -0.5, 0.5, -2.41101, -0.5, -0.5, -2.41101, -0.5, -0.5, -2.41101, 0.5, -0.5, 2.41101, -0.5, -0.5, -2.41101, -0.5, 0.5, -2.41101, -0.5, -0.5, 2.41101, -0.5, -0.5, 2.41101, 0.5, -0.5, -2.41101, 0.5, -0.5, -2.41101, 0.5, -0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, -0.5, 2.41101, 0.5, -0.5, 2.41101, -0.5, -0.5, -2.41101, 0.5, 0.5, -2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, 2.41101, 0.5, 0.5, -2.41101, 0.5, -0.5, -2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, -2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, 2.41101, -0.5, -0.5, 2.41101, -0.5, -0.5, 2.41101, -0.5, 0.5, 2.41101, -0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, -0.5, 0.5, -2.41101, -0.5)
 
+[sub_resource type="Animation" id="Animation_oqghw"]
+length = 0.001
+
 [sub_resource type="Animation" id="Animation_bl68w"]
 resource_name = "close"
 length = 0.5
@@ -48,9 +51,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector3(71.1346, 9.29044, 0), Vector3(71.1346, 4.47773, 0)]
 }
-
-[sub_resource type="Animation" id="Animation_oqghw"]
-length = 0.001
 
 [sub_resource type="Animation" id="Animation_tyqoy"]
 resource_name = "open"
@@ -88,6 +88,9 @@ _data = {
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_b8mnj"]
 size = Vector3(1.49207, 1.26709, 1)
+
+[sub_resource type="Animation" id="Animation_ev3uv"]
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_hkm8l"]
 resource_name = "close"
@@ -129,9 +132,6 @@ tracks/2/keys = {
 "values": [true]
 }
 
-[sub_resource type="Animation" id="Animation_ev3uv"]
-length = 0.001
-
 [sub_resource type="Animation" id="Animation_nna16"]
 resource_name = "open"
 tracks/0/type = "value"
@@ -169,6 +169,9 @@ _data = {
 [sub_resource type="BoxShape3D" id="BoxShape3D_u1alr"]
 size = Vector3(1, 7.95386, 1)
 
+[sub_resource type="Animation" id="Animation_b8mnj"]
+length = 0.001
+
 [sub_resource type="Animation" id="Animation_tg567"]
 resource_name = "close"
 length = 0.5
@@ -196,9 +199,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [false, true]
 }
-
-[sub_resource type="Animation" id="Animation_b8mnj"]
-length = 0.001
 
 [sub_resource type="Animation" id="Animation_im7t5"]
 resource_name = "open"

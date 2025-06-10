@@ -163,8 +163,8 @@ func create_hitbox() -> void:
 	hit_box.name = "hit_box"
 	hit_box.collision_layer = 0
 	hit_box.collision_mask = 1 << 4
-	var collision_shape_hit := CollisionShape3D.new()
-	var sphere_shape := SphereShape3D.new()
+	var collision_shape_hit = CollisionShape3D.new()
+	var sphere_shape = SphereShape3D.new()
 	sphere_shape.radius = 0.5 * 2
 	hit_box.monitorable = false
 	hit_box.monitoring = false

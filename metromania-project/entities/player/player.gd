@@ -211,7 +211,6 @@ func _physics_process(delta: float) -> void:
 	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
-
 	move_and_slide()
 
 func attach_camera() -> void:
@@ -661,6 +660,10 @@ func attack(_x : float, _y : float) -> void:
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	print("player takes damage")
+	camera_moves(CAM.TILT)
+	camera_moves(CAM.SLOMMO)
+	camera_moves(CAM.SHAKE)
+	camera_moves(CAM.ZOOM)
 	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
@@ -685,7 +688,7 @@ func deal_damage(area : Area3D) -> void:
 #region hit_hurt
 @export var hit_box : Area3D 
 @export var hurt_box: Area3D 
-var _damage := 1
+var _damage : int = 1
 
 func on_hit_box_entered(area: Area3D) -> void:
 	dash_spent = false
@@ -725,3 +728,82 @@ func _unhandled_input(event: InputEvent) -> void:
 		await get_tree().create_timer(0.25).timeout
 		enable_hit_box(0.2)
 #endregion 
+
+#region camera_moves
+var shake_active: bool
+var slowmo_active: bool
+var title_active: bool
+var zoom_active: bool
+@onready var default_rotation : Vector3 = rotation_degrees
+@onready var default_fov : float = 90
+enum CAM {SHAKE, SLOMMO, TILT, ZOOM}
+ 
+func camera_moves(motion_type: CAM) -> void:
+	match motion_type:
+		0:
+			if shake_active:
+				return
+			else:
+				shake_active = true
+				_camera_shake()
+		1:
+			if slowmo_active:
+				return 
+			else:
+				slowmo_active = true
+				await _cam_slowmo()
+				slowmo_active = false
+		2:
+			if title_active:
+				return
+			else:
+				title_active = true
+				await _camera_tilt()
+				title_active = false
+		3:
+			if zoom_active:
+				return
+			else:
+				zoom_active = true
+				await _zoom()
+				zoom_active = false 
+
+func _camera_shake() -> void:
+	var period : float = 0.3
+	var magnitude : float = 0.4
+	var initial_transform = camera_3d.transform
+	var elapsed_time : float = 0.0
+	while elapsed_time < period:
+		var offset : Vector3 = Vector3(
+			randf_range(-magnitude, magnitude),
+			randf_range(-magnitude, magnitude),
+			0.0
+		)
+		camera_3d.transform.origin = initial_transform.origin + offset
+		elapsed_time += get_process_delta_time()
+		await get_tree().process_frame
+	camera_3d.transform = initial_transform
+	shake_active = false
+ 
+func _cam_slowmo() -> Signal:
+	var _tween: Tween = get_tree().create_tween()
+	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
+	_tween.tween_property(Engine, "time_scale", 1.0, 0.25)
+	return _tween.finished
+
+func _camera_tilt(tilt_degrees : float = 5.0,  duration = 0.15) -> Signal:
+	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var target_rotation = default_rotation
+	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
+	tween.tween_property(camera_3d, "rotation_degrees", target_rotation, duration)
+	tween.tween_property(camera_3d, "rotation_degrees", default_rotation, duration)
+	return tween.finished
+
+func _zoom(zoom_amount = 10.0, duration = 0.15) -> Signal:
+	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
+	tween.tween_property(camera_3d, "fov", target_fov, duration)
+	tween.tween_property(camera_3d, "fov", default_fov, duration)
+	return tween.finished 
+
+#endregion  
