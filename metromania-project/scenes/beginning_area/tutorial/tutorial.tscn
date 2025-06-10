@@ -270,7 +270,7 @@ monitorable = true
 
 [node name="ChangeSceneEvent" type="Node3D" parent="Interactables(not_in_blender)/Change_scene" index="0" node_paths=PackedStringArray("triggers")]
 script = ExtResource("9_5qgyi")
-new_scene = "uid://cskc4trs2sigm"
+new_scene = "uid://vcbogngxcolu"
 entrance_number = 1
 triggers = [NodePath("..")]
 
