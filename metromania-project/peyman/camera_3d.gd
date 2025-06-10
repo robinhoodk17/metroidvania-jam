@@ -58,6 +58,17 @@ func _update_hollow_knight_mode(delta):
 	target_position.x = lerp(target_position.x, player_pos.x, hollow_follow_speed * delta)
 	target_position.y = lerp(target_position.y, player_pos.y, hollow_follow_speed * delta)
  
+func dampen_y() -> float:
+	recent_y_positions.append(player.global_position.y)
+	if recent_y_positions.size() > smoothing_frame_count:
+		recent_y_positions.remove_at(0)
+	var sum_y : float = 0.0
+	for i in recent_y_positions:
+		sum_y += i
+	var avg_y = sum_y / recent_y_positions.size()
+	return avg_y
+
+#region cam_signals
 func on_cam_shake(duration: float = 0.3) -> void:
 	if shake_active:
 		return
@@ -128,18 +139,5 @@ func handle_camera_zoom(duration: float) -> Signal:
 	tween.tween_property(self, "fov", target_fov, duration)
 	tween.tween_property(self, "fov", default_fov, duration)
 	return tween.finished 
- 
-func set_mode(new_mode) -> void:
-	mode = new_mode
-	target_position = global_transform.origin
-	last_area_position = target_position
- 
-func dampen_y() -> float:
-	recent_y_positions.append(player.global_position.y)
-	if recent_y_positions.size() > smoothing_frame_count:
-		recent_y_positions.remove_at(0)
-	var sum_y : float = 0.0
-	for i in recent_y_positions:
-		sum_y += i
-	var avg_y = sum_y / recent_y_positions.size()
-	return avg_y
+
+#endregion 
