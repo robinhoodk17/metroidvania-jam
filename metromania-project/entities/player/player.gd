@@ -75,11 +75,6 @@ signal break_interaction
 
 @onready var camera_3d: Camera3D = $CameraPivot/Camera3D
 @onready var camera_pivot: Node3D = $CameraPivot
-@onready var coyote_timer: Timer = $CoyoteTimer
-@onready var combo_reset_timer: Timer = $ComboResetTimer
-@onready var dash_reset_timer: Timer = $DashResetTimer
-@onready var queue_timer: Timer = $QueueTimer
-@onready var landing_timer: Timer = $LandingTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var grappling_hook : Node3D = $GrapplingHookParent
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
@@ -137,12 +132,26 @@ var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
   
+@onready var coyote_timer: Timer = create_timer()
+@onready var combo_reset_timer: Timer = create_timer()
+@onready var dash_reset_timer: Timer = create_timer()
+@onready var queue_timer: Timer = create_timer()
+@onready var landing_timer: Timer = create_timer()
+
+func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
+	var timer = Timer.new()
+	timer.wait_time = wait_time
+	timer.one_shot = one_shot
+	add_child(timer)
+	timer.start()
+	return timer
+	
 func _ready() -> void:
 #region Setting up combat
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
-	
+		
 #endregion
 	
 	jump_action.triggered.connect(queue_jump)
@@ -167,6 +176,7 @@ func _ready() -> void:
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+
 
 func queue_dash() -> void:
 	input_queued = inputs.DASH
