@@ -1,8 +1,11 @@
 extends CharacterBody3D
 
+signal death(current_body : Node3D)
+
 @onready var player: Node3D = get_tree().get_first_node_in_group("player")
 @onready var animation_tree: AnimationTree = $AnimationTree
 
+@export var maxhp : int = 1
 @export var attack_cooldown: float = 3.0
 @export var attack_speed: float = 15.0
 @export var return_speed: float = 10.0
@@ -22,6 +25,7 @@ var hurt : bool
 var stagger_position_target : Vector3
 var hover_timer: Timer
 var delay_retreat: bool
+var hp : int = maxhp
 
 func _ready():
 	handle_first_adustments()
@@ -76,6 +80,10 @@ func hover(delta) -> void:
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = Vector3.ZERO) -> void:
 	print_debug("enemy take damage")
+	hp -= amount
+	if hp <= 0:
+		die()
+		return
 	hurt = true
 	animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 	_stunned_timer.start()
@@ -83,7 +91,11 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 		stagger_position_target = global_position - _position
 	await _stunned_timer.timeout
 	hurt = false
-	
+
+func die() -> void:
+	death.emit(self)
+	queue_free()
+
 func attack() -> void:
 	attacking = true
 	attack_timer = attack_cooldown

@@ -161,7 +161,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func run_state_machine(delta: float) -> void:
-	if current_action_state == action_state.INTERACTING:
+	if current_action_state == action_state.INTERACTING or captured:
 		return
 	if current_run_state == run_state.STAGGERING:
 		velocity = staggering_towards * stagger_speed
@@ -283,7 +283,7 @@ func action_state_machine(_delta: float) -> void:
 	var vertical_direction : float = up_down.value_axis_1d
 
 	manage_action_inputs()
-	if current_run_state == run_state.STAGGERING:
+	if current_run_state == run_state.STAGGERING or captured:
 		return
 
 	match input_queued:

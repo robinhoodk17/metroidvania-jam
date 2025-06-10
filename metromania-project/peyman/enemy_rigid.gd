@@ -1,5 +1,9 @@
 extends RigidBody3D
+
+signal death(current_body : Node3D)
+
 @export var provoked: bool = true
+@export var maxhp : int = 2
 @export var patrol_points: Array[Vector3] = []
 @export var chase_distance: float = 15.0 - 5.0
 @export var attack_distance: float = 2.5 
@@ -29,6 +33,7 @@ var _stunned_timer: Timer
 var call_method_timer: Timer
 var delay_timer: Timer
 var delay_rotation: bool 
+var hp = maxhp
 
 func _ready() -> void:
 	create_navmesh()
@@ -236,9 +241,12 @@ func perform_attack() -> void:
 	call_method_timer.start()
 	await call_method_timer.timeout
 	enable_hit_box()
-  
+
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = Vector3.ZERO) -> void:
-	print_debug("enemy take damage")
+	hp -= amount
+	if hp <= 0:
+		die()
+		return
 	hurt = true
 	var nav_rid = nav_region.get_rid()
 	var stagger_position_target : Vector3
@@ -255,7 +263,11 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 	delay_timer.start()
 	await delay_timer.timeout
 	delay_rotation = false
- 
+
+func die() -> void:
+	death.emit(self)
+	queue_free()
+
 func rotate_pivot_toward_target(delta) -> void:
 	if delay_rotation or hurt:
 		return
