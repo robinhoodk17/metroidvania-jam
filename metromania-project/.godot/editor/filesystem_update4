@@ -21,3 +21,6 @@ res://aa&&root/main.tscn
 res://entities/player/alice.tscn
 res://entities/player/hookshot.tscn
 res://ui/main_menu/main_menu.tscn
+res://peyman/camera_3d.gd
+res://scripts/AutoLoads/signalbus_player.gd
+res://main.gd

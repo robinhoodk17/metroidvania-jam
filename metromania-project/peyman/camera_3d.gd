@@ -13,18 +13,20 @@ var celeste_fast_move_speed : float = 15.0
 var celeste_area_threshold : float = 5.0           
 var hollow_follow_speed : float = 7.0               
 enum CameraMode { CELESTE, HOLLOW_KNIGHT }
+var recent_y_positions : PackedFloat32Array = PackedFloat32Array()
 var shake_active: bool
 var slowmo_active: bool
-var title_active: bool
-var zoom_active: bool
-var recent_y_positions : PackedFloat32Array = PackedFloat32Array()
- 
+var slowmo_tween: Tween
+var tilt_tween: Tween
+var zoom_tween: Tween
+
 func _ready() -> void:
 	SignalbusPlayer.cam_shake.connect(on_cam_shake)
 	SignalbusPlayer.cam_slomo.connect(on_cam_slomo)
 	SignalbusPlayer.cam_tilt.connect(on_cam_tilt)
-	SignalbusPlayer.cam_zoom_in_out.connect(on_cam_zoom_in_out)
-	
+	SignalbusPlayer.cam_fast_zooms.connect(on_cam_fast_zooms)
+	SignalbusPlayer.cam_pan.connect(on_cam_pan)
+
 func switch_player(parent: Node3D) -> void:
 	reparent(parent)
 	player = parent
@@ -84,22 +86,6 @@ func on_cam_slomo(duration: float = 0.5) -> void:
 		await handle_cam_slowmo(duration)
 		slowmo_active = false
  
-func on_cam_tilt(duration: float = 0.15) -> void:
-	if title_active:
-		return
-	else:
-		title_active = true
-		await handle_camera_tilt(duration)
-		title_active = false
-		
-func on_cam_zoom_in_out(duration: float = 0.15) -> void:
-	if zoom_active:
-		return
-	else:
-		zoom_active = true
-		await handle_camera_zoom(duration)
-		zoom_active = false 
-
 func handle_camera_shake(duration : float) -> void:
 	var period : float = duration
 	var magnitude : float = 0.4
@@ -118,26 +104,35 @@ func handle_camera_shake(duration : float) -> void:
 	shake_active = false
  
 func handle_cam_slowmo(duration : float) -> Signal:
-	var _tween: Tween = get_tree().create_tween()
-	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
-	_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
-	return _tween.finished
+	slowmo_tween = get_tree().create_tween()
+	slowmo_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
+	slowmo_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
+	return slowmo_tween.finished
 
-func handle_camera_tilt(duration : float) -> Signal:
+func on_cam_tilt(duration : float = 0.15) -> Signal:
 	var tilt_degrees : float = 5.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	var target_rotation = default_rotation
 	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
-	tween.tween_property(self, "rotation_degrees", target_rotation, duration)
-	tween.tween_property(self, "rotation_degrees", default_rotation, duration)
-	return tween.finished
+	if tilt_tween && tilt_tween.is_running():
+		tilt_tween.kill()
+	tilt_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tilt_tween.tween_property(self, "rotation_degrees", target_rotation, duration)
+	tilt_tween.tween_property(self, "rotation_degrees", default_rotation, duration)
+	return tilt_tween.finished
 
-func handle_camera_zoom(duration: float) -> Signal:
+func on_cam_fast_zooms(duration: float = 0.15) -> Signal:
 	var zoom_amount : float = 10.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
-	tween.tween_property(self, "fov", target_fov, duration)
-	tween.tween_property(self, "fov", default_fov, duration)
-	return tween.finished 
+	if zoom_tween && zoom_tween.is_running():
+		zoom_tween.kill()
+	zoom_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	zoom_tween.tween_property(self, "fov", target_fov, duration)
+	zoom_tween.tween_property(self, "fov", default_fov, duration)
+	return zoom_tween.finished 
 
+func on_cam_pan(direction: float, amount: float) -> void:
+	### use only 1 and -1 for direction, 1 for right and -1 for left 
+	var right : Vector3 = global_transform.basis.x.normalized()
+	global_translate(right * direction * amount)
+ 
 #endregion 

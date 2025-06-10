@@ -87,7 +87,7 @@ func die() -> void:
 	death.emit(self)
 	SignalbusPlayer.cam_shake.emit()
 	SignalbusPlayer.cam_tilt.emit()
-	SignalbusPlayer.cam_zoom_in_out.emit()
+	SignalbusPlayer.cam_fast_zooms.emit()
 	enemy_slowmo(0.7)
 	await get_tree().create_timer(1).timeout
 	queue_free()
