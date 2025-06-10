@@ -228,14 +228,21 @@ func position_camera(delta: float) -> void:
 	for i : float in dampened_y_array:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
-	var target_position = (Vector3(global_position.x, averaged_y, global_position.z) + alice.global_position)/2
+	var target_position : Vector3
+	var target_z : float
+	if alice.captured:
+		target_position = Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z)
+		target_z = camera_zoom_min
+	else:
+		target_position = (Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z) + alice.global_position)/2
+		target_z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
+	target_position = Vector3(target_position.x, target_position.y, target_z)
 	if is_on_floor():
 		lerp_power = lerp(lerp_power, 5.0, delta * 10)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
 		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
 		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
-	camera_3d.global_position.z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
 
 func manage_action_inputs() -> void:
 	return
@@ -678,10 +685,11 @@ func deal_damage(area : Area3D) -> void:
 #region hit_hurt
 @export var hit_box : Area3D 
 @export var hurt_box: Area3D 
-var _damage := 10
+var _damage := 1
 
 func on_hit_box_entered(area: Area3D) -> void:
-
+	dash_spent = false
+	second_jump = false
 	traveled_stagger_distance = 0
 	current_run_state = run_state.STAGGERING
 	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
