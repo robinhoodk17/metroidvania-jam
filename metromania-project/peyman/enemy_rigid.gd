@@ -37,6 +37,7 @@ var hurt: bool
 var delay_rotation: bool 
 var hp = maxhp
 var can_teleport: bool = true
+var is_teleport: bool
 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
@@ -83,6 +84,8 @@ func _physics_process(delta) -> void:
 		"patrol":
 			if distance_to_player <= chase_distance:
 				state = "chase"
+				if can_teleport == false:
+					can_teleport = true
 			else:
 				patrol_behavior(delta)
 		"chase":
@@ -90,6 +93,8 @@ func _physics_process(delta) -> void:
 				state = "attack"
 				attack_timer = 0.0
 			elif distance_to_player > chase_distance:
+				if can_teleport && is_teleport == false:
+					teleport()
 				state = "patrol"
 				set_patrol_target()
 			else:
@@ -109,9 +114,6 @@ func chase_behavior(delta) -> void:
 	
 func attack_behavior(delta) -> void:
 	attack_timer -= delta
-	if can_teleport:
-		teleport()
-		return
 	if attack_timer <= 0.0:
 		perform_attack()
 		attack_timer = attack_cooldown
@@ -287,9 +289,10 @@ func rotate_pivot_toward_target(delta) -> void:
 		pivot_node.rotation = Vector3(0, new_yaw, 0)
 
 func teleport() -> void:
+	delay_timer.start()
 	var player_forward = -player.global_transform.basis.x.normalized()
 	global_position = player.global_position + player_forward * 3.0
 	pivot_node.look_at(player.global_position, Vector3.UP)
-	can_teleport = false
-	await get_tree().create_timer(5).timeout
-	can_teleport = true
+	is_teleport = true
+	await get_tree().create_timer(3).timeout
+	is_teleport = false

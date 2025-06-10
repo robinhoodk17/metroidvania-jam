@@ -1,4 +1,5 @@
 extends Camera3D
+
 @onready var player : Node3D = get_parent()
 @onready var mode : CameraMode = CameraMode.CELESTE 
 @onready var target_position : Vector3 = global_position
