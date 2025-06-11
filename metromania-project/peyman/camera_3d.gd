@@ -24,7 +24,6 @@ var in_small_area : bool = true:
 			await timer.timeout
 			camera_static_position = _desired_pos
 		in_small_area = value
-		print("sdfsdf")
 var in_big_area : bool = true
 var lerp_speed_slow := 0.5 
 var lerp_speed_fast := 2.5 
@@ -153,12 +152,4 @@ func on_cam_pan(direction: float, amount: float) -> void:
 	global_translate(right * direction * amount)
  
 #endregion 
- 
-var previous_condition_met := false
-
-func check_condition(current_condition: bool) -> bool:
-	# Returns true only when condition changes from false to true
-	var just_met = current_condition and not previous_condition_met
-	previous_condition_met = current_condition
-	return just_met
  
