@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://qwwjdbl082b6"]
 
-[ext_resource type="Shader" uid="uid://3h5we00urd6n" path="res://materials/shaders/slash_shader.res" id="1_m75fo"]
+[ext_resource type="Shader" uid="uid://3h5we00urd6n" path="res://materials/shaders/slash_shader_visual.res" id="1_m75fo"]
 
 [sub_resource type="Gradient" id="Gradient_ux8g3"]
 colors = PackedColorArray(1, 0.101961, 0.568627, 1, 1, 0.101961, 0.568627, 1)
