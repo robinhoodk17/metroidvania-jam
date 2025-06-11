@@ -1,20 +1,21 @@
-extends Camera3D
+extends Node3D
 var default_rotation : Vector3 = rotation_degrees
 var shake_active: bool
 var slowmo_active: bool
 var slowmo_tween: Tween
 var tilt_tween: Tween
 var zoom_tween: Tween
-@onready var default_fov : float = fov 
+@onready var camera_3d: Camera3D = $Camera3D
+@onready var default_fov : float = camera_3d.fov 
 @onready var camera_static_position: Vector3 = global_position 
 @onready var player : Node3D = get_parent()
-@onready var small_area: Area3D = $Node/small_area
-@onready var big_area: Area3D = $Node/big_area
+@export var small_area: Area3D 
+@export var big_area: Area3D 
 @export var camera_mode := "Celeste" 
 var in_small_area := true
 var in_big_area := true
-var lerp_speed_slow := 0.5
-var lerp_speed_fast := 2.5  
+var lerp_speed_slow := 0.5 
+var lerp_speed_fast := 2.5 
 var y_dampening_factor := 0.1 
 var vertical_offset = Vector3(0, 5, 0)  
 var side_offset = Vector3(0, 0, 10)
@@ -92,8 +93,8 @@ func on_cam_fast_zooms(duration: float = 0.15) -> Signal:
 	if zoom_tween && zoom_tween.is_running():
 		zoom_tween.kill()
 	zoom_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	zoom_tween.tween_property(self, "fov", target_fov, duration)
-	zoom_tween.tween_property(self, "fov", default_fov, duration)
+	zoom_tween.tween_property(camera_3d, "fov", target_fov, duration)
+	zoom_tween.tween_property(camera_3d, "fov", default_fov, duration)
 	return zoom_tween.finished 
 
 func on_cam_pan(direction: float, amount: float) -> void:
@@ -103,9 +104,10 @@ func on_cam_pan(direction: float, amount: float) -> void:
  
 #endregion 
 func _physics_process(delta):
-	var player_pos : Vector3 = player.global_transform.origin
+	var player_pos : Vector3 = player.global_position
 	var desired_pos : Vector3 = player_pos + vertical_offset + side_offset
-	var target_pos : Vector3 = global_transform.origin
+	var target_pos : Vector3 = global_position
+
 	match camera_mode:
 		"Celeste":
 			if in_small_area:
@@ -132,6 +134,5 @@ func _physics_process(delta):
 					camera_static_position = target_pos
 
 	global_transform.origin = target_pos
-
 
  
