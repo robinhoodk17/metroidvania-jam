@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_m57ok"]
 [ext_resource type="PackedScene" uid="uid://ct8s1bgps34bg" path="res://scenes/beginning_area/combat_tutorial/combat_tutorial.blend" id="2_waalu"]
-[ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="3_waalu"]
+[ext_resource type="Script" path="res://scenes/world/entrance.gd" id="3_waalu"]
 [ext_resource type="PackedScene" uid="uid://bk4hxejv0l7ap" path="res://peyman/enemy_rigid.tscn" id="4_adecd"]
 [ext_resource type="PackedScene" uid="uid://08b8jxbryx21" path="res://scenes/world/game_events/triggers/area_entered/area_entered.tscn" id="4_untp2"]
 [ext_resource type="PackedScene" uid="uid://buglwrfsemxbe" path="res://scenes/world/game_events/events/self_free/self_free.tscn" id="5_tg567"]
