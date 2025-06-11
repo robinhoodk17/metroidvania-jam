@@ -17,12 +17,9 @@ var zoom_tween: Tween
 @export var static_control : float = 8.0
 var in_small_area : bool = true:
 	set(value):
-		if camera_static_position.distance_to(_desired_pos) > static_control: 
-			camera_static_position = _desired_pos
-		else:
-			timer.start()
-			await timer.timeout
-			camera_static_position = _desired_pos
+		timer.start()
+		await timer.timeout
+		camera_static_position = _desired_pos
 		in_small_area = value
 var in_big_area : bool = true
 var lerp_speed_slow := 0.5 
@@ -54,8 +51,8 @@ func _ready() -> void:
 func _physics_process(delta):
 	var player_pos : Vector3 = player.global_transform.origin
 	var desired_pos : Vector3 = player_pos + vertical_offset + side_offset
-	_desired_pos = desired_pos
 	var target_pos : Vector3 = global_transform.origin
+	_desired_pos = desired_pos
 	match camera_mode:
 		"Celeste":
 			if in_small_area:
