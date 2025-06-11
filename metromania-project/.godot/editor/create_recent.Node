@@ -1,8 +1,9 @@
-Node
 Node3D
+Marker3D
+RemoteTransform3D
+Node
 CollisionShape3D
 Area3D
-Marker3D
 AnimationPlayer
 ShapeCast3D
 NavigationAgent3D
@@ -11,4 +12,3 @@ CharacterBody3D
 BoneAttachment3D
 AudioStreamPlayer
 MeshInstance3D
-AnimatableBody3D

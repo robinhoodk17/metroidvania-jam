@@ -1,4 +1,3 @@
-res://meshes/vfx/slash_mesh.res
 res://aa&&root/player.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
@@ -7,7 +6,6 @@ res://entities/Myck/Myck_Animations/animation_tree.tres
 res://materials/shader_materials/vfx.tres
 res://peyman/enemy_tree.tres
 res://entities/player/animation_tree.tres
-res://peyman/camera_3d.gd
 res://scenes/master.tscn
 res://peyman/enemy_rigid.tscn
 res://scenes/world/prompt.tscn
@@ -22,4 +20,5 @@ res://entities/player/alice.tscn
 res://entities/player/hookshot.tscn
 res://ui/main_menu/main_menu.tscn
 res://scenes/beginning_area/hub/hub_area.tscn
+res://peyman/camera_3d.gd
 res://entities/player/player.gd

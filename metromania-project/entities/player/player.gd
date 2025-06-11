@@ -72,7 +72,7 @@ signal break_interaction
 @export var dash_action : GUIDEAction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
-@onready var camera_3d: Camera3D = $Camera3D
+@export var camera_3d: Camera3D  
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
