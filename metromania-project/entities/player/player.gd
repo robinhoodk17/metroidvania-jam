@@ -134,7 +134,7 @@ var lerp_power : float = 2.5
 
 """animation"""
 var run_animation : AnimationNodeStateMachinePlayback
-var action_animation : AnimationNodeStateMachinePlayback
+#var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
   
 func _ready() -> void:
@@ -162,8 +162,9 @@ func _ready() -> void:
 	dash_reset_timer.timeout.connect(change_action_state)
 	"""setting up animations"""
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
-	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
+	#action_animation = animation_tree.get("parameters/StateMachine_action/playback")
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
+	
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
@@ -273,7 +274,7 @@ func throw_grappling(_x : float, _y : float) -> void:
 		alice.throw(target_position)
 
 	carrying_child = false
-	set_oneshot_animation("MyckThrow")
+	set_oneshot_animation("Myck_Throw_12")
 	
 	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
@@ -332,7 +333,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
-			set_oneshot_animation("Myck_Land")
+			set_oneshot_animation("Myck_Land_12")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
 			SignalbusPlayer.landed.emit()
@@ -372,7 +373,7 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Myck_Jump")
+	set_oneshot_animation("Myck_Jump_12")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	velocity += get_platform_velocity()/4.0
@@ -412,7 +413,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
-	set_oneshot_animation("Myck_Dash")
+	set_oneshot_animation("Myck_Dash_12")
 	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
@@ -422,12 +423,12 @@ func run_state_machine(delta: float) -> void:
 	
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
-		run_animation.travel("idle")
+		run_animation.travel("Myck_Idle_24")
 		return
 		
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
-		run_animation.travel("idle")
+		run_animation.travel("Myck_Idle_24")
 		return
 		
 	var run_direction = left_right.value_axis_1d
@@ -466,9 +467,9 @@ func run_state_machine(delta: float) -> void:
 		run_state.IDLE:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
-				run_animation.travel("idle")
+				run_animation.travel("Myck_Idle_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -486,9 +487,9 @@ func run_state_machine(delta: float) -> void:
 			else:
 				velocity.x = abs(velocity.x) * run_direction
 			if is_on_floor():
-				run_animation.travel("walk")
+				run_animation.travel("Myck_Walk_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				SignalbusPlayer.braked.emit()
 				current_run_state = run_state.IDLE
@@ -501,9 +502,9 @@ func run_state_machine(delta: float) -> void:
 			if !is_on_floor() or !landing_timer.is_stopped():
 				current_run_state = run_state.WALKING
 			if is_on_floor():
-				run_animation.travel("run")
+				run_animation.travel("Myck_Run_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
 				braking_time = 0.0
@@ -515,7 +516,7 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, sign(velocity.x) * speed, delta * 5.0)
 
 		run_state.BRAKING:
-			run_animation.travel("walk")
+			run_animation.travel("Myck_Walk_24")
 			velocity.x = sign(velocity.x) * speed * deceleration_curve.sample(braking_time/deceleration)
 			braking_time += delta
 			if braking_time >= deceleration:
@@ -527,7 +528,7 @@ func run_state_machine(delta: float) -> void:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
-			run_animation.travel("Ledge_Grab")
+			run_animation.travel("Myck_Wall_24")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE
@@ -630,17 +631,17 @@ func attack(_x : float, _y : float) -> void:
 	_x = looking
 	if abs(_y) < 0.5:
 		_y = 0
-		set_oneshot_animation("Myck_AttackFront")
+		set_oneshot_animation("Myck_HoriAttack_24")
 		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
 		if _y > 0:
 			hit_box.rotation = Vector3(0,0,PI/2)
-			set_oneshot_animation("Myck_AttackUp")
+			set_oneshot_animation("Myck_UpAttack_12")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
-			set_oneshot_animation("Myck_AttackBelow")
+			set_oneshot_animation("Myck_DownAttack_12")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
@@ -713,7 +714,7 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("g"):
-		set_oneshot_animation("Robot_Punch")
+		set_oneshot_animation("Myck_Hit_12")
 		await get_tree().create_timer(0.25).timeout
 		enable_hit_box(0.2)
 #endregion 

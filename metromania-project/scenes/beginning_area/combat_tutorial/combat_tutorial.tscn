@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_m57ok"]
 [ext_resource type="PackedScene" uid="uid://ct8s1bgps34bg" path="res://scenes/beginning_area/combat_tutorial/combat_tutorial.blend" id="2_waalu"]
-[ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="3_waalu"]
+[ext_resource type="Script" path="res://scenes/world/entrance.gd" id="3_waalu"]
 
 [node name="Node" instance=ExtResource("1_m57ok")]
 
