@@ -1,4 +1,4 @@
 extends Resource
 class_name EnemyWave
 
-var enemies : Array[PackedScene]
+@export var enemies : Array[PackedScene]

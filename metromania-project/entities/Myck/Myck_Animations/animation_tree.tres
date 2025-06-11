@@ -1,64 +1,27 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=29 format=3 uid="uid://dwh5faypa8v5s"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=23 format=3 uid="uid://dwh5faypa8v5s"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kmjeu"]
-animation = &"Robot_ThumbsUp"
+animation = &"Myck_Hit_12"
 
-[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_ftwnj"]
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bls4j"]
-animation = &"Myck_LedgeGrab"
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_yidw8"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vlv7e"]
-animation = &"Myck_Air"
+animation = &"Myck_Air_24"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_05bod"]
-animation = &"Myck_Idle"
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vv1ge"]
+animation = &"Myck_Idle_24"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vsfr3"]
-animation = &"Myck_Run"
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q51j7"]
+animation = &"Myck_Run_24"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fowm0"]
-animation = &"Myck_Walk"
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fdvuc"]
+animation = &"Myck_Walk_24"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xtfgc"]
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hlx2b"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_764mo"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_61rmo"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8rhtf"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tsq4r"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t82xd"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fkugw"]
-xfade_time = 0.3
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8fjmc"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qiwj3"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_26q78"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vv1ge"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_q51j7"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fdvuc"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yidw8"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yidw8"]
+animation = &"Myck_Wall_24"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dufuv"]
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wr7dr"]
 
@@ -66,31 +29,51 @@ xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ghbgs"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_sf3wb"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f3u4u"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_40uk0"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_21t7h"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rvfvm"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4kt3e"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2ob0p"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_e3kmj"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qhddb"]
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ur8kk"]
-states/Ledge_Grab/node = SubResource("AnimationNodeAnimation_bls4j")
-states/Ledge_Grab/position = Vector2(500.292, 15.662)
-states/Myck_Air/node = SubResource("AnimationNodeAnimation_vlv7e")
-states/Myck_Air/position = Vector2(416.292, 93.1416)
-states/Start/position = Vector2(52, 45.3333)
-states/idle/node = SubResource("AnimationNodeAnimation_05bod")
-states/idle/position = Vector2(241, 153.334)
-states/run/node = SubResource("AnimationNodeAnimation_vsfr3")
-states/run/position = Vector2(747.666, 100)
-states/walk/node = SubResource("AnimationNodeAnimation_fowm0")
-states/walk/position = Vector2(354.333, -60)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_xtfgc"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_hlx2b"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_764mo"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_61rmo"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_8rhtf"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_tsq4r"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_t82xd"), "Ledge_Grab", "idle", SubResource("AnimationNodeStateMachineTransition_fkugw"), "walk", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_8fjmc"), "run", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_qiwj3"), "idle", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_26q78"), "walk", "Myck_Air", SubResource("AnimationNodeStateMachineTransition_vv1ge"), "Myck_Air", "walk", SubResource("AnimationNodeStateMachineTransition_q51j7"), "run", "Myck_Air", SubResource("AnimationNodeStateMachineTransition_fdvuc"), "Myck_Air", "run", SubResource("AnimationNodeStateMachineTransition_yidw8"), "Myck_Air", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_dufuv"), "Ledge_Grab", "Myck_Air", SubResource("AnimationNodeStateMachineTransition_wr7dr"), "Myck_Air", "idle", SubResource("AnimationNodeStateMachineTransition_v7ujq"), "idle", "Myck_Air", SubResource("AnimationNodeStateMachineTransition_ghbgs")]
-graph_offset = Vector2(-61.375, -86.5251)
+states/End/position = Vector2(606.5, 82.2374)
+states/Myck_Air_24/node = SubResource("AnimationNodeAnimation_vlv7e")
+states/Myck_Air_24/position = Vector2(467.625, 169.975)
+states/Myck_Idle_24/node = SubResource("AnimationNodeAnimation_vv1ge")
+states/Myck_Idle_24/position = Vector2(186.625, 183.475)
+states/Myck_Run_24/node = SubResource("AnimationNodeAnimation_q51j7")
+states/Myck_Run_24/position = Vector2(392.625, 49.475)
+states/Myck_Walk_24/node = SubResource("AnimationNodeAnimation_fdvuc")
+states/Myck_Walk_24/position = Vector2(210.625, 28.975)
+states/Myck_Wall_24/node = SubResource("AnimationNodeAnimation_yidw8")
+states/Myck_Wall_24/position = Vector2(337.625, 276.975)
+states/Start/position = Vector2(-35, 44.8333)
+transitions = ["Start", "Myck_Idle_24", SubResource("AnimationNodeStateMachineTransition_dufuv"), "Myck_Idle_24", "Myck_Walk_24", SubResource("AnimationNodeStateMachineTransition_wr7dr"), "Myck_Walk_24", "Myck_Idle_24", SubResource("AnimationNodeStateMachineTransition_v7ujq"), "Myck_Walk_24", "Myck_Run_24", SubResource("AnimationNodeStateMachineTransition_ghbgs"), "Myck_Run_24", "Myck_Walk_24", SubResource("AnimationNodeStateMachineTransition_sf3wb"), "Myck_Run_24", "Myck_Idle_24", SubResource("AnimationNodeStateMachineTransition_f3u4u"), "Myck_Idle_24", "Myck_Run_24", SubResource("AnimationNodeStateMachineTransition_40uk0"), "Myck_Idle_24", "Myck_Air_24", SubResource("AnimationNodeStateMachineTransition_21t7h"), "Myck_Run_24", "Myck_Air_24", SubResource("AnimationNodeStateMachineTransition_rvfvm"), "Myck_Walk_24", "Myck_Air_24", SubResource("AnimationNodeStateMachineTransition_4kt3e"), "Myck_Air_24", "Myck_Wall_24", SubResource("AnimationNodeStateMachineTransition_2ob0p"), "Myck_Wall_24", "Myck_Air_24", SubResource("AnimationNodeStateMachineTransition_e3kmj"), "Myck_Air_24", "Myck_Idle_24", SubResource("AnimationNodeStateMachineTransition_qhddb")]
+graph_offset = Vector2(-194.375, 132.475)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
 
 [resource]
-graph_offset = Vector2(-568.701, 23.4921)
+graph_offset = Vector2(-695.227, 64.9524)
 nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
-nodes/OneShotAnimation/position = Vector2(-400, 320)
-nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_ftwnj")
-nodes/OneShotBlend/position = Vector2(-80, 106.667)
+nodes/OneShotAnimation/position = Vector2(-510, 290)
+nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_yidw8")
+nodes/OneShotBlend/position = Vector2(-260, 110)
 nodes/StateMachine_running/node = SubResource("AnimationNodeStateMachine_ur8kk")
-nodes/StateMachine_running/position = Vector2(-506.667, 106.667)
+nodes/StateMachine_running/position = Vector2(-510, 110)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_2dkur")
-nodes/TimeScale/position = Vector2(133.333, 160)
+nodes/TimeScale/position = Vector2(30, 160)
+nodes/output/position = Vector2(200, 150)
 node_connections = [&"OneShotBlend", 0, &"StateMachine_running", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]

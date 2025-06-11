@@ -94,6 +94,7 @@ ui/toolbar/run_overall=true
 [global_group]
 
 hook=""
+enemy=""
 
 [godot_resource_groups]
 

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyWave" load_steps=3 format=3 uid="uid://bifqcxas7w0sb"]
+
+[ext_resource type="Script" uid="uid://cbg685taynwml" path="res://scenes/world/game_events/enemy_wave.gd" id="1_k2fp4"]
+[ext_resource type="PackedScene" uid="uid://bk4hxejv0l7ap" path="res://peyman/enemy_rigid.tscn" id="1_sa5y1"]
+
+[resource]
+script = ExtResource("1_k2fp4")
+enemies = Array[PackedScene]([ExtResource("1_sa5y1")])
+metadata/_custom_type_script = "uid://cbg685taynwml"

@@ -1,8 +1,9 @@
+Marker3D
+Node3D
+CollisionShape3D
 AnimationPlayer
 ShapeCast3D
 NavigationAgent3D
-CollisionShape3D
-Node3D
 Node
 AnimationTree
 CharacterBody3D
@@ -11,4 +12,3 @@ BoneAttachment3D
 AudioStreamPlayer
 MeshInstance3D
 AnimatableBody3D
-SubViewport

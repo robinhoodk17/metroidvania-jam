@@ -39,7 +39,7 @@ signal break_interaction
 @export var dash_velocity : float = 30.0
 @export var dash_duration : float = 0.25
 @export var coyote_time : float = 0.25
-@export var ledge_grab_offset : float = -.15
+@export var ledge_grab_offset : float = -1.2
 
 @export_group("Combat")
 @export var combo_reset : float = 1.5
@@ -59,7 +59,7 @@ signal break_interaction
 
 @export_group("Camera")
 @export var dampen_frames : int = 20
-@export var camera_zoom_min : float = 15
+@export var camera_zoom_min : float = 10
 @export var camera_zoom_max : float = 25
 
 @export_group("Nodes")
@@ -73,15 +73,7 @@ signal break_interaction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
 
-@onready var camera_3d: Camera3D = $CameraPivot/Camera3D
-@onready var camera_pivot: Node3D = $CameraPivot
-@onready var coyote_timer: Timer = $CoyoteTimer
-@onready var combo_reset_timer: Timer = $ComboResetTimer
-@onready var dash_reset_timer: Timer = $DashResetTimer
-@onready var queue_timer: Timer = $QueueTimer
-@onready var landing_timer: Timer = $LandingTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
-@onready var grappling_hook : Node3D = $GrapplingHookParent
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
 @onready var check_collisions: ShapeCast3D = $MeshParent/LedgeGrab/CheckCollisions
@@ -89,9 +81,9 @@ signal break_interaction
 @onready var checkpoint_box = $MeshParent/Checkpoint
 
 """child interaction"""
-@onready var alice: CharacterBody3D = $MeshParent/ChildContainer/Alice
 @onready var pick_child: Area3D = $MeshParent/PickChild
 @onready var auto_aim: Area3D = $MeshParent/AutoAim
+@onready var camera_3d: Camera3D = $Camera3D
 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
@@ -137,12 +129,35 @@ var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
   
+@onready var coyote_timer: Timer = create_timer()
+@onready var combo_reset_timer: Timer = create_timer()
+@onready var dash_reset_timer: Timer = create_timer()
+@onready var queue_timer: Timer = create_timer()
+@onready var landing_timer: Timer = create_timer()
+@onready var alice: CharacterBody3D = instantiate_child("res://entities/player/alice.tscn")
+
+func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
+	var timer = Timer.new()
+	timer.wait_time = wait_time
+	timer.one_shot = one_shot
+	add_child(timer)
+	return timer
+
+func instantiate_child(scene_path: String) -> Node:
+	var scene = load(scene_path) as PackedScene
+	if scene == null:
+		push_error("Failed to load Alice: " + scene_path)
+		return null
+	var instance = scene.instantiate()
+	$MeshParent/ChildContainer.add_child(instance)
+	return instance
+
 func _ready() -> void:
 #region Setting up combat
 	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
-	
+		
 #endregion
 	
 	jump_action.triggered.connect(queue_jump)
@@ -153,7 +168,6 @@ func _ready() -> void:
 	checkpoint = global_position
 	checkpoint_box.area_entered.connect(store_checkpoint)
 	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
-	camera_pivot.top_level = true
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
 	SignalbusPlayer.end_retracting.connect(end_retracting)
@@ -167,6 +181,7 @@ func _ready() -> void:
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
+
 
 func queue_dash() -> void:
 	input_queued = inputs.DASH
@@ -207,20 +222,17 @@ func _physics_process(delta: float) -> void:
 		Engine.time_scale = 0.25
 	if queue_timer.is_stopped():
 		input_queued = inputs.NONE
-	position_camera(delta)
+	#position_camera(delta)
 	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
-
 	move_and_slide()
 
 func attach_camera() -> void:
 	for i : int in range(dampen_frames):
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
-	camera_pivot.global_position = global_position
-	
-
+ 
 func position_camera(delta: float) -> void:
 	current_y = (current_y + 1) % dampened_y_array.size()
 	dampened_y_array[current_y] = global_position.y
@@ -228,14 +240,19 @@ func position_camera(delta: float) -> void:
 	for i : float in dampened_y_array:
 		running_sum += i
 	averaged_y = running_sum/dampened_y_array.size()
-	var target_position = (Vector3(global_position.x, averaged_y, global_position.z) + alice.global_position)/2
+	var target_position : Vector3
+	var target_z : float
+	if alice.captured:
+		target_position = Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z)
+		target_z = camera_zoom_min
+	else:
+		target_position = (Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z) + alice.global_position)/2
+		target_z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
+	target_position = Vector3(target_position.x, target_position.y, target_z)
 	if is_on_floor():
 		lerp_power = lerp(lerp_power, 5.0, delta * 10)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
 	else:
 		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
-		camera_pivot.global_position = lerp(camera_pivot.global_position, target_position, delta * lerp_power)
-	camera_3d.global_position.z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
 
 func manage_action_inputs() -> void:
 	return
@@ -271,9 +288,8 @@ func throw_grappling(_x : float, _y : float) -> void:
 	else:
 		var target_position : Vector3 = global_position + (hookshot_range * mesh.global_basis.x.normalized())
 		alice.throw(target_position)
-
 	carrying_child = false
-	set_oneshot_animation("MyckThrow")
+	set_oneshot_animation("Myck_Throw_12")
 	
 	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
@@ -332,7 +348,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
-			set_oneshot_animation("Myck_Land")
+			set_oneshot_animation("Myck_Land_12")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
 			SignalbusPlayer.landed.emit()
@@ -372,9 +388,11 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Myck_Jump")
+	set_oneshot_animation("Myck_Jump_12")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
+	if current_run_state == run_state.LEDGE_GRABBING:
+		velocity.y = jump_velocity * 1.5
 	velocity += get_platform_velocity()/4.0
 	if abs(velocity.x) > speed:
 		running_time = acceleration
@@ -412,7 +430,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
-	set_oneshot_animation("Myck_Dash")
+	set_oneshot_animation("Myck_Dash_12")
 	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
@@ -422,12 +440,12 @@ func run_state_machine(delta: float) -> void:
 	
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
-		run_animation.travel("idle")
+		run_animation.travel("Myck_Idle_24")
 		return
 		
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
-		run_animation.travel("idle")
+		run_animation.travel("Myck_Idle_24")
 		return
 		
 	var run_direction = left_right.value_axis_1d
@@ -466,9 +484,9 @@ func run_state_machine(delta: float) -> void:
 		run_state.IDLE:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
-				run_animation.travel("idle")
+				run_animation.travel("Myck_Idle_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -486,9 +504,9 @@ func run_state_machine(delta: float) -> void:
 			else:
 				velocity.x = abs(velocity.x) * run_direction
 			if is_on_floor():
-				run_animation.travel("walk")
+				run_animation.travel("Myck_Walk_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				SignalbusPlayer.braked.emit()
 				current_run_state = run_state.IDLE
@@ -501,9 +519,9 @@ func run_state_machine(delta: float) -> void:
 			if !is_on_floor() or !landing_timer.is_stopped():
 				current_run_state = run_state.WALKING
 			if is_on_floor():
-				run_animation.travel("run")
+				run_animation.travel("Myck_Run_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
 				braking_time = 0.0
@@ -515,7 +533,7 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, sign(velocity.x) * speed, delta * 5.0)
 
 		run_state.BRAKING:
-			run_animation.travel("walk")
+			run_animation.travel("Myck_Walk_24")
 			velocity.x = sign(velocity.x) * speed * deceleration_curve.sample(braking_time/deceleration)
 			braking_time += delta
 			if braking_time >= deceleration:
@@ -527,7 +545,8 @@ func run_state_machine(delta: float) -> void:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
-			run_animation.travel("Ledge_Grab")
+			#animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
+			run_animation.travel("Myck_Wall_24")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE
@@ -630,17 +649,17 @@ func attack(_x : float, _y : float) -> void:
 	_x = looking
 	if abs(_y) < 0.5:
 		_y = 0
-		set_oneshot_animation("Myck_AttackFront")
+		set_oneshot_animation("Myck_HoriAttack_24")
 		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
 		if _y > 0:
 			hit_box.rotation = Vector3(0,0,PI/2)
-			set_oneshot_animation("Myck_AttackUp")
+			set_oneshot_animation("Myck_UpAttack_12")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
-			set_oneshot_animation("Myck_AttackBelow")
+			set_oneshot_animation("Myck_DownAttack_12")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
@@ -651,9 +670,9 @@ func attack(_x : float, _y : float) -> void:
 	await get_tree().create_timer(1.0).timeout
 	hit_box.hide()
 
-
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	print("player takes damage")
+	set_oneshot_animation("Myck_Hit_12")
 	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING
@@ -678,10 +697,11 @@ func deal_damage(area : Area3D) -> void:
 #region hit_hurt
 @export var hit_box : Area3D 
 @export var hurt_box: Area3D 
-var _damage := 10
+var _damage : int = 1
 
 func on_hit_box_entered(area: Area3D) -> void:
-
+	dash_spent = false
+	second_jump = false
 	traveled_stagger_distance = 0
 	current_run_state = run_state.STAGGERING
 	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
@@ -717,3 +737,83 @@ func _unhandled_input(event: InputEvent) -> void:
 		await get_tree().create_timer(0.25).timeout
 		enable_hit_box(0.2)
 #endregion 
+#region camera_moves
+var shake_active: bool
+var slowmo_active: bool
+var title_active: bool
+var zoom_active: bool
+@onready var default_rotation : Vector3 = rotation_degrees
+@onready var default_fov : float = 90
+ 
+func _camera_shake(duration: float = 0.3) -> void:
+	if shake_active:
+		return
+	else:
+		shake_active = true
+		handle_camera_shake(duration)
+
+func _camera_slowmo(duration: float = 0.5) -> void:
+	if slowmo_active:
+		return 
+	else:
+		slowmo_active = true
+		await handle_cam_slowmo(duration)
+		slowmo_active = false
+ 
+func _camera_tilt(duration: float = 0.15) -> void:
+	if title_active:
+		return
+	else:
+		title_active = true
+		await handle_camera_tilt(duration)
+		title_active = false
+		
+func _camera_zoom(duration: float = 0.15) -> void:
+	if zoom_active:
+		return
+	else:
+		zoom_active = true
+		await handle_camera_zoom(duration)
+		zoom_active = false 
+
+func handle_camera_shake(duration : float) -> void:
+	var period : float = duration
+	var magnitude : float = 0.4
+	var initial_transform = camera_3d.transform
+	var elapsed_time : float = 0.0
+	while elapsed_time < period:
+		var offset : Vector3 = Vector3(
+			randf_range(-magnitude, magnitude),
+			randf_range(-magnitude, magnitude),
+			0.0
+		)
+		camera_3d.transform.origin = initial_transform.origin + offset
+		elapsed_time += get_process_delta_time()
+		#await get_tree().process_frame
+	camera_3d.transform = initial_transform
+	shake_active = false
+ 
+func handle_cam_slowmo(duration : float) -> Signal:
+	var _tween: Tween = get_tree().create_tween()
+	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
+	_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
+	return _tween.finished
+
+func handle_camera_tilt(duration : float) -> Signal:
+	var tilt_degrees : float = 5.0
+	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var target_rotation = default_rotation
+	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
+	tween.tween_property(camera_3d, "rotation_degrees", target_rotation, duration)
+	tween.tween_property(camera_3d, "rotation_degrees", default_rotation, duration)
+	return tween.finished
+
+func handle_camera_zoom(duration: float) -> Signal:
+	var zoom_amount : float = 10.0
+	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
+	tween.tween_property(camera_3d, "fov", target_fov, duration)
+	tween.tween_property(camera_3d, "fov", default_fov, duration)
+	return tween.finished 
+
+#endregion  
