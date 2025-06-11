@@ -59,7 +59,7 @@ signal break_interaction
 
 @export_group("Camera")
 @export var dampen_frames : int = 20
-@export var camera_zoom_min : float = 15
+@export var camera_zoom_min : float = 10
 @export var camera_zoom_max : float = 25
 
 @export_group("Nodes")
@@ -254,7 +254,6 @@ func position_camera(delta: float) -> void:
 	else:
 		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
 
-
 func manage_action_inputs() -> void:
 	return
 	if jump_action.is_triggered():
@@ -290,7 +289,7 @@ func throw_grappling(_x : float, _y : float) -> void:
 		var target_position : Vector3 = global_position + (hookshot_range * mesh.global_basis.x.normalized())
 		alice.throw(target_position)
 	carrying_child = false
-	set_oneshot_animation("MyckThrow")
+	set_oneshot_animation("Myck_Throw_12")
 	
 	#var position2D : Vector2 = get_tree().root.get_camera_3d().unproject_position(global_position)
 	#var mouse_position : Vector2 = (get_viewport().get_mouse_position() - position2D).normalized()
@@ -349,7 +348,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
-			set_oneshot_animation("Myck_Land")
+			set_oneshot_animation("Myck_Land_12")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
 			SignalbusPlayer.landed.emit()
@@ -389,9 +388,11 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Myck_Jump")
+	set_oneshot_animation("Myck_Jump_12")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
+	if current_run_state == run_state.LEDGE_GRABBING:
+		velocity.y = jump_velocity * 1.3
 	velocity += get_platform_velocity()/4.0
 	if abs(velocity.x) > speed:
 		running_time = acceleration
@@ -429,7 +430,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
-	set_oneshot_animation("Myck_Dash")
+	set_oneshot_animation("Myck_Dash_12")
 	SignalbusPlayer.dashed.emit()
 
 #region statemachine and animations
@@ -544,6 +545,7 @@ func run_state_machine(delta: float) -> void:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
+			#animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
 			run_animation.travel("Ledge_Grab")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
@@ -647,17 +649,17 @@ func attack(_x : float, _y : float) -> void:
 	_x = looking
 	if abs(_y) < 0.5:
 		_y = 0
-		set_oneshot_animation("Myck_AttackFront")
+		set_oneshot_animation("Myck_HoriAttack_24")
 		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
 		if _y > 0:
 			hit_box.rotation = Vector3(0,0,PI/2)
-			set_oneshot_animation("Myck_AttackUp")
+			set_oneshot_animation("Myck_UpAttack_12")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
-			set_oneshot_animation("Myck_AttackBelow")
+			set_oneshot_animation("Myck_DownAttack_12")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
@@ -734,3 +736,83 @@ func _unhandled_input(event: InputEvent) -> void:
 		await get_tree().create_timer(0.25).timeout
 		enable_hit_box(0.2)
 #endregion 
+#region camera_moves
+var shake_active: bool
+var slowmo_active: bool
+var title_active: bool
+var zoom_active: bool
+@onready var default_rotation : Vector3 = rotation_degrees
+@onready var default_fov : float = 90
+ 
+func _camera_shake(duration: float = 0.3) -> void:
+	if shake_active:
+		return
+	else:
+		shake_active = true
+		handle_camera_shake(duration)
+
+func _camera_slowmo(duration: float = 0.5) -> void:
+	if slowmo_active:
+		return 
+	else:
+		slowmo_active = true
+		await handle_cam_slowmo(duration)
+		slowmo_active = false
+ 
+func _camera_tilt(duration: float = 0.15) -> void:
+	if title_active:
+		return
+	else:
+		title_active = true
+		await handle_camera_tilt(duration)
+		title_active = false
+		
+func _camera_zoom(duration: float = 0.15) -> void:
+	if zoom_active:
+		return
+	else:
+		zoom_active = true
+		await handle_camera_zoom(duration)
+		zoom_active = false 
+
+func handle_camera_shake(duration : float) -> void:
+	var period : float = duration
+	var magnitude : float = 0.4
+	var initial_transform = camera_3d.transform
+	var elapsed_time : float = 0.0
+	while elapsed_time < period:
+		var offset : Vector3 = Vector3(
+			randf_range(-magnitude, magnitude),
+			randf_range(-magnitude, magnitude),
+			0.0
+		)
+		camera_3d.transform.origin = initial_transform.origin + offset
+		elapsed_time += get_process_delta_time()
+		#await get_tree().process_frame
+	camera_3d.transform = initial_transform
+	shake_active = false
+ 
+func handle_cam_slowmo(duration : float) -> Signal:
+	var _tween: Tween = get_tree().create_tween()
+	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
+	_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
+	return _tween.finished
+
+func handle_camera_tilt(duration : float) -> Signal:
+	var tilt_degrees : float = 5.0
+	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var target_rotation = default_rotation
+	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
+	tween.tween_property(camera_3d, "rotation_degrees", target_rotation, duration)
+	tween.tween_property(camera_3d, "rotation_degrees", default_rotation, duration)
+	return tween.finished
+
+func handle_camera_zoom(duration: float) -> Signal:
+	var zoom_amount : float = 10.0
+	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
+	tween.tween_property(camera_3d, "fov", target_fov, duration)
+	tween.tween_property(camera_3d, "fov", default_fov, duration)
+	return tween.finished 
+
+#endregion  
