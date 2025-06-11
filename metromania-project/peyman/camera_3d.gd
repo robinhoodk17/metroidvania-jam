@@ -1,4 +1,5 @@
 extends Camera3D
+
 var default_rotation : Vector3 = rotation_degrees
 var shake_active: bool
 var slowmo_active: bool
@@ -7,31 +8,79 @@ var tilt_tween: Tween
 var zoom_tween: Tween
 
 @onready var default_fov : float = fov 
-@onready var player : Node3D = get_parent() 
-@onready var camera_static_position: Vector3 = global_transform.origin
+@onready var player : Node3D = get_tree().get_first_node_in_group("player")
+@onready var timer = create_timer(0.5)
+@onready var camera_static_position: Vector3 = global_transform.origin 
 @export var small_area: Area3D 
 @export var big_area: Area3D 
 @export var camera_mode := "Celeste" 
-
-var in_small_area := true
-var in_big_area := true
+@export var static_control : float = 8.0
+var in_small_area : bool = true:
+	set(value):
+		if camera_static_position.distance_to(_desired_pos) > static_control: 
+			camera_static_position = _desired_pos
+		else:
+			timer.start()
+			await timer.timeout
+			camera_static_position = _desired_pos
+		in_small_area = value
+		print("sdfsdf")
+var in_big_area : bool = true
 var lerp_speed_slow := 0.5 
 var lerp_speed_fast := 2.5 
 var y_dampening_factor := 0.1 
 var vertical_offset = Vector3(0, 1, 0)  
 var side_offset = Vector3(0, 0, 10)
+var _desired_pos : Vector3
 
+func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
+	var timer = Timer.new()
+	timer.wait_time = wait_time
+	timer.one_shot = one_shot
+	add_child(timer)
+	return timer
+ 
 func _ready() -> void:
-	small_area.body_entered.connect(func(body: Node3D): if body == player: in_small_area = true)
-	small_area.body_exited.connect(func(body: Node3D): if body == player: in_small_area = false)
-	big_area.body_entered.connect(func(body: Node3D): if body == player: in_big_area = true)
-	big_area.body_exited.connect(func(body: Node3D): if body == player: in_big_area = false)
+	position = vertical_offset + side_offset
+	small_area.body_entered.connect(func(body: Node3D): if body == player && in_small_area == false: in_small_area = true)
+	small_area.body_exited.connect(func(body: Node3D): if body == player && in_small_area == true: in_small_area = false)
+	big_area.body_entered.connect(func(body: Node3D): if body == player && in_big_area == false: in_big_area = true)
+	big_area.body_exited.connect(func(body: Node3D): if body == player && in_big_area == true: in_big_area = false)
 	SignalbusPlayer.cam_shake.connect(on_cam_shake)
 	SignalbusPlayer.cam_slomo.connect(on_cam_slomo)
 	SignalbusPlayer.cam_tilt.connect(on_cam_tilt)
 	SignalbusPlayer.cam_fast_zooms.connect(on_cam_fast_zooms)
 	SignalbusPlayer.cam_pan.connect(on_cam_pan)
-
+ 
+func _physics_process(delta):
+	var player_pos : Vector3 = player.global_transform.origin
+	var desired_pos : Vector3 = player_pos + vertical_offset + side_offset
+	_desired_pos = desired_pos
+	var target_pos : Vector3 = global_transform.origin
+	match camera_mode:
+		"Celeste":
+			if in_small_area:
+				target_pos = camera_static_position
+			elif in_big_area and not in_small_area:
+				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
+				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
+				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+			else:
+				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_fast * delta)
+				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_fast * delta)
+				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+		"HollowKnight":
+			if in_big_area:
+				target_pos = camera_static_position
+			else:
+				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
+				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
+				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if in_small_area:
+					camera_static_position = target_pos
+					
+	global_transform.origin = target_pos
+ 
 func switch_player(parent: Node3D) -> void:
 	reparent(parent)
 	player = parent
@@ -104,35 +153,12 @@ func on_cam_pan(direction: float, amount: float) -> void:
 	global_translate(right * direction * amount)
  
 #endregion 
-func _physics_process(delta):
-	var player_pos : Vector3 = player.global_transform.origin
-	var desired_pos : Vector3 = player_pos + vertical_offset + side_offset
-	var target_pos : Vector3 = global_transform.origin
-	match camera_mode:
-		"Celeste":
-			if in_small_area:
-				target_pos = camera_static_position
-			elif in_big_area and not in_small_area:
-				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
-				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
-				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
-			else:
-				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_fast * delta)
-				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_fast * delta)
-				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
-				if global_transform.origin.distance_to(desired_pos) < 0.1:
-					camera_static_position = desired_pos
+ 
+var previous_condition_met := false
 
-		"HollowKnight":
-			if in_big_area:
-				target_pos = camera_static_position
-			else:
-				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
-				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
-				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
-				if in_small_area:
-					camera_static_position = target_pos
-
-	global_transform.origin = target_pos
-
+func check_condition(current_condition: bool) -> bool:
+	# Returns true only when condition changes from false to true
+	var just_met = current_condition and not previous_condition_met
+	previous_condition_met = current_condition
+	return just_met
  
