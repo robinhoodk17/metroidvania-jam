@@ -39,7 +39,7 @@ signal break_interaction
 @export var dash_velocity : float = 30.0
 @export var dash_duration : float = 0.25
 @export var coyote_time : float = 0.25
-@export var ledge_grab_offset : float = -.15
+@export var ledge_grab_offset : float = -1.2
 
 @export_group("Combat")
 @export var combo_reset : float = 1.5
@@ -392,7 +392,7 @@ func jump() -> void:
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	if current_run_state == run_state.LEDGE_GRABBING:
-		velocity.y = jump_velocity * 1.3
+		velocity.y = jump_velocity * 1.5
 	velocity += get_platform_velocity()/4.0
 	if abs(velocity.x) > speed:
 		running_time = acceleration
@@ -440,12 +440,12 @@ func run_state_machine(delta: float) -> void:
 	
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
-		run_animation.travel("idle")
+		run_animation.travel("Myck_Idle_24")
 		return
 		
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
-		run_animation.travel("idle")
+		run_animation.travel("Myck_Idle_24")
 		return
 		
 	var run_direction = left_right.value_axis_1d
@@ -484,9 +484,9 @@ func run_state_machine(delta: float) -> void:
 		run_state.IDLE:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
-				run_animation.travel("idle")
+				run_animation.travel("Myck_Idle_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -504,9 +504,9 @@ func run_state_machine(delta: float) -> void:
 			else:
 				velocity.x = abs(velocity.x) * run_direction
 			if is_on_floor():
-				run_animation.travel("walk")
+				run_animation.travel("Myck_Walk_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				SignalbusPlayer.braked.emit()
 				current_run_state = run_state.IDLE
@@ -519,9 +519,9 @@ func run_state_machine(delta: float) -> void:
 			if !is_on_floor() or !landing_timer.is_stopped():
 				current_run_state = run_state.WALKING
 			if is_on_floor():
-				run_animation.travel("run")
+				run_animation.travel("Myck_Run_24")
 			else:
-				run_animation.travel("Myck_Air")
+				run_animation.travel("Myck_Air_24")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
 				braking_time = 0.0
@@ -533,7 +533,7 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, sign(velocity.x) * speed, delta * 5.0)
 
 		run_state.BRAKING:
-			run_animation.travel("walk")
+			run_animation.travel("Myck_Walk_24")
 			velocity.x = sign(velocity.x) * speed * deceleration_curve.sample(braking_time/deceleration)
 			braking_time += delta
 			if braking_time >= deceleration:
@@ -546,7 +546,7 @@ func run_state_machine(delta: float) -> void:
 		
 		run_state.LEDGE_GRABBING:
 			#animation_tree.set("parameters/OneShotBlend/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
-			run_animation.travel("Ledge_Grab")
+			run_animation.travel("Myck_Wall_24")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE
@@ -672,6 +672,7 @@ func attack(_x : float, _y : float) -> void:
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:
 	print("player takes damage")
+	set_oneshot_animation("Myck_Hit_12")
 	GlobalsPlayer.current_hp -= amount
 	if knockback > 0.0:
 		current_run_state = run_state.STAGGERING

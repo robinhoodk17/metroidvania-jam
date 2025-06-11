@@ -19,7 +19,7 @@ func activate() -> void:
 	
 	for i : Marker3D in spawn_locations:
 		await get_tree().create_timer(delay).timeout
-		var random_index : int = randi_range(0, enemies.size() -1)
+		var random_index : int = randi_range(0, enemies[wave_number].enemies.size() -1)
 		var random_enemy : Node3D = enemies[wave_number].enemies[random_index].instantiate()
 		random_enemy.death.connect(reduce_active_enemies)
 		active_enemies += 1

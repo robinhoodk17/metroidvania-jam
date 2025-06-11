@@ -1,10 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://bb7oqyp5pmvds"]
+[gd_scene load_steps=11 format=3 uid="uid://bb7oqyp5pmvds"]
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_xgn07"]
 [ext_resource type="PackedScene" uid="uid://fxxm2hiee7bo" path="res://scenes/beginning_area/hub/hub_area.blend" id="2_uxkil"]
 [ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="3_shjvc"]
 [ext_resource type="PackedScene" uid="uid://08b8jxbryx21" path="res://scenes/world/game_events/triggers/area_entered/area_entered.tscn" id="4_eoo1u"]
 [ext_resource type="PackedScene" uid="uid://x08nn6lsnink" path="res://peyman/enemy_flying.tscn" id="4_shjvc"]
+[ext_resource type="PackedScene" uid="uid://cn0guvtaw8w66" path="res://scenes/world/game_events/events/spawn_enemies/spawn_enemies.tscn" id="5_krwih"]
+[ext_resource type="Script" uid="uid://cbg685taynwml" path="res://scenes/world/game_events/enemy_wave.gd" id="6_auiq8"]
+[ext_resource type="Resource" uid="uid://wj3krc4a8ish" path="res://scenes/beginning_area/hub/ground.tres" id="7_82rf0"]
+[ext_resource type="Resource" uid="uid://csxsmlq0tuah4" path="res://scenes/beginning_area/hub/flying.tres" id="8_vp61v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eoo1u"]
+size = Vector3(32.6083, 18.2307, 2000.43)
 
 [node name="Node" instance=ExtResource("1_xgn07")]
 
@@ -17,7 +24,32 @@ script = ExtResource("3_shjvc")
 [node name="AreaEntered" parent="Interactables(not_in_blender)" index="1" instance=ExtResource("4_eoo1u")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/AreaEntered" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.53262, 8.61536, 999.715)
+shape = SubResource("BoxShape3D_eoo1u")
+
+[node name="SpawnEnemies" parent="Interactables(not_in_blender)/AreaEntered" index="1" node_paths=PackedStringArray("spawn_locations", "triggers") instance=ExtResource("5_krwih")]
+spawn_locations = [NodePath("Marker3D"), NodePath("Marker3D2")]
+enemies = Array[ExtResource("6_auiq8")]([ExtResource("7_82rf0")])
+delay = 0.5
+triggers = [NodePath("..")]
+
+[node name="Marker3D" type="Marker3D" parent="Interactables(not_in_blender)/AreaEntered/SpawnEnemies" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.24181, 2.09672, 0)
+
+[node name="Marker3D2" type="Marker3D" parent="Interactables(not_in_blender)/AreaEntered/SpawnEnemies" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.9496, 2.09672, 0)
+
+[node name="SpawnEnemies2" parent="Interactables(not_in_blender)/AreaEntered" index="2" node_paths=PackedStringArray("spawn_locations", "triggers") instance=ExtResource("5_krwih")]
+spawn_locations = [NodePath("Marker3D3")]
+enemies = Array[ExtResource("6_auiq8")]([ExtResource("8_vp61v")])
+triggers = [NodePath("..")]
+
+[node name="Marker3D3" type="Marker3D" parent="Interactables(not_in_blender)/AreaEntered/SpawnEnemies2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.96048, 10.4836, 0)
 
 [node name="Flying" parent="Enemies" index="0" instance=ExtResource("4_shjvc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, 24.141, 0)
 provoked = false
+
+[node name="Myck" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.204, -0.0342698, 13.6439)

@@ -1,6 +1,6 @@
-CollisionShape3D
 Marker3D
 Node3D
+CollisionShape3D
 AnimationPlayer
 ShapeCast3D
 NavigationAgent3D
