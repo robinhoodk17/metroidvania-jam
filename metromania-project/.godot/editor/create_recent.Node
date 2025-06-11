@@ -1,13 +1,13 @@
-Marker3D
+Node
 Node3D
 CollisionShape3D
+Area3D
+Marker3D
 AnimationPlayer
 ShapeCast3D
 NavigationAgent3D
-Node
 AnimationTree
 CharacterBody3D
-Area3D
 BoneAttachment3D
 AudioStreamPlayer
 MeshInstance3D
