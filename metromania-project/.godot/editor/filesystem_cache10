@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1749644603
+::res://::1749721985
 ATTRIBUTION.md::TextFile/TextFile::-1::1749566326::0::1::::<><><>0<>0<><>::
 default_bus_layout.tres::AudioBusLayout/AudioBusLayout::517765334660057362::1749624076::0::1::::<><><>0<>0<><>::
 default_settings.cfg::TextFile/TextFile::-1::1749566327::0::1::::<><><>0<>0<><>::
@@ -11,7 +11,7 @@ README.md::TextFile/TextFile::-1::1749566326::0::1::::<><><>0<>0<><>::
 zzFinalReleaseTodos.md::TextFile/TextFile::-1::1749566327::0::1::::<><><>0<>0<><>::
 ::res://aa&&root/::1749631605
 main.tscn::PackedScene/PackedScene::8146250356454209612::1749624083::0::1::::<><><>0<>0<><>::uid://bvr8gs45y6h57::::res://main.gd<>uid://jftpla2ic4fw::::res://peyman/pause_menu.tscn<>uid://h8a8r2wb5lu3::::res://aa&&root/player.tscn<>uid://dkhjtbwvdf2ss::::res://aa&&root/trial_scene.blend<>uid://bk4hxejv0l7ap::::res://peyman/enemy_rigid.tscn<>uid://x08nn6lsnink::::res://peyman/enemy_flying.tscn
-player.tscn::PackedScene::559506238157840752::1749631605::0::1::::<><><>0<>0<><>::uid://bcji03sv3g5eh::::res://entities/player/player.gd<>uid://d0781vuxbhofs::::res://input/left_right.tres<>uid://c8h8ki5lw8ydw::::res://input/up_down.tres<>uid://n7cvsuoh381r::::res://input/jump.tres<>uid://djbmv3glvtkcn::::res://input/dash.tres<>uid://dn7xm7551du3c::::res://input/throw.tres<>uid://dscups0415vf3::::res://input/attack.tres<>res://entities/player/auto_aim.gd<>uid://c3apf5nk6yw5c::::res://entities/Myck/Myck.glb<>uid://b0gg4eyj3yc7q::::res://materials/shader_materials/surface0.tres<>uid://bc1xo71qbof0p::::res://materials/shader_materials/surface1.tres<>uid://3och035os5v1::::res://materials/shader_materials/surface2.tres<>uid://dwh5faypa8v5s::::res://entities/Myck/Myck_Animations/animation_tree.tres<>uid://gbaybbokp4yw::::res://materials/shader_materials/slash_vfx.tscn<>uid://t8ldqeok401r::::res://materials/shader_materials/hit_vfx.tscn<>res://peyman/camera_3d.gd
+player.tscn::PackedScene/PackedScene::559506238157840752::1749631605::0::1::::<><><>0<>0<><>::uid://bcji03sv3g5eh::::res://entities/player/player.gd<>uid://d0781vuxbhofs::::res://input/left_right.tres<>uid://c8h8ki5lw8ydw::::res://input/up_down.tres<>uid://n7cvsuoh381r::::res://input/jump.tres<>uid://djbmv3glvtkcn::::res://input/dash.tres<>uid://dn7xm7551du3c::::res://input/throw.tres<>uid://dscups0415vf3::::res://input/attack.tres<>res://entities/player/auto_aim.gd<>uid://c3apf5nk6yw5c::::res://entities/Myck/Myck.glb<>uid://b0gg4eyj3yc7q::::res://materials/shader_materials/surface0.tres<>uid://bc1xo71qbof0p::::res://materials/shader_materials/surface1.tres<>uid://3och035os5v1::::res://materials/shader_materials/surface2.tres<>uid://dwh5faypa8v5s::::res://entities/Myck/Myck_Animations/animation_tree.tres<>uid://gbaybbokp4yw::::res://materials/shader_materials/slash_vfx.tscn<>uid://t8ldqeok401r::::res://materials/shader_materials/hit_vfx.tscn<>res://peyman/camera_3d.gd
 trial_scene.blend::PackedScene/PackedScene::7876181602224565210::1749566326::1749566356::1::::<><><>0<>0<>bf2f79f28d4a5a58390b22d697034612<>res://.godot/imported/trial_scene.blend-14196d4f88d6429927fe6f3dc6440706.scn::
 trial_scene.tscn::PackedScene/PackedScene::8805630713442181102::1749566336::0::1::::<><><>0<>0<><>::uid://dhtbgoohearlq::::res://scenes/master.tscn<>uid://h8a8r2wb5lu3::::res://aa&&root/player.tscn<>uid://dkhjtbwvdf2ss::::res://aa&&root/trial_scene.blend<>uid://bk4hxejv0l7ap::::res://peyman/enemy_rigid.tscn
 ::res://addons/::1749566327
@@ -573,12 +573,12 @@ event_text.gd::GDScript/GDScript::7199229198122971661::1749566326::0::1::::Dialo
 icon.svg::CompressedTexture2D/CompressedTexture2D::9151163472776694991::1749566326::1749566340::1::::<><><>0<>0<>c3322103d45750d096f11ecd03411177<>res://.godot/imported/icon.svg-e2501ddcdef01c7f2c3538940f5abfc1.ctex::
 index.gd::GDScript/GDScript::3735692247776249690::1749566326::0::1::::<>DialogicIndexer<><>0<>1<><>::
 manual_advance.gd::GDScript/GDScript::7278833021501408885::1749566326::0::1::::DialogicManualAdvance<>RefCounted<><>0<>0<><>::
-node_dialog_text.gd::GDScript/GDScript::8367256849905527338::1749566326::0::1::::DialogicNode_DialogText<>RichTextLabel<>res://addons/dialogic/Modules/Text/node_dialog_text_icon.svg<>0<>0<><>::
+node_dialog_text.gd::GDScript/GDScript::8367256849905527338::1749566326::0::1::::DialogicNode_DialogText<>RichTextLabel<><>0<>0<><>::
 node_dialog_text_icon.svg::CompressedTexture2D/CompressedTexture2D::4044689466443943908::1749566326::1749566340::1::::<><><>0<>0<>497fe8cd6cb72aeedb7077c36069c336<>res://.godot/imported/node_dialog_text_icon.svg-3cf845e99d76137d8156865c09f39e3e.ctex::
 node_input.gd::GDScript/GDScript::6135746528022206122::1749566326::0::1::::DialogicNode_Input<>Control<><>0<>0<><>::
-node_name_label.gd::GDScript/GDScript::2409060177523604634::1749566326::0::1::::DialogicNode_NameLabel<>Label<>res://addons/dialogic/Modules/Text/node_name_label_icon.svg<>0<>0<><>::
+node_name_label.gd::GDScript/GDScript::2409060177523604634::1749566326::0::1::::DialogicNode_NameLabel<>Label<><>0<>0<><>::
 node_name_label_icon.svg::CompressedTexture2D/CompressedTexture2D::753910208124862534::1749566326::1749566340::1::::<><><>0<>0<>3bc6897be0d1bfc61b99594389e51bf2<>res://.godot/imported/node_name_label_icon.svg-d482939b74b41ec2da6edc97e41c8bf8.ctex::
-node_next_indicator.gd::GDScript/GDScript::8643102605516753138::1749566326::0::1::::DialogicNode_NextIndicator<>Control<>res://addons/dialogic/Modules/Text/node_next_indicator_icon.svg<>0<>0<><>::
+node_next_indicator.gd::GDScript/GDScript::8643102605516753138::1749566326::0::1::::DialogicNode_NextIndicator<>Control<><>0<>0<><>::
 node_next_indicator_icon.svg::CompressedTexture2D/CompressedTexture2D::302873534409359568::1749566326::1749566340::1::::<><><>0<>0<>d16cf5e370ce5bad31aa615e40bbdce1<>res://.godot/imported/node_next_indicator_icon.svg-06167a3b3e290941c1c34386ebd60af8.ctex::
 node_type_sound.gd::GDScript/GDScript::8257091630640999901::1749566326::0::1::::DialogicNode_TypeSounds<>AudioStreamPlayer<><>0<>1<><>::
 settings_text.gd::GDScript/GDScript::5031029662621467051::1749566326::0::1::::<>DialogicSettingsPage<><>0<>1<><>::
@@ -660,7 +660,7 @@ GdUnitResultAssert.gd::GDScript/GDScript::6953724962807308305::1749566326::0::1:
 GdUnitSceneRunner.gd::GDScript/GDScript::61539651311913209::1749566326::0::1::::GdUnitSceneRunner<>RefCounted<><>0<>0<><>::
 GdUnitSignalAssert.gd::GDScript/GDScript::5331380200826747676::1749566326::0::1::::GdUnitSignalAssert<>GdUnitAssert<><>0<>0<><>::
 GdUnitStringAssert.gd::GDScript/GDScript::4424840212939975856::1749566326::0::1::::GdUnitStringAssert<>GdUnitAssert<><>0<>0<><>::
-GdUnitTestSuite.gd::GDScript/GDScript::2354335231532199097::1749566326::0::1::::GdUnitTestSuite<>Node<>res://addons/gdUnit4/src/ui/settings/logo.png<>0<>0<><>::
+GdUnitTestSuite.gd::GDScript/GDScript::2354335231532199097::1749566326::0::1::::GdUnitTestSuite<>Node<><>0<>0<><>::
 GdUnitTuple.gd::GDScript/GDScript::8449296266264235023::1749566326::0::1::::GdUnitTuple<>RefCounted<><>0<>0<><>::
 GdUnitValueExtractor.gd::GDScript/GDScript::6842483467621846668::1749566326::0::1::::GdUnitValueExtractor<>RefCounted<><>0<>0<><>::
 GdUnitVectorAssert.gd::GDScript/GDScript::708150982578765221::1749566326::0::1::::GdUnitVectorAssert<>GdUnitAssert<><>0<>0<><>::
@@ -914,13 +914,13 @@ RobotoMono-Thin.ttf::FontFile/FontFile::5691030676903845637::1749566327::1749566
 RobotoMono-ThinItalic.ttf::FontFile/FontFile::6262943951101195158::1749566327::1749566337::1::::<><><>0<>0<>446c33e0bca2216759d6694746a4bb74<>res://.godot/imported/RobotoMono-ThinItalic.ttf-e9ceff3e4cdfbfedd19dbb3d3bba724a.fontdata::
 ::res://addons/guide/::1749566338
 guide.gd::GDScript/GDScript::5808533942972135857::1749566327::0::1::::<>Node<><>0<>0<><>::
-guide_action.gd::GDScript/GDScript::6942797533844034629::1749566327::0::1::::GUIDEAction<>Resource<>res://addons/guide/guide_action.svg<>0<>1<><>::
+guide_action.gd::GDScript/GDScript::6942797533844034629::1749566327::0::1::::GUIDEAction<>Resource<><>0<>1<><>::
 guide_action.svg::CompressedTexture2D/CompressedTexture2D::2685638792534833501::1749566327::1749566338::1::::<><><>0<>0<>0fed95861f97a8b6e491d08eebdea50e<>res://.godot/imported/guide_action.svg-4d1dfb47183d95c4796078798ce2d0ab.ctex::
-guide_action_mapping.gd::GDScript/GDScript::7635863440127223149::1749566327::0::1::::GUIDEActionMapping<>Resource<>res://addons/guide/guide_internal.svg<>0<>1<><>::
-guide_input_mapping.gd::GDScript/GDScript::6164648137157877407::1749566327::0::1::::GUIDEInputMapping<>Resource<>res://addons/guide/guide_internal.svg<>0<>1<><>::
+guide_action_mapping.gd::GDScript/GDScript::7635863440127223149::1749566327::0::1::::GUIDEActionMapping<>Resource<><>0<>1<><>::
+guide_input_mapping.gd::GDScript/GDScript::6164648137157877407::1749566327::0::1::::GUIDEInputMapping<>Resource<><>0<>1<><>::
 guide_input_tracker.gd::GDScript/GDScript::7375753567345546380::1749566327::0::1::::<>Node<><>0<>0<><>::
 guide_internal.svg::CompressedTexture2D/CompressedTexture2D::7391076504055567055::1749566327::1749566337::1::::<><><>0<>0<>9f61183331f90c5fddd88d5c084d8ac6<>res://.godot/imported/guide_internal.svg-560a143a1e289215e72d8844f5173844.ctex::
-guide_mapping_context.gd::GDScript/GDScript::4025139846048120014::1749566327::0::1::::GUIDEMappingContext<>Resource<>res://addons/guide/guide_mapping_context.svg<>0<>1<><>::
+guide_mapping_context.gd::GDScript/GDScript::4025139846048120014::1749566327::0::1::::GUIDEMappingContext<>Resource<><>0<>1<><>::
 guide_mapping_context.svg::CompressedTexture2D/CompressedTexture2D::2573154166349567085::1749566327::1749566337::1::::<><><>0<>0<>176f380c1d1f54fbda57217e7536f1ff<>res://.godot/imported/guide_mapping_context.svg-025f10fbbdb2bb11a96754ab9b725bea.ctex::
 guide_reset.gd::GDScript/GDScript::5805510566683897136::1749566327::0::1::::<>Node<><>0<>0<><>::
 guide_set.gd::GDScript/GDScript::1033704584405236847::1749566327::0::1::::<>RefCounted<><>0<>0<><>::
@@ -964,7 +964,7 @@ modifier_slot.tscn::PackedScene/PackedScene::5536712480618268392::1749566327::0:
 trigger_slot.gd::GDScript/GDScript::8366158114829552994::1749566327::0::1::::<>Control<><>0<>1<><>::
 trigger_slot.tscn::PackedScene/PackedScene::1355977703747753604::1749566327::0::1::::<><><>0<>0<><>::uid://drgvnwr6t55uc::::res://addons/guide/editor/trigger_slot/trigger_slot.gd
 ::res://addons/guide/inputs/::1749566337
-guide_input.gd::GDScript/GDScript::2823619829393170979::1749566327::0::1::::GUIDEInput<>Resource<>res://addons/guide/inputs/guide_input.svg<>0<>1<><>::
+guide_input.gd::GDScript/GDScript::2823619829393170979::1749566327::0::1::::GUIDEInput<>Resource<><>0<>1<><>::
 guide_input.svg::CompressedTexture2D/CompressedTexture2D::1004559383591479557::1749566327::1749566337::1::::<><><>0<>0<>ea7eb335b2dc8714ae9627b1fefcc9f8<>res://.godot/imported/guide_input.svg-d7e8ae255db039e6a02cccc3f844cc0e.ctex::
 guide_input_action.gd::GDScript/GDScript::5271254899795339379::1749566327::0::1::::GUIDEInputAction<>GUIDEInput<><>0<>1<><>::
 guide_input_any.gd::GDScript/GDScript::340539894717040008::1749566327::0::1::::GUIDEInputAny<>GUIDEInput<><>0<>1<><>::
@@ -986,7 +986,7 @@ guide_input_touch_distance.gd::GDScript/GDScript::7247808228193702113::174956632
 guide_input_touch_position.gd::GDScript/GDScript::3857703312394527231::1749566327::0::1::::GUIDEInputTouchPosition<>GUIDEInputTouchBase<><>0<>1<><>::
 guide_touch_state.gd::GDScript/GDScript::5427235990173207299::1749566327::0::1::::<>RefCounted<><>0<>1<><>::
 ::res://addons/guide/modifiers/::1749566337
-guide_modifier.gd::GDScript/GDScript::4192069836590995060::1749566327::0::1::::GUIDEModifier<>Resource<>res://addons/guide/modifiers/guide_modifier.svg<>0<>1<><>::
+guide_modifier.gd::GDScript/GDScript::4192069836590995060::1749566327::0::1::::GUIDEModifier<>Resource<><>0<>1<><>::
 guide_modifier.svg::CompressedTexture2D/CompressedTexture2D::697463207961229659::1749566327::1749566337::1::::<><><>0<>0<>db7194ca7685c9ad895debf14b82c7e9<>res://.godot/imported/guide_modifier.svg-8cf939ca3244410aba00f7b558561d72.ctex::
 guide_modifier_3d_coordinates.gd::GDScript/GDScript::5262862820468437665::1749566327::0::1::::GUIDEModifier3DCoordinates<>GUIDEModifier<><>0<>1<><>::
 guide_modifier_8_way_direction.gd::GDScript/GDScript::5193056691678556982::1749566327::0::1::::GUIDEModifier8WayDirection<>GUIDEModifier<><>0<>1<><>::
@@ -1004,14 +1004,14 @@ guide_modifier_window_relative.gd::GDScript/GDScript::9203663232919191043::17495
 ::res://addons/guide/remapping/::1749566327
 guide_input_detector.gd::GDScript/GDScript::1808024975624369333::1749566327::0::1::::GUIDEInputDetector<>Node<><>0<>1<><>::
 guide_remapper.gd::GDScript/GDScript::1693452267590097612::1749566327::0::1::::GUIDERemapper<>RefCounted<><>0<>0<><>::
-guide_remapping_config.gd::GDScript/GDScript::4539604276539777060::1749566327::0::1::::GUIDERemappingConfig<>Resource<>res://addons/guide/guide_internal.svg<>0<>0<><>::
+guide_remapping_config.gd::GDScript/GDScript::4539604276539777060::1749566327::0::1::::GUIDERemappingConfig<>Resource<><>0<>0<><>::
 ::res://addons/guide/triggers/::1749566337
-guide_trigger.gd::GDScript/GDScript::2264454360643316291::1749566327::0::1::::GUIDETrigger<>Resource<>res://addons/guide/triggers/guide_trigger.svg<>0<>1<><>::
+guide_trigger.gd::GDScript/GDScript::2264454360643316291::1749566327::0::1::::GUIDETrigger<>Resource<><>0<>1<><>::
 guide_trigger.svg::CompressedTexture2D/CompressedTexture2D::4826772353684548122::1749566327::1749566337::1::::<><><>0<>0<>3192cfcc6212f9dd511c39b2bf93c0e1<>res://.godot/imported/guide_trigger.svg-cd87acbd491929cf49a255f8481b0b63.ctex::
 guide_trigger_chorded_action.gd::GDScript/GDScript::1027083374324966632::1749566327::0::1::::GUIDETriggerChordedAction<>GUIDETrigger<><>0<>1<><>::
 guide_trigger_combo.gd::GDScript/GDScript::3821873329147589909::1749566327::0::1::::GUIDETriggerCombo<>GUIDETrigger<><>0<>1<><>::
-guide_trigger_combo_cancel_action.gd::GDScript/GDScript::1055509164395448405::1749566327::0::1::::GUIDETriggerComboCancelAction<>Resource<>res://addons/guide/guide_internal.svg<>0<>0<><>::
-guide_trigger_combo_step.gd::GDScript/GDScript::6917481315288460108::1749566327::0::1::::GUIDETriggerComboStep<>Resource<>res://addons/guide/guide_internal.svg<>0<>0<><>::
+guide_trigger_combo_cancel_action.gd::GDScript/GDScript::1055509164395448405::1749566327::0::1::::GUIDETriggerComboCancelAction<>Resource<><>0<>0<><>::
+guide_trigger_combo_step.gd::GDScript/GDScript::6917481315288460108::1749566327::0::1::::GUIDETriggerComboStep<>Resource<><>0<>0<><>::
 guide_trigger_down.gd::GDScript/GDScript::7545011417901216697::1749566327::0::1::::GUIDETriggerDown<>GUIDETrigger<><>0<>1<><>::
 guide_trigger_hold.gd::GDScript/GDScript::8054983587322357652::1749566327::0::1::::GUIDETriggerHold<>GUIDETrigger<><>0<>1<><>::
 guide_trigger_pressed.gd::GDScript/GDScript::6281567180719371312::1749566327::0::1::::GUIDETriggerPressed<>GUIDETrigger<><>0<>1<><>::
@@ -1197,7 +1197,7 @@ shaderV_icon.png::CompressedTexture2D/CompressedTexture2D::8584048802262396868::
 ::res://addons/shaderV/examples/::1749566337
 basic_examples.tscn::PackedScene/PackedScene::6578874085566438765::1749566327::0::1::::<><><>0<>0<><>::uid://dukgbairam5vc::::res://addons/shaderV/shaderV_icon.png<>res://addons/shaderV/uv/tilingNoffset.gd<>res://addons/shaderV/uv/pixelate.gd<>res://addons/shaderV/uv/lensDistortion.gd<>res://addons/shaderV/uv/flipUV.gd<>res://addons/shaderV/uv/distortionUV.gd<>res://addons/shaderV/uv/scaleUV.gd<>res://addons/shaderV/uv/sphericalUV.gd<>res://addons/shaderV/uv/rotate.gd<>res://addons/shaderV/uv/tileUV.gd<>res://addons/shaderV/uv/transformUV.gd<>res://addons/shaderV/uv/twirl.gd<>res://addons/shaderV/uv/animated/distortionUVAnimated.gd<>res://addons/shaderV/uv/animated/doodleUV.gd<>res://addons/shaderV/uv/animated/tilingNoffsetAnimated.gd<>res://addons/shaderV/tools/sinTime.gd<>res://addons/shaderV/uv/animated/rotateAnimated.gd<>res://addons/shaderV/tools/random/hash1d.gd<>res://addons/shaderV/uv/animated/swirlUV.gd<>res://addons/shaderV/tools/random/hash2d.gd<>res://addons/shaderV/tools/random/hash2dvector.gd<>res://addons/shaderV/tools/random/randomFloat.gd<>res://addons/shaderV/rgba/BCSAdjustment.gd<>res://addons/shaderV/tools/random/randomFloat4D.gd<>res://addons/shaderV/tools/random/randomGoldNoiseFloat.gd<>res://addons/shaderV/tools/vec2Compose.gd<>res://addons/shaderV/tools/remap.gd<>res://addons/shaderV/rgba/blur/blur9sample.gd<>res://addons/shaderV/rgba/blur/blurCustom.gd<>res://addons/shaderV/rgba/blur/zoomBlur.gd<>res://addons/shaderV/rgba/glow/innerGlow.gd<>res://addons/shaderV/rgba/glow/glowEmpty.gd<>res://addons/shaderV/rgba/glow/innerGlowEmpty.gd<>res://addons/shaderV/rgba/glow/outerGlow.gd<>res://addons/shaderV/rgba/glow/outerGlowEmpty.gd<>res://addons/shaderV/rgba/generate_shapes/chekerboardPattern.gd<>res://addons/shaderV/rgba/generate_shapes/generateCircle2.gd<>res://addons/shaderV/rgba/generate_shapes/generateCircle.gd<>res://addons/shaderV/rgba/generate_shapes/generateRegularNgon.gd<>res://addons/shaderV/rgba/generate_shapes/generateSpiral.gd<>res://addons/shaderV/rgba/generate_shapes/scanLinesSharp.gd<>res://addons/shaderV/rgba/generate_shapes/stripesRandom.gd<>res://addons/shaderV/rgba/noise/generic2d.gd<>res://addons/shaderV/rgba/noise/perlin2d.gd<>res://addons/shaderV/rgba/noise/perlin3d.gd<>res://addons/shaderV/rgba/noise/perlinPeriodic3d.gd<>res://addons/shaderV/rgba/noise/perlin4d.gd<>res://addons/shaderV/rgba/noise/simplex2d.gd<>res://addons/shaderV/rgba/noise/simplex3d.gd<>res://addons/shaderV/rgba/noise/simplex4d.gd<>res://addons/shaderV/rgba/noise/worley2d.gd<>res://addons/shaderV/rgba/noise/worley2x2.gd<>res://addons/shaderV/rgba/noise/worley2x2x2.gd<>res://addons/shaderV/rgba/noise/worley3d.gd<>res://addons/shaderV/rgba/blackNwhite.gd<>uid://ds4rnuhypjs8a::::res://addons/shaderV/examples/godot_logo.png<>res://addons/shaderV/rgba/blendAwithB.gd<>res://addons/shaderV/rgba/bloom.gd<>res://addons/shaderV/rgba/chromaticAberration.gd<>res://addons/shaderV/rgba/clamp.gd<>res://addons/shaderV/rgba/colorCorrectionAdjustment.gd<>res://addons/shaderV/rgba/emboss.gd<>res://addons/shaderV/rgba/fireFX.gd<>res://addons/shaderV/rgba/gradient4corners.gd<>res://addons/shaderV/rgba/gradientMapping.gd<>res://addons/shaderV/rgba/grayscale.gd<>res://addons/shaderV/rgba/hue.gd<>res://addons/shaderV/rgba/inverseColor.gd<>res://addons/shaderV/rgba/maskAlpha.gd<>res://addons/shaderV/rgba/posterize.gd<>res://addons/shaderV/rgba/shiftHSV.gd<>res://addons/shaderV/rgba/shineFX.gd<>res://addons/shaderV/rgba/tintRGBA.gd<>res://addons/shaderV/rgba/tonemap.gd<>res://addons/shaderV/rgba/turnCGA4Palette.gd<>res://addons/shaderV/rgba/turnGBPalette.gd<>res://addons/shaderV/tools/TimeScaled.gd<>res://addons/shaderV/rgba/noise/fractal/generic2d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/perlin2d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/worley2d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/simplex2d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/worley3d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/perlin3d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/simplex3d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/perlin4d_fractal.gd<>res://addons/shaderV/rgba/noise/fractal/simplex4d_fractal.gd<>res://addons/shaderV/rgba/normalFromHeightmap.gd<>res://addons/shaderV/tools/transformCoordinates/cartesianToPolar.gd<>res://addons/shaderV/tools/transformCoordinates/sphericalToCartesian.gd<>res://addons/shaderV/tools/transformCoordinates/cartesianToSpherical.gd<>res://addons/shaderV/tools/transformCoordinates/polarToCartesian.gd<>res://addons/shaderV/rgba/generate_shapes/gridShape.gd<>res://addons/shaderV/rgba/sobelEdge.gd
 godot_logo.png::CompressedTexture2D/CompressedTexture2D::8483584658020917794::1749566327::1749566337::1::::<><><>0<>0<>6d783bf47234a44d265926f000518cc7<>res://.godot/imported/godot_logo.png-89258be532bb292e475149e3c00d215d.ctex::
-::res://addons/shaderV/rgba/::1749566327
+::res://addons/shaderV/rgba/::1749705108
 BCSAdjustment.gd::GDScript/GDScript::6262794341218933829::1749566327::0::1::::VisualShaderNodeRGBAadjustmentBCS<>VisualShaderNodeCustom<><>0<>1<><>::
 BCSAdjustment.gdshaderinc::ShaderInclude/ShaderInclude::1456624863090656306::1749566327::0::1::::<><><>0<>0<><>::
 blackNwhite.gd::GDScript/GDScript::5413447204546540405::1749566327::0::1::::VisualShaderNodeRGBAblackNwhite<>VisualShaderNodeCustom<><>0<>1<><>::
@@ -1217,7 +1217,7 @@ emboss.gdshaderinc::ShaderInclude/ShaderInclude::515113368803040960::1749566327:
 fireFX.gd::GDScript/GDScript::509212054411683133::1749566327::0::1::::VisualShaderNodeRGBAfireFX<>VisualShaderNodeCustom<><>0<>1<><>::
 fireFX.gdshaderinc::ShaderInclude/ShaderInclude::3803785497956684210::1749566327::0::1::::<><><>0<>0<><>::
 gradient4corners.gd::GDScript/GDScript::2876659655780617685::1749566327::0::1::::VisualShaderNodeRGBAgradient4corners<>VisualShaderNodeCustom<><>0<>1<><>::
-gradient4corners.gdshaderinc::ShaderInclude/ShaderInclude::2621603346367231554::1749566327::0::1::::<><><>0<>0<><>::
+gradient4corners.gdshaderinc::ShaderInclude/ShaderInclude::2621603346367231554::1749705108::0::1::::<><><>0<>0<><>::
 gradientMapping.gd::GDScript/GDScript::8224198236266133018::1749566327::0::1::::VisualShaderNodeRGBAgradientMapping<>VisualShaderNodeCustom<><>0<>1<><>::
 gradientMapping.gdshaderinc::ShaderInclude/ShaderInclude::8350989090274728960::1749566327::0::1::::<><><>0<>0<><>::
 grayscale.gd::GDScript/GDScript::6494449613823672317::1749566327::0::1::::VisualShaderNodeRGBAgrayscale<>VisualShaderNodeCustom<><>0<>1<><>::
@@ -1390,7 +1390,7 @@ tilingNoffsetAnimated.gdshaderinc::ShaderInclude/ShaderInclude::2433498919973381
 ::res://addons/theme_gen/::1749566327
 LICENSE.md::TextFile/TextFile::-1::1749566327::0::1::::<><><>0<>0<><>::
 programmatic_theme.gd::GDScript/GDScript::8692302801423138520::1749566327::0::1::::ProgrammaticTheme<>EditorScript<><>0<>1<><>::
-::res://addons/Todo_Manager/::1749644600
+::res://addons/Todo_Manager/::1749721900
 ColourPicker.gd::GDScript/GDScript::6097031925324776369::1749566326::0::1::::<>HBoxContainer<><>0<>1<><>::
 Current.gd::GDScript/GDScript::6316476136076829491::1749566326::0::1::::<>Panel<><>0<>1<><>::
 Dock.gd::GDScript/GDScript::1955968837925510645::1749566326::0::1::::<>Control<><>0<>1<><>::
@@ -1398,7 +1398,7 @@ Pattern.gd::GDScript/GDScript::6318807095697872232::1749566326::0::1::::<>HBoxCo
 plugin.cfg::TextFile/TextFile::-1::1749566326::0::1::::<><><>0<>0<><>::
 plugin.gd::GDScript/GDScript::8187229632720054551::1749566326::0::1::::<>EditorPlugin<><>0<>1<><>::
 Project.gd::GDScript/GDScript::2116468978867121067::1749566326::0::1::::<>Panel<><>0<>1<><>::
-todo.cfg::TextFile::-1::1749644600::0::1::::<><><>0<>0<><>::
+todo.cfg::TextFile::-1::1749721900::0::1::::<><><>0<>0<><>::
 todoItem_class.gd::GDScript/GDScript::6614494084139783945::1749566326::0::1::::<>RefCounted<><>0<>1<><>::
 todo_class.gd::GDScript/GDScript::3111129193747512983::1749566326::0::1::::<>RefCounted<><>0<>1<><>::
 ::res://addons/Todo_Manager/doc/::1749566326
@@ -1425,9 +1425,9 @@ Robot.dae::PackedScene/PackedScene::6106567970922462199::1749533774::1749566195:
 Robot.blend::PackedScene/PackedScene::5851410676140395067::1749533774::1749566203::1::::<><><>0<>0<>9846f78b50aa1891e9d96b2ec4977426<>res://.godot/imported/Robot.blend-27320f0bf60ea842870a2894a58c9b9b.scn::uid://dlurxyouho5ba::::res://entities/Animated-3D-Robot/animations/death.res<>uid://c2gc5s27debom::::res://entities/Animated-3D-Robot/animations/idle.res<>uid://brcl5u8538s3u::::res://entities/Animated-3D-Robot/animations/jump.res<>uid://bdxt0qb5aym3v::::res://entities/Animated-3D-Robot/animations/attack.res<>uid://ben35064ac1rv::::res://entities/Animated-3D-Robot/animations/run.res<>uid://c8xi6ukos3vko::::res://entities/Animated-3D-Robot/animations/walk.res
 ::res://entities/Myck/::1749626039
 Myck.glb::PackedScene/PackedScene::6739050269391842438::1749624361::1749626039::1::::<><><>0<>0<>d80b28290b87c914c9fb51961ebb2e73<>res://.godot/imported/Myck.glb-31b87f58deea2ae14e99259bf6bd299d.scn::
-::res://entities/Myck/Myck_Animations/::1749629967
+::res://entities/Myck/Myck_Animations/::1749720748
 animation_process.gd::GDScript/GDScript::5606679748353101475::1749624083::0::1::::<>EditorScript<><>0<>1<><>::
-animation_tree.tres::AnimationNodeBlendTree::8719697731905112138::1749629967::0::1::::<><><>0<>0<><>::
+animation_tree.tres::AnimationNodeBlendTree::8719697731905112138::1749720748::0::1::::<><><>0<>0<><>::
 nearest_interpolation.gd::GDScript/GDScript::-1::1749624076::0::1::::<>EditorScript<><>0<>1<><>::
 ::res://entities/Myck/Myck_Textures/::1749566338
 Myck_Diffuse.png::CompressedTexture2D/CompressedTexture2D::8001417308035285657::1749566327::1749566338::1::::<><><>0<>0<>8a43364872c990bbdf5e89599d0bae58<>res://.godot/imported/Myck_Diffuse.png-c166f2e56f18531586812876904517ad.s3tc.ctex<*>res://.godot/imported/Myck_Diffuse.png-c166f2e56f18531586812876904517ad.etc2.ctex::
@@ -1441,15 +1441,15 @@ grappling_hook_parent.gd::GDScript/GDScript::6619707093370511856::1749533774::0:
 hookshot.tscn::PackedScene/PackedScene::2945042609957267664::1749533774::0::1::::<><><>0<>0<><>::uid://c1kvuxvok7lqe::::res://entities/player/grappling_hook_parent.gd<>uid://c7o8ih1kxjkdu::::res://entities/player/hookshot_tip.gd
 hookshot_tip.gd::GDScript/GDScript::7049804007786428954::1749533774::0::1::::<>Area3D<><>0<>0<><>::
 player.gd::GDScript/GDScript::2545909650997573399::1749625852::0::1::::PlayerController<>CharacterBody3D<><>0<>0<><>::
-::res://input/::1749629967
+::res://input/::1749720748
 attack.tres::Resource/GUIDEAction::8428032104229896970::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 change_mapping.tres::Resource/GUIDEAction::7557084290514905521::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
-controller.tres::Resource/GUIDEMappingContext::5221274758703745466::1749629967::0::1::::<><><>0<>0<><>::uid://dg14s44mi7afd::::res://addons/guide/guide_action_mapping.gd<>uid://d0781vuxbhofs::::res://input/left_right.tres<>uid://bxl2p20uj1xj7::::res://addons/guide/guide_mapping_context.gd<>uid://ct3g4bnu5x5vf::::res://addons/guide/guide_input_mapping.gd<>uid://ch1agfownbo1h::::res://addons/guide/inputs/guide_input_joy_axis_1d.gd<>uid://b0yw1pcjn3gtg::::res://addons/guide/modifiers/guide_modifier.gd<>uid://dggy21cgqdqnr::::res://addons/guide/modifiers/guide_modifier_deadzone.gd<>uid://7i6h50l5fn8f::::res://addons/guide/triggers/guide_trigger.gd<>uid://c8h8ki5lw8ydw::::res://input/up_down.tres<>uid://bnn4juai0oqpv::::res://addons/guide/modifiers/guide_modifier_negate.gd<>uid://n7cvsuoh381r::::res://input/jump.tres<>uid://c0pi7oydxnyst::::res://addons/guide/inputs/guide_input_joy_button.gd<>uid://cvq3q10desro7::::res://addons/guide/triggers/guide_trigger_pressed.gd<>uid://djbmv3glvtkcn::::res://input/dash.tres<>uid://mon2mvh3sfir::::res://input/jump_alice.tres<>uid://dn7xm7551du3c::::res://input/throw.tres<>uid://dscups0415vf3::::res://input/attack.tres<>uid://1e5trfcp6ufe::::res://input/dash_alice.tres<>uid://bwv7mx7ef41bo::::res://input/left_right_alice.tres<>uid://6tf3g3n7urmk::::res://input/up_down_alice.tres<>uid://dfwycry27dvsb::::res://input/change_mapping.tres<>uid://e37v3rpkiqjw::::res://addons/guide/inputs/guide_input_any.gd
+controller.tres::Resource/GUIDEMappingContext::5221274758703745466::1749720748::0::1::::<><>res://addons/guide/guide_mapping_context.svg<>0<>0<><>::uid://dg14s44mi7afd::::res://addons/guide/guide_action_mapping.gd<>uid://d0781vuxbhofs::::res://input/left_right.tres<>uid://bxl2p20uj1xj7::::res://addons/guide/guide_mapping_context.gd<>uid://ct3g4bnu5x5vf::::res://addons/guide/guide_input_mapping.gd<>uid://ch1agfownbo1h::::res://addons/guide/inputs/guide_input_joy_axis_1d.gd<>uid://b0yw1pcjn3gtg::::res://addons/guide/modifiers/guide_modifier.gd<>uid://dggy21cgqdqnr::::res://addons/guide/modifiers/guide_modifier_deadzone.gd<>uid://7i6h50l5fn8f::::res://addons/guide/triggers/guide_trigger.gd<>uid://c8h8ki5lw8ydw::::res://input/up_down.tres<>uid://bnn4juai0oqpv::::res://addons/guide/modifiers/guide_modifier_negate.gd<>uid://n7cvsuoh381r::::res://input/jump.tres<>uid://c0pi7oydxnyst::::res://addons/guide/inputs/guide_input_joy_button.gd<>uid://cvq3q10desro7::::res://addons/guide/triggers/guide_trigger_pressed.gd<>uid://djbmv3glvtkcn::::res://input/dash.tres<>uid://mon2mvh3sfir::::res://input/jump_alice.tres<>uid://dn7xm7551du3c::::res://input/throw.tres<>uid://dscups0415vf3::::res://input/attack.tres<>uid://1e5trfcp6ufe::::res://input/dash_alice.tres<>uid://bwv7mx7ef41bo::::res://input/left_right_alice.tres<>uid://6tf3g3n7urmk::::res://input/up_down_alice.tres<>uid://dfwycry27dvsb::::res://input/change_mapping.tres<>uid://e37v3rpkiqjw::::res://addons/guide/inputs/guide_input_any.gd
 dash.tres::Resource/GUIDEAction::7793793607612096449::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 dash_alice.tres::Resource/GUIDEAction::1835023786205400166::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 jump.tres::Resource/GUIDEAction::978674968044850329::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 jump_alice.tres::Resource/GUIDEAction::872005612631895077::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
-keyboard.tres::Resource/GUIDEMappingContext::8487177495021784121::1749629967::0::1::::<><><>0<>0<><>::uid://dg14s44mi7afd::::res://addons/guide/guide_action_mapping.gd<>uid://d0781vuxbhofs::::res://input/left_right.tres<>uid://bxl2p20uj1xj7::::res://addons/guide/guide_mapping_context.gd<>uid://ct3g4bnu5x5vf::::res://addons/guide/guide_input_mapping.gd<>uid://b0yw1pcjn3gtg::::res://addons/guide/modifiers/guide_modifier.gd<>uid://7i6h50l5fn8f::::res://addons/guide/triggers/guide_trigger.gd<>uid://bnn4juai0oqpv::::res://addons/guide/modifiers/guide_modifier_negate.gd<>uid://cvq3q10desro7::::res://addons/guide/triggers/guide_trigger_pressed.gd<>uid://c8h8ki5lw8ydw::::res://input/up_down.tres<>uid://n7cvsuoh381r::::res://input/jump.tres<>uid://mon2mvh3sfir::::res://input/jump_alice.tres<>uid://djbmv3glvtkcn::::res://input/dash.tres<>uid://dn7xm7551du3c::::res://input/throw.tres<>uid://1e5trfcp6ufe::::res://input/dash_alice.tres<>uid://bwv7mx7ef41bo::::res://input/left_right_alice.tres<>uid://dscups0415vf3::::res://input/attack.tres<>uid://df4825iov1k2c::::res://addons/guide/inputs/guide_input_key.gd<>uid://dfwycry27dvsb::::res://input/change_mapping.tres<>uid://e37v3rpkiqjw::::res://addons/guide/inputs/guide_input_any.gd<>uid://6tf3g3n7urmk::::res://input/up_down_alice.tres
+keyboard.tres::Resource/GUIDEMappingContext::8487177495021784121::1749720748::0::1::::<><>res://addons/guide/guide_mapping_context.svg<>0<>0<><>::uid://dg14s44mi7afd::::res://addons/guide/guide_action_mapping.gd<>uid://d0781vuxbhofs::::res://input/left_right.tres<>uid://bxl2p20uj1xj7::::res://addons/guide/guide_mapping_context.gd<>uid://ct3g4bnu5x5vf::::res://addons/guide/guide_input_mapping.gd<>uid://b0yw1pcjn3gtg::::res://addons/guide/modifiers/guide_modifier.gd<>uid://7i6h50l5fn8f::::res://addons/guide/triggers/guide_trigger.gd<>uid://bnn4juai0oqpv::::res://addons/guide/modifiers/guide_modifier_negate.gd<>uid://cvq3q10desro7::::res://addons/guide/triggers/guide_trigger_pressed.gd<>uid://c8h8ki5lw8ydw::::res://input/up_down.tres<>uid://n7cvsuoh381r::::res://input/jump.tres<>uid://mon2mvh3sfir::::res://input/jump_alice.tres<>uid://djbmv3glvtkcn::::res://input/dash.tres<>uid://dn7xm7551du3c::::res://input/throw.tres<>uid://1e5trfcp6ufe::::res://input/dash_alice.tres<>uid://bwv7mx7ef41bo::::res://input/left_right_alice.tres<>uid://dscups0415vf3::::res://input/attack.tres<>uid://df4825iov1k2c::::res://addons/guide/inputs/guide_input_key.gd<>uid://dfwycry27dvsb::::res://input/change_mapping.tres<>uid://e37v3rpkiqjw::::res://addons/guide/inputs/guide_input_any.gd<>uid://6tf3g3n7urmk::::res://input/up_down_alice.tres
 left_right.tres::Resource/GUIDEAction::8982094456495930140::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 left_right_alice.tres::Resource/GUIDEAction::3975892807520842320::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 pause.tres::Resource/GUIDEAction::7750642807758270876::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
@@ -1457,21 +1457,23 @@ throw.tres::Resource/GUIDEAction::8139196755353410946::1749566327::0::1::::<><>r
 up_down.tres::Resource/GUIDEAction::7105545837481479076::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 up_down_alice.tres::Resource/GUIDEAction::2215431276328162982::1749566327::0::1::::<><>res://addons/guide/guide_action.svg<>0<>0<><>::uid://c56e4jl2mxdir::::res://addons/guide/guide_action.gd
 ::res://materials/::1749566327
-::res://materials/shaders/::1749631617
-depth_outline_shader.gdshader::Shader/Shader::8043965035187944522::1749566327::0::1::::<><><>0<>0<><>::
+::res://materials/shaders/::1749721899
+depth_outline_shader.gdshader::Shader/Shader::8043965035187944522::1749710278::0::1::::<><><>0<>0<><>::
 generic_vfx_shader.tres::VisualShader/VisualShader::2727163300545060413::1749624076::0::1::::<><><>0<>0<><>::
 grid_shader.gdshader::Shader/Shader::2063278893537579624::1749533774::0::1::::<><><>0<>0<><>::
 outline_shader.gdshader::Shader/Shader::6986040777895112237::1749566327::0::1::::<><><>0<>0<><>::
-slash_shader.res::Shader::3888946210789237092::1749631617::0::1::::<><><>0<>0<><>::
-slash_shader_visual.res::VisualShader::1981599313269022815::1749631617::0::1::::<><><>0<>0<><>::uid://crah52defortf::::res://addons/shaderV/rgba/generate_shapes/generateCircle.gd<>uid://cp8v83mqjsldo::::res://addons/shaderV/rgba/noise/worley3d.gd<>uid://bu8we18ccop5::::res://addons/shaderV/uv/scaleUV.gd
-toon_shader.gdshader::Shader::1866270995827344478::1749631617::0::1::::<><><>0<>0<><>::
-::res://materials/shader_materials/::1749631605
+slash_shader.res::Shader::3888946210789237092::1749721991::0::1::::<><><>0<>0<><>::
+slash_shader_visual.res::VisualShader::1981599313269022815::1749721991::0::1::::<><><>0<>0<><>::uid://crah52defortf::::res://addons/shaderV/rgba/generate_shapes/generateCircle.gd<>uid://cp8v83mqjsldo::::res://addons/shaderV/rgba/noise/worley3d.gd<>uid://bu8we18ccop5::::res://addons/shaderV/uv/scaleUV.gd
+toon_shader.gdshader::Shader::1866270995827344478::1749721991::0::1::::<><><>0<>0<><>::
+wave_shader.gdshader::Shader::8998672838915522406::1749721991::0::1::::<><><>0<>0<><>::
+wave_shader_visual.tres::VisualShader::6977931331042177014::1749721991::0::1::::<><><>0<>0<><>::uid://bg8qft4revg8t::::res://addons/shaderV/rgba/gradient4corners.gd<>uid://cp8v83mqjsldo::::res://addons/shaderV/rgba/noise/worley3d.gd
+::res://materials/shader_materials/::1749720748
 hit_vfx.tscn::PackedScene/PackedScene::1402386586512182577::1749566327::0::1::::<><><>0<>0<><>::uid://dscrf8sgqfesp::::res://materials/textures/particle.png<>uid://bfthwvubxm040::::res://materials/textures/ring.png
 slash_vfx.tscn::PackedScene/PackedScene::423240353354209362::1749566327::0::1::::<><><>0<>0<><>::uid://cko80rnpv5lqe::::res://meshes/vfx/slash_mesh.res<>uid://qwwjdbl082b6::::res://materials/shader_materials/vfx.tres
-surface0.tres::ShaderMaterial::4153944378764099576::1749629967::0::1::::<><><>0<>0<><>::uid://1ubhfq3bbpak::::res://materials/shaders/toon_shader.gdshader<>uid://dl87f6gsd2lxx::::res://entities/Myck/Myck_Textures/Myck_Diffuse.png
+surface0.tres::ShaderMaterial::4153944378764099576::1749720748::0::1::::<><><>0<>0<><>::uid://1ubhfq3bbpak::::res://materials/shaders/toon_shader.gdshader<>uid://dl87f6gsd2lxx::::res://entities/Myck/Myck_Textures/Myck_Diffuse.png
 surface1.tres::ShaderMaterial/ShaderMaterial::2581895406163996661::1749566327::0::1::::<><><>0<>0<><>::uid://1ubhfq3bbpak::::res://materials/shaders/toon_shader.gdshader<>uid://dl87f6gsd2lxx::::res://entities/Myck/Myck_Textures/Myck_Diffuse.png
 surface2.tres::StandardMaterial3D/StandardMaterial3D::1994324202685402380::1749566327::0::1::::<><><>0<>0<><>::
-vfx.tres::ShaderMaterial::1169789814433220709::1749631605::0::1::::<><><>0<>0<><>::uid://3h5we00urd6n::::res://materials/shaders/slash_shader_visual.res
+vfx.tres::ShaderMaterial::1169789814433220709::1749720748::0::1::::<><><>0<>0<><>::uid://3h5we00urd6n::::res://materials/shaders/slash_shader_visual.res
 vfx_animation.tscn::PackedScene/PackedScene::767141837444739467::1749566327::0::1::::<><><>0<>0<><>::
 ::res://materials/textures/::1749566338
 6qhd2mwv0o2djuj7lux8q.jpg::CompressedTexture2D/CompressedTexture2D::4720562574805488688::1749533774::1749566327::1::::<><><>0<>0<>b5630070d5271c40ea1a0f9124a2a3d4<>res://.godot/imported/6qhd2mwv0o2djuj7lux8q.jpg-4e71d3dc1fa82be78155a194345a2b9a.s3tc.ctex<*>res://.godot/imported/6qhd2mwv0o2djuj7lux8q.jpg-4e71d3dc1fa82be78155a194345a2b9a.etc2.ctex::
@@ -1492,13 +1494,21 @@ Game Logo.png::CompressedTexture2D/CompressedTexture2D::837358782713228461::1749
 Social Media Image.png::CompressedTexture2D/CompressedTexture2D::7300345094487884351::1749566327::1749566338::1::::<><><>0<>0<>0a9a68fc5fe825abd7a05c20e1ad67a5<>res://.godot/imported/Social Media Image.png-cdfc58a1622437a89ea884f548ec9f3d.ctex::
 Wide Cover.png::CompressedTexture2D/CompressedTexture2D::2259530431277885690::1749566327::1749566338::1::::<><><>0<>0<>bb8922f71a89b66ada6c498677d9a42c<>res://.godot/imported/Wide Cover.png-b31118f8726def4e018faa5394c38c82.ctex::
 ::res://meshes/::1749566327
-::res://meshes/vfx/::1749566344
-slash.glb::PackedScene/PackedScene::8029849538925813500::1749566327::1749566344::1::::<><><>0<>0<>10e3235c40cd5c9ef1c4dbfb89f8f3c0<>res://.godot/imported/slash.glb-b7179509137cc506ea079318f6912a91.scn::uid://cko80rnpv5lqe::::res://meshes/vfx/slash_mesh.res
+::res://meshes/vfx/::1749721985
 slash_mesh.res::ArrayMesh/ArrayMesh::5505680311622475184::1749566341::0::1::::<><><>0<>0<><>::
+vfx_cone.glb::PackedScene/PackedScene::6303298966640105236::1749689061::1749703276::1::::<><><>0<>0<>ae52484e5af0baa8a7e501a53500a941<>res://.godot/imported/vfx_cone.glb-516a99010a0bd03a2c9c9d20a335dc27.scn::uid://ewsc3ftraf7y::::res://meshes/vfx/vfx_cone_mesh.res
+vfx_cone_mesh.res::ArrayMesh/ArrayMesh::327269641862874524::1749703275::0::1::::<><><>0<>0<><>::
+vfx_cylinder.glb::PackedScene/PackedScene::68822178491405746::1749689029::1749703276::1::::<><><>0<>0<>736e84ae93a428a3ef28916279811a30<>res://.godot/imported/vfx_cylinder.glb-b861b2db363404e705be5097c472e88e.scn::uid://baldyqmpqmxjm::::res://meshes/vfx/vfx_cylinder_mesh.res
+vfx_cylinder_mesh.res::ArrayMesh/ArrayMesh::2409354708634442074::1749703276::0::1::::<><><>0<>0<><>::
+vfx_disc.glb::PackedScene/PackedScene::2570995902247679816::1749709650::1749720608::1::::<><><>0<>0<>d194016091783a2deead09fe5b06b672<>res://.godot/imported/vfx_disc.glb-9384139a08e603fb4d4c6f8fe3b24956.scn::uid://ot5ygxjhbjxy::::res://meshes/vfx/vfx_disc.res
+vfx_disc.res::ArrayMesh/ArrayMesh::1023731708185226658::1749720607::0::1::::<><><>0<>0<><>::
+vfx_slash.glb::PackedScene::8029849538925813500::1749566327::1749721986::1::::<><><>0<>0<>c2d61a40aa83200244fe651eba84bf8b<>res://.godot/imported/vfx_slash.glb-92c46a22567f8f864ad8289dafd067b4.scn::
+vfx_sphere.glb::PackedScene/PackedScene::4315311908755612215::1749689282::1749703277::1::::<><><>0<>0<>fb5852e6f19d4972d8fedb9bfe62b502<>res://.godot/imported/vfx_sphere.glb-16b401cfb260d617c0cf7298398d9c07.scn::uid://772yo8o36ue7::::res://meshes/vfx/vfx_sphere_mesh.res
+vfx_sphere_mesh.res::ArrayMesh/ArrayMesh::2313786089385563952::1749703276::0::1::::<><><>0<>0<><>::
 ::res://music/::1749566194
 [Idea 1] Main Theme V2.mp3::AudioStreamMP3/AudioStreamMP3::2676311271174533255::1749533774::1749566194::1::::<><><>0<>0<>3c8558a51923208c1dbc2f4def4d178a<>res://.godot/imported/[Idea 1] Main Theme V2.mp3-451ddc6993b8c259ba57246d86cd37c4.mp3str::
 [Idea 2] Into the Darkness.mp3::AudioStreamMP3/AudioStreamMP3::1592055979020351322::1749533774::1749566194::1::::<><><>0<>0<>c687be34f2049cd626c13896fa0c99ec<>res://.godot/imported/[Idea 2] Into the Darkness.mp3-2a22d64a096f0d509620fff579e93fd3.mp3str::
-::res://peyman/::1749629967
+::res://peyman/::1749720748
 (map_generate).gd::GDScript/GDScript::5411925612028566455::1749533774::0::1::::<>Node<><>0<>0<><>::
 (title_menu).gd::GDScript/GDScript::7159452177030412203::1749566327::0::1::::<>Control<><>0<>0<><>::
 camera_3d.gd::GDScript/GDScript::-1::1749624083::0::1::::<>Camera3D<><>0<>0<><>::
@@ -1507,7 +1517,7 @@ enemy_flying.gd::GDScript/GDScript::-1::1749624083::0::1::::<>CharacterBody3D<><
 enemy_flying.tscn::PackedScene/PackedScene::1667980454825149324::1749566336::0::1::::<><><>0<>0<><>::uid://bo1u0wiwq1ivi::::res://peyman/enemy_flying.gd<>uid://clvlclskefosb::::res://peyman/enemy_tree.tres<>uid://dlurxyouho5ba::::res://entities/Animated-3D-Robot/animations/death.res<>uid://c2gc5s27debom::::res://entities/Animated-3D-Robot/animations/idle.res<>uid://brcl5u8538s3u::::res://entities/Animated-3D-Robot/animations/jump.res<>uid://bdxt0qb5aym3v::::res://entities/Animated-3D-Robot/animations/attack.res<>uid://ben35064ac1rv::::res://entities/Animated-3D-Robot/animations/run.res<>uid://c8xi6ukos3vko::::res://entities/Animated-3D-Robot/animations/walk.res
 enemy_rigid.gd::GDScript/GDScript::-1::1749624083::0::1::::<>RigidBody3D<><>0<>0<><>::
 enemy_rigid.tscn::PackedScene/PackedScene::3148642392134998231::1749624083::0::1::::<><><>0<>0<><>::uid://rb8t4py4akyh::::res://peyman/enemy_rigid.gd<>uid://dlurxyouho5ba::::res://entities/Animated-3D-Robot/animations/death.res<>uid://c2gc5s27debom::::res://entities/Animated-3D-Robot/animations/idle.res<>uid://brcl5u8538s3u::::res://entities/Animated-3D-Robot/animations/jump.res<>uid://bdxt0qb5aym3v::::res://entities/Animated-3D-Robot/animations/attack.res<>uid://ben35064ac1rv::::res://entities/Animated-3D-Robot/animations/run.res<>uid://c8xi6ukos3vko::::res://entities/Animated-3D-Robot/animations/walk.res<>uid://clvlclskefosb::::res://peyman/enemy_tree.tres
-enemy_tree.tres::AnimationNodeBlendTree::5588942644771298501::1749629967::0::1::::<><><>0<>0<><>::
+enemy_tree.tres::AnimationNodeBlendTree::5588942644771298501::1749720748::0::1::::<><><>0<>0<><>::
 Health bar fill.png::CompressedTexture2D/CompressedTexture2D::3005999791630179359::1749566327::1749566338::1::::<><><>0<>0<>ea7da2ebf8d05cf87541716f054d4bbf<>res://.godot/imported/Health bar fill.png-ddb704e8cb82af38f6051f13fc179614.ctex::
 Health bar outline.png::CompressedTexture2D/CompressedTexture2D::7126899550001539838::1749566327::1749566338::1::::<><><>0<>0<>b28b36d04788f253e1983e8dc1a63e9b<>res://.godot/imported/Health bar outline.png-165ff59de41ae67cc9efb17fd12ae6aa.ctex::
 pause_menu.gd::GDScript/GDScript::-1::1749566327::0::1::::<>Control<><>0<>0<><>::
@@ -1546,8 +1556,8 @@ trial_timeline.dtl::Resource/DialogicTimeline::162290884392315360::1749566327::0
 Amelia.dch::Resource/DialogicCharacter::1944213723303676888::1749566327::0::1::::<><><>0<>0<><>::
 Myck.dch::Resource/DialogicCharacter::6167327525526600471::1749566327::0::1::::<><><>0<>0<><>::
 ::res://scenes/trial_scene/::1749566326
-::res://scenes/vfx_scene/::1749631134
-vfx_scene.tscn::PackedScene::5472185983733452526::1749631134::0::1::::<><><>0<>0<><>::uid://cko80rnpv5lqe::::res://meshes/vfx/slash_mesh.res<>uid://bvn3m1s0pvrg3::::res://materials/shaders/slash_shader.res<>uid://4np5wvmrrk8g::::res://materials/shaders/grid_shader.gdshader<>uid://b8iw8gfyw4eay::::res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg
+::res://scenes/vfx_scene/::1749721899
+vfx_scene.tscn::PackedScene::5472185983733452526::1749721991::0::1::::<><><>0<>0<><>::uid://4np5wvmrrk8g::::res://materials/shaders/grid_shader.gdshader<>uid://b8iw8gfyw4eay::::res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg
 ::res://scenes/vfx_scene/materials/::1749566327
 robot_blue.tres::ShaderMaterial/ShaderMaterial::5860104946516722324::1749566327::0::1::::<><><>0<>0<><>::uid://1ubhfq3bbpak::::res://materials/shaders/toon_shader.gdshader<>uid://dhqrsaicq1dbf::::res://scenes/vfx_scene/materials/robot_outline.tres
 robot_dark_grey.tres::ShaderMaterial/ShaderMaterial::5086922436157194791::1749566327::0::1::::<><><>0<>0<><>::uid://dhqrsaicq1dbf::::res://scenes/vfx_scene/materials/robot_outline.tres<>uid://1ubhfq3bbpak::::res://materials/shaders/toon_shader.gdshader
@@ -1614,7 +1624,7 @@ proc_stairs.gd::GDScript/GDScript::627090275973764170::1749533774::0::1::::Stair
 ::res://sfx/::1749566195
 cat.wav::AudioStreamWAV/AudioStreamWAV::6595346381156281464::1749533774::1749566195::1::::<><><>0<>0<>80bc6d5a648cc4d551fef0f797f56d35<>res://.godot/imported/cat.wav-ee9828d23e6089104256137ce282bc87.sample::
 EnemyCry.wav::AudioStreamWAV/AudioStreamWAV::30298239741538418::1749533774::1749566195::1::::<><><>0<>0<>701c87570d287d6d0a8ac5a4a6512f68<>res://.godot/imported/EnemyCry.wav-ed37eb22e560def3930df5ce4c5e80ef.sample::
-::res://ui/::1749629967
+::res://ui/::1749720748
 overlay.gd::GDScript/GDScript::7921324526927336496::1749566327::0::1::::<>ColorRect<><>0<>0<><>::
 ui.gd::GDScript/GDScript::2178106011205396244::1749566327::0::1::::<>CanvasLayer<><>0<>0<><>::
 ui.tscn::PackedScene/PackedScene::1458736735138512520::1749566327::0::1::::<><><>0<>0<><>::uid://cc37235kj4384::::res://addons/maaacks_ui_sound_controller/base/scenes/Autoloads/ProjectUISoundController.tscn<>uid://6bdc8qcu5soa::::res://ui/ui.gd<>uid://2vrf5v6tmuk7::::res://ui/main_menu/main_menu.tscn<>uid://bxl2p20uj1xj7::::res://addons/guide/guide_mapping_context.gd<>uid://cgnhvrdl0qj0u::::res://input/controller.tres<>uid://5kc55ftsdrvt::::res://ui/assets/audio/rollover5.ogg<>uid://ds6itq18nl0pp::::res://input/keyboard.tres<>uid://dfwycry27dvsb::::res://input/change_mapping.tres<>uid://dekllill0y50r::::res://ui/credits/credits.tscn<>uid://dk4fb7vonrejw::::res://ui/overlay.gd<>uid://3s7lo7jd53un::::res://ui/pause_menu/pause_menu.tscn<>uid://bojsla6nqcf03::::res://ui/game/game_ui.tscn<>uid://dfgowfkuko4ne::::res://ui/how_to_play/how_to_play.tscn<>uid://c31bw3nk5ujvg::::res://ui/settings/settings.tscn<>uid://mwbv2jh1ugjq::::res://ui/controls/controls.tscn<>uid://dtrluvg5ox2vb::::res://ui/notifications/message_board.tscn
@@ -1622,7 +1632,7 @@ UI_animator.gd::GDScript/GDScript::2358578874353034629::1749566327::0::1::::Anim
 UI_animator.tscn::PackedScene/PackedScene::8171006007461749756::1749566327::0::1::::<><><>0<>0<><>::uid://8urpjt5e8xgv::::res://ui/UI_animator.gd
 ui_retro_c64_theme.tres::Theme/Theme::7703978684589346039::1749566327::0::1::::<><><>0<>0<><>::uid://dv4k0y8fqrksg::::res://ui/assets/fonts/Sixtyfour-Regular.ttf<>uid://c6ygf0h8x7788::::res://ui/assets/slider.png<>uid://b2cfq0vfg4xvh::::res://ui/assets/slider_disabled.png<>uid://c30tmfc0n0nd3::::res://ui/assets/slider_highlight.png
 ui_theme.gd::GDScript/GDScript::7372646120751189307::1749566327::0::1::::<>ProgrammaticTheme<><>0<>1<><>::
-ui_theme.tres::Theme::8184138839022716607::1749629967::0::1::::<><><>0<>0<><>::
+ui_theme.tres::Theme::8184138839022716607::1749720748::0::1::::<><><>0<>0<><>::
 ::res://ui/assets/::1749566338
 slider.png::CompressedTexture2D/CompressedTexture2D::6998615142617549011::1749566327::1749566338::1::::<><><>0<>0<>19ad6fa5af02b3d62694ebf427e96aa5<>res://.godot/imported/slider.png-49afeb9584ed94e92cafa1f5378bb8a5.ctex::
 slider_disabled.png::CompressedTexture2D/CompressedTexture2D::4285981720855414229::1749566327::1749566338::1::::<><><>0<>0<>f717eb3b0b35015ed198d2c866e1c704<>res://.godot/imported/slider_disabled.png-477d40cc048d1f22e8c6f0f6ba3ee9e6.ctex::

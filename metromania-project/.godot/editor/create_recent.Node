@@ -1,7 +1,8 @@
 CPUParticles3D
+Node3D
+MeshInstance3D
 GPUParticles3D
 Marker3D
-Node3D
 CollisionShape3D
 AnimationPlayer
 ShapeCast3D
@@ -11,5 +12,3 @@ AnimationTree
 CharacterBody3D
 Area3D
 BoneAttachment3D
-AudioStreamPlayer
-MeshInstance3D

@@ -1,3 +1,4 @@
+res://meshes/vfx/vfx_disc.res
 res://scenes/vfx_scene/vfx_scene.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
@@ -7,5 +8,7 @@ res://materials/shader_materials/surface0.tres
 res://entities/Myck/Myck_Animations/animation_tree.tres
 res://materials/shader_materials/vfx.tres
 res://peyman/enemy_tree.tres
+res://materials/shaders/wave_shader.gdshader
 res://materials/shaders/slash_shader.res
+res://materials/shaders/wave_shader_visual.tres
 res://materials/shaders/slash_shader_visual.res
