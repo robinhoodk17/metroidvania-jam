@@ -6,19 +6,19 @@ var slowmo_active: bool
 var slowmo_tween: Tween
 var tilt_tween: Tween
 var zoom_tween: Tween
-
 @onready var default_fov : float = fov 
 @onready var player : Node3D = get_tree().get_first_node_in_group("player")
-@onready var timer = create_timer(0.5)
-@onready var small_area: Area3D = create_area_with_collision(Vector3(1, 1, 1,)) 
+@onready var first_timer = create_timer(0.1)
+@onready var second_timer = create_timer(0.5)
+@onready var small_area: Area3D = create_area_with_collision(Vector3(3, 3, 3,)) 
 @onready var big_area: Area3D = create_area_with_collision(Vector3(8, 8, 8,))
 @onready var camera_static_position: Vector3 = global_transform.origin 
-@export var camera_mode := "Celeste" 
+@export var camera_mode := "HollowKnight" 
 @export var static_control : float = 8.0
 var in_small_area : bool = true:
 	set(value):
-		timer.start()
-		await timer.timeout
+		first_timer.start()
+		await first_timer.timeout
 		camera_static_position = _desired_pos
 		in_small_area = value
 var in_big_area : bool = true
@@ -68,25 +68,32 @@ func _physics_process(delta):
 	match camera_mode:
 		"Celeste":
 			if in_small_area:
-				target_pos = camera_static_position
+				target_pos = target_pos.lerp(camera_static_position, lerp_speed_slow * delta)
 			elif in_big_area and not in_small_area:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
 				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if target_pos.distance_to(desired_pos) < 0.01:
+					target_pos = desired_pos
 			else:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_fast * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_fast * delta)
 				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if target_pos.distance_to(desired_pos) < 0.01:
+					target_pos = desired_pos
+ 
 		"HollowKnight":
 			if in_big_area:
-				target_pos = camera_static_position
+				target_pos = target_pos.lerp(camera_static_position, lerp_speed_slow * delta)
 			else:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
 				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if target_pos.distance_to(desired_pos) < 0.01:
+					target_pos = desired_pos
 				if in_small_area:
 					camera_static_position = target_pos
-					
+
 	global_transform.origin = target_pos
  
 func switch_player(parent: Node3D) -> void:
