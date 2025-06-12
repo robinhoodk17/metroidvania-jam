@@ -9,19 +9,23 @@ var zoom_tween: Tween
 @onready var default_fov : float = fov 
 @onready var player : Node3D = get_tree().get_first_node_in_group("player")
 @onready var first_timer = create_timer(0.1)
-@onready var second_timer = create_timer(0.5)
+@onready var second_timer = create_timer(5.0)
 @onready var small_area: Area3D = create_area_with_collision(Vector3(3, 3, 3,)) 
 @onready var big_area: Area3D = create_area_with_collision(Vector3(8, 8, 8,))
 @onready var camera_static_position: Vector3 = global_transform.origin 
-@export var camera_mode := "HollowKnight" 
+@export var camera_mode := "Celeste" 
 @export var static_control : float = 8.0
 var in_small_area : bool = true:
 	set(value):
+		print(value)
 		first_timer.start()
 		await first_timer.timeout
 		camera_static_position = _desired_pos
 		in_small_area = value
-var in_big_area : bool = true
+var in_big_area : bool = true:
+	set(value):
+		print(value)
+	
 var lerp_speed_slow := 0.5 
 var lerp_speed_fast := 2.5 
 var y_dampening_factor := 0.1 
@@ -50,6 +54,8 @@ func _ready() -> void:
 	position = vertical_offset + side_offset
 	big_area.global_transform.origin =  player.global_transform.origin
 	small_area.global_transform.origin = player.global_transform.origin
+	second_timer.start()
+	second_timer.timeout.connect(on_second_timer_timeout)
 	small_area.body_entered.connect(func(body: Node3D): if body == player && in_small_area == false: in_small_area = true)
 	small_area.body_exited.connect(func(body: Node3D): if body == player && in_small_area == true: in_small_area = false)
 	big_area.body_entered.connect(func(body: Node3D): if body == player && in_big_area == false: in_big_area = true)
@@ -169,3 +175,10 @@ func on_cam_pan(direction: float, amount: float) -> void:
  
 #endregion 
  
+func on_second_timer_timeout () -> void:
+	small_area.monitoring = false
+	big_area.monitoring = false
+	await get_tree().create_timer(0.1).timeout
+	small_area.monitoring = true
+	big_area.monitoring = true
+	second_timer.start()
