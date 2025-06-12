@@ -72,7 +72,7 @@ signal break_interaction
 @export var dash_action : GUIDEAction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
-
+@onready var camera_3d: Camera3D = $Camera3D
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
@@ -83,8 +83,7 @@ signal break_interaction
 """child interaction"""
 @onready var pick_child: Area3D = $MeshParent/PickChild
 @onready var auto_aim: Area3D = $MeshParent/AutoAim
-@onready var camera_3d: Camera3D = $Camera3D
-
+ 
 """state machine"""
 var current_run_state : run_state = run_state.IDLE
 var current_action_state : action_state = action_state.IDLE_ACTION : 
