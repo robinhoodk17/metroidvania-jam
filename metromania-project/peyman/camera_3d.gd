@@ -6,8 +6,9 @@ var slowmo_active: bool
 var slowmo_tween: Tween
 var tilt_tween: Tween
 var zoom_tween: Tween
+
 @onready var default_fov : float = fov 
-@onready var player : Node3D = get_tree().get_first_node_in_group("player")
+@onready var player : Node3D = get_parent()
 @onready var first_timer = create_timer(0.1)
 @onready var second_timer = create_timer(5.0)
 @onready var small_area: Area3D = create_area_with_collision(Vector3(3, 3, 3,)) 
@@ -15,29 +16,28 @@ var zoom_tween: Tween
 @onready var camera_static_position: Vector3 = global_transform.origin 
 @export var camera_mode := "Celeste" 
 @export var static_control : float = 8.0
+
 var in_small_area : bool = true:
 	set(value):
-		print(value)
 		first_timer.start()
 		await first_timer.timeout
 		camera_static_position = _desired_pos
 		in_small_area = value
-var in_big_area : bool = true:
-	set(value):
-		print(value)
-	
+var in_big_area : bool = true 
 var lerp_speed_slow := 0.5 
 var lerp_speed_fast := 2.5 
 var y_dampening_factor := 0.1 
 var vertical_offset = Vector3(0, 1, 0)  
 var side_offset = Vector3(0, 0, 10)
 var _desired_pos : Vector3
+
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
 	timer.one_shot = one_shot
 	add_child(timer)
 	return timer
+	
 func create_area_with_collision(size: Vector3) -> Area3D:
 	var area : Area3D = Area3D.new()
 	var collision_shape : CollisionShape3D = CollisionShape3D.new()
@@ -50,6 +50,7 @@ func create_area_with_collision(size: Vector3) -> Area3D:
 	area.monitorable = false
 	add_child(area)
 	return area
+ 
 func _ready() -> void:
 	position = vertical_offset + side_offset
 	big_area.global_transform.origin =  player.global_transform.origin
