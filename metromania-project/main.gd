@@ -1,27 +1,24 @@
 extends Node
  
 const CLEAR : Color = Color(0,0,0,0)
-var _tween: Tween
-var tween2: Tween
-var fade : ColorRect
-
+var fade_tween: Tween
+var progress_tween: Tween
 @export var fade_duration := 1.0
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
-
+@onready var fade : ColorRect = create_fade()
+@onready var progress_bar: TextureProgressBar = create_progress_bar()
 const HEALTH_BAR_FILL = preload("res://peyman/Health bar fill.png")
 const HEALTH_BAR_OUTLINE = preload("res://peyman/Health bar outline.png")
-var progress_bar: TextureProgressBar
 
 func _ready() -> void:
 	call_deferred("late_ready")
-	create_fade()
-	create_progress_bar()
 	create_sun_envio()
 	if SaveLoad.progress == null:
 		SaveLoad.progress = Progress.new()
 		print("progress resource created")
 	Music.play_music("[Idea 2] Into the Darkness")
 	progress_bar.hide()
+	SignalbusPlayer.cam_pan.emit(1, 20)
 	await fade_to_clear()
 	set_progress_bar_value(50)
  
@@ -35,10 +32,10 @@ func play_different_music (int):
 func set_progress_bar_value(amount: float) -> void:
 	var max_value = progress_bar.max_value
 	var clamped_amount = clamp(amount, 0, max_value)
-	if tween2 && tween2.is_running():
-		tween2.Kill()
-	tween2 = create_tween()
-	tween2.tween_property(progress_bar, "value", clamped_amount, 0.3)
+	if progress_tween && progress_tween.is_running():
+		progress_tween.Kill()
+	progress_tween = create_tween()
+	progress_tween.tween_property(progress_bar, "value", clamped_amount, 0.3)
 	
 func change_scenes(path : String) -> void:
 	Music.fade_out()
@@ -55,8 +52,8 @@ func reload_cur_scene() -> void:
 
 #region create_nodes
 
-func create_fade() -> void:
-	fade = ColorRect.new()
+func create_fade() -> ColorRect:
+	var fade : ColorRect = ColorRect.new()
 	fade.name = "fade"
 	fade.color = Color.BLACK 
 	fade.anchor_left = 0
@@ -65,9 +62,10 @@ func create_fade() -> void:
 	fade.anchor_bottom = 1
 	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas_layer.add_child(fade)
+	return fade 
 
-func create_progress_bar():
-	progress_bar = TextureProgressBar.new()
+func create_progress_bar() -> TextureProgressBar:
+	var progress_bar : TextureProgressBar = TextureProgressBar.new()
 	progress_bar.name = "XPProgressBar"
 	progress_bar.scale *= 0.4
 	progress_bar.texture_over = HEALTH_BAR_OUTLINE
@@ -77,6 +75,7 @@ func create_progress_bar():
 	progress_bar.value = 0
 	progress_bar.set_position(Vector2(25.0, 25.0)) 
 	canvas_layer.add_child(progress_bar)
+	return progress_bar
  
 func create_sun_envio():
 	var sun : DirectionalLight3D = DirectionalLight3D.new()
@@ -116,9 +115,9 @@ func fade_to_black(duration: float = fade_duration) -> Signal:
 	return _to_color(Color.BLACK, duration)
 
 func _to_color(new_color: Color, duration: float) -> Signal:
-	if _tween && _tween.is_running():
-		_tween.Kill()
-	_tween = create_tween()
-	_tween.tween_property(fade, "color", new_color, duration)
-	return _tween.finished
+	if fade_tween && fade_tween.is_running():
+		fade_tween.Kill()
+	fade_tween = create_tween()
+	fade_tween.tween_property(fade, "color", new_color, duration)
+	return fade_tween.finished
  

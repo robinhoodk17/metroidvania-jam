@@ -22,3 +22,10 @@ signal grabbed_ledge
 signal wall_jumped
 signal grabbed_hook
 signal yeeted_child 
+
+###cam_signals
+signal cam_shake(duration: float)
+signal cam_tilt(duration: float)
+signal cam_fast_zooms(duration: float)
+signal cam_slomo(duration: float)
+signal cam_pan(direction: float, duration: float)
