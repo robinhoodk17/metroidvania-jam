@@ -133,6 +133,7 @@ var oneshot_animation : AnimationNode
 @onready var dash_reset_timer: Timer = create_timer()
 @onready var queue_timer: Timer = create_timer()
 @onready var landing_timer: Timer = create_timer()
+@onready var down_timer : Timer = create_timer(0.2)
 @onready var alice: CharacterBody3D = instantiate_child("res://entities/player/alice.tscn")
 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
@@ -341,8 +342,6 @@ func handle_gravity(delta: float) -> void:
 		jumping_time += delta
 		if jump_action.value_bool:
 			velocity.y = jump_velocity
-	if up_down.value_axis_1d < -0.8:
-		current_gravity_force *= 2.0
 	if is_on_floor():
 		second_jump = false
 		dash_spent = false
@@ -453,6 +452,9 @@ func run_state_machine(delta: float) -> void:
 	var run_direction = left_right.value_axis_1d
 	var vertical_direction = up_down.value_axis_1d
 	var aiming_for_wall : bool = false
+	
+	if vertical_direction < -0.8:
+		down_timer.start()
 	if ledge_grab.is_colliding() and !check_collisions.is_colliding():
 		if velocity.y < 0:
 			if !is_on_floor():
@@ -561,7 +563,10 @@ func run_state_machine(delta: float) -> void:
 				running_time = 0
 				velocity.x = run_direction * speed * acceleration_curve.sample(running_time/acceleration)
 				return
-			velocity = staggering_towards * stagger_speed
+			if staggering_towards.y > 0:
+				velocity = staggering_towards * stagger_speed * 1.15
+			else:
+				velocity = staggering_towards * stagger_speed
 	direction_x = run_direction
 
 func action_state_machine(_delta: float) -> void:
@@ -648,6 +653,8 @@ func change_action_state(new_state : action_state = action_state.IDLE_ACTION) ->
 
 #region handle combat
 func attack(_x : float, _y : float) -> void: 
+	if !down_timer.is_stopped():
+		_y = -1
 	var centered = 1
 	_x = looking
 	if abs(_y) < 0.5:
@@ -667,10 +674,10 @@ func attack(_x : float, _y : float) -> void:
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
 	attack_direction = Vector2(_x,_y)
-	enable_hit_box(1.0)
+	enable_hit_box(.15)
 	hit_box.show()
 	VFX_anim_player.play("slash1")
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(.15).timeout
 	hit_box.hide()
 
 func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = global_position) -> void:

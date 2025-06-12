@@ -62,6 +62,8 @@ func _ready() -> void:
 	set_patrol_target()
 
 func _physics_process(delta) -> void:
+	if player == null:
+		return
 	if linear_velocity.length() > 0.1:
 		if locomotion.get_current_node() != "Robot_Walking":
 			locomotion.travel("Robot_Running")

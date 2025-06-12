@@ -24,6 +24,7 @@ signal grabbed_hook
 signal yeeted_child 
 
 ###cam_signals
+signal cam_attach
 signal cam_shake(duration: float)
 signal cam_tilt(duration: float)
 signal cam_fast_zooms(duration: float)

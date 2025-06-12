@@ -45,6 +45,8 @@ func _ready() -> void:
 	upper_state  = animation_tree.get("parameters/StateMachine_upper/playback")
  
 func _physics_process(delta) -> void:
+	if player == null:
+		return
 	if hurt:
 		velocity = stagger_position_target * knockback_speed
 		move_and_slide()

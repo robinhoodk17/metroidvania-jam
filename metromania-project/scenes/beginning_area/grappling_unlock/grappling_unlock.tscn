@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cjru168f728i1"]
+
+[ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_58anx"]
+[ext_resource type="PackedScene" uid="uid://ihxrxyyxy23o" path="res://scenes/beginning_area/grappling_unlock/grappling_unlock.blend" id="2_k7v1e"]
+[ext_resource type="Script" uid="uid://dtk1un7sh1ad6" path="res://scenes/world/entrance.gd" id="3_k7v1e"]
+[ext_resource type="PackedScene" uid="uid://x08nn6lsnink" path="res://peyman/enemy_flying.tscn" id="4_7g8n3"]
+
+[node name="Node" instance=ExtResource("1_58anx")]
+
+[node name="grappling_unlock" parent="Map" index="0" instance=ExtResource("2_k7v1e")]
+
+[node name="Entrance0" type="Node3D" parent="Interactables(not_in_blender)" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78.9707, 2.09889, 0)
+script = ExtResource("3_k7v1e")
+velocity = Vector3(5, 30, 0)
+
+[node name="CharacterBody3D" parent="Enemies" index="0" instance=ExtResource("4_7g8n3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.8777, -2.92086, 0)
+provoked = false
+
+[node name="CharacterBody3D4" parent="Enemies" index="1" instance=ExtResource("4_7g8n3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.8911, -2.92086, 0)
+provoked = false
+
+[node name="CharacterBody3D2" parent="Enemies" index="2" instance=ExtResource("4_7g8n3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.7688, 4.16389, 0)
+provoked = false
+
+[node name="CharacterBody3D3" parent="Enemies" index="3" instance=ExtResource("4_7g8n3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.1222, 8.33138, 0)
+provoked = false

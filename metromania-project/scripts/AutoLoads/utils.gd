@@ -36,8 +36,15 @@ func reparent_node(node: Node, parent: Node, position_reset: bool = true) -> voi
 		node.set("global_position", pos)
 
 func change_scene(new_scene : String, entrance_number : int = 0) -> void:
+	var velocity : Vector3
+	var player = get_tree().get_first_node_in_group("player")
+	if player != null:
+		velocity = player.velocity
 	await Ui.fade_to_black(0.2)
 	await get_tree().change_scene_to_file(new_scene)
 	await get_tree().create_timer(.01).timeout
 	Globals.player_entrance = entrance_number
 	await Ui.fade_to_clear(0.2)
+	#player = get_tree().get_first_node_in_group("player")
+	#if player != null:
+		#player.velocity = velocity
