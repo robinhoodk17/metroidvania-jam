@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dhtbgoohearlq"]
 
 [ext_resource type="PackedScene" uid="uid://h8a8r2wb5lu3" path="res://aa&&root/player.tscn" id="1_aynem"]
-[ext_resource type="Script" path="res://scenes/scene_manager.gd" id="1_jooxx"]
+[ext_resource type="Script" uid="uid://dnl6d2qad3bqh" path="res://scenes/scene_manager.gd" id="1_jooxx"]
 
 [sub_resource type="Environment" id="Environment_ivxrm"]
 

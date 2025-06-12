@@ -387,7 +387,6 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Myck_Jump")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	if current_run_state == run_state.LEDGE_GRABBING:
@@ -405,8 +404,12 @@ func jump() -> void:
 		second_jump = true
 	SignalbusPlayer.jumped.emit()
 	coyote_timer.stop()
+	
+	set_oneshot_animation("Myck_Jump")
 
 func do_wall_jump() -> void:
+	
+	set_oneshot_animation("Myck_WallJump")
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.WALKING
 	var _sign = 1
