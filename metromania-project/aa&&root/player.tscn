@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://h8a8r2wb5lu3"]
+[gd_scene load_steps=28 format=3 uid="uid://h8a8r2wb5lu3"]
 
 [ext_resource type="Script" uid="uid://bcji03sv3g5eh" path="res://entities/player/player.gd" id="1_symyc"]
 [ext_resource type="Resource" uid="uid://d0781vuxbhofs" path="res://input/left_right.tres" id="2_wvtmh"]
@@ -51,12 +51,6 @@ height = 2.04704
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
 radius = 0.969567
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_8lqrv"]
-size = Vector3(3, 3, 3)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_870r4"]
-size = Vector3(8, 8, 8)
 
 [node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX_anim_player", "Hit_VFX", "camera_3d", "hit_box", "hurt_box") groups=["player"]]
 collision_layer = 4
@@ -191,34 +185,10 @@ transform = Transform3D(-0.707104, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.707104, 
 transform = Transform3D(1, -5.34908e-09, 8.94067e-08, 1.6843e-08, 1, -2.98023e-08, -1.12345e-07, 2.98023e-08, 1, 0.694143, 0.343748, 0.595388)
 visible = false
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("small_area", "big_area")]
+[node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10)
 fov = 90.0
 script = ExtResource("24_nb4kq")
-small_area = NodePath("small_area")
-big_area = NodePath("big_area")
-
-[node name="small_area" type="Area3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-collision_layer = 0
-collision_mask = 4
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/small_area"]
-shape = SubResource("BoxShape3D_8lqrv")
-
-[node name="big_area" type="Area3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-collision_layer = 0
-collision_mask = 4
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/big_area"]
-shape = SubResource("BoxShape3D_870r4")
-
-[node name="Node3D" type="Node3D" parent="."]
-
-[node name="Node3D2" type="Node3D" parent="."]
 
 [editable path="MeshParent/Myck2"]
 [editable path="Hitbox/Slash_VFX"]

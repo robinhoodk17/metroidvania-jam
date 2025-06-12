@@ -32,6 +32,33 @@ size = Vector3(3.23584, 2.03708, 2000.43)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_rws47"]
 data = PackedVector3Array(-0.288025, -1.06674, 0.5, -0.288025, -1.06674, -0.5, -0.288025, 1.06674, -0.5, 0.288025, -1.06674, -0.5, -0.288025, -1.06674, -0.5, -0.288025, -1.06674, 0.5, -0.288025, 1.06674, -0.5, -0.288025, -1.06674, -0.5, 0.288025, -1.06674, -0.5, -0.288025, 1.06674, -0.5, -0.288025, 1.06674, 0.5, -0.288025, -1.06674, 0.5, -0.288025, -1.06674, 0.5, -0.288025, 1.06674, 0.5, 0.288025, 1.06674, 0.5, 0.288025, 1.06674, 0.5, -0.288025, 1.06674, 0.5, -0.288025, 1.06674, -0.5, -0.288025, -1.06674, 0.5, 0.288025, -1.06674, 0.5, 0.288025, -1.06674, -0.5, 0.288025, 1.06674, 0.5, 0.288025, -1.06674, 0.5, -0.288025, -1.06674, 0.5, 0.288025, -1.06674, -0.5, 0.288025, -1.06674, 0.5, 0.288025, 1.06674, 0.5, 0.288025, -1.06674, -0.5, 0.288025, 1.06674, -0.5, -0.288025, 1.06674, -0.5, -0.288025, 1.06674, -0.5, 0.288025, 1.06674, -0.5, 0.288025, 1.06674, 0.5, 0.288025, 1.06674, 0.5, 0.288025, 1.06674, -0.5, 0.288025, -1.06674, -0.5)
 
+[sub_resource type="Animation" id="Animation_yndp2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-29.9721, -1.29455, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
 [sub_resource type="Animation" id="Animation_p7ouv"]
 resource_name = "close"
 length = 0.5
@@ -60,33 +87,6 @@ tracks/1/keys = {
 "values": [false, true]
 }
 
-[sub_resource type="Animation" id="Animation_yndp2"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-29.9721, -1.29455, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1e1jm"]
 _data = {
 &"RESET": SubResource("Animation_yndp2"),
@@ -95,33 +95,6 @@ _data = {
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_y6nva"]
 data = PackedVector3Array(-0.5, -2.41101, 0.5, -0.5, -2.41101, -0.5, -0.5, 2.41101, -0.5, 0.5, -2.41101, -0.5, -0.5, -2.41101, -0.5, -0.5, -2.41101, 0.5, -0.5, 2.41101, -0.5, -0.5, -2.41101, -0.5, 0.5, -2.41101, -0.5, -0.5, 2.41101, -0.5, -0.5, 2.41101, 0.5, -0.5, -2.41101, 0.5, -0.5, -2.41101, 0.5, -0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, -0.5, 2.41101, 0.5, -0.5, 2.41101, -0.5, -0.5, -2.41101, 0.5, 0.5, -2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, 2.41101, 0.5, 0.5, -2.41101, 0.5, -0.5, -2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, -2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, -2.41101, -0.5, 0.5, 2.41101, -0.5, -0.5, 2.41101, -0.5, -0.5, 2.41101, -0.5, 0.5, 2.41101, -0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, 0.5, 0.5, 2.41101, -0.5, 0.5, -2.41101, -0.5)
-
-[sub_resource type="Animation" id="Animation_5kyi8"]
-resource_name = "open"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.8),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(-24.1104, 3.01113, 0), Vector3(-24.1104, 9.71045, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
 
 [sub_resource type="Animation" id="Animation_do4f1"]
 length = 0.001
@@ -148,6 +121,33 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_5kyi8"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-24.1104, 3.01113, 0), Vector3(-24.1104, 9.71045, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vluu5"]
@@ -211,8 +211,7 @@ size = Vector3(0.57605, 2.13348, 1)
 [node name="CSGBakedCollisionShape3D2" type="CollisionShape3D" parent="Interactables(not_in_blender)/AreaEntered/SmallDoor/StaticBody3D" index="0"]
 shape = SubResource("ConcavePolygonShape3D_rws47")
 
-[node name="open" parent="Interactables(not_in_blender)/AreaEntered/SmallDoor" index="1" node_paths=PackedStringArray("animationplayer") instance=ExtResource("7_h3v2a")]
-animationplayer = NodePath("")
+[node name="open" parent="Interactables(not_in_blender)/AreaEntered/SmallDoor" index="1" instance=ExtResource("7_h3v2a")]
 animation = "open"
 
 [node name="close" parent="Interactables(not_in_blender)/AreaEntered/SmallDoor" index="2" node_paths=PackedStringArray("animationplayer", "triggers") instance=ExtResource("7_h3v2a")]
