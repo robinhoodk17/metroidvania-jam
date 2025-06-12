@@ -31,3 +31,7 @@ res://peyman/camera_3d.gd
 res://scripts/AutoLoads/signalbus_player.gd
 res://scenes/world/game_events/triggers/enemies_killed/enemies_killed_trigger.gd
 res://entities/player/player.gd
+res://scenes/world/spikes.tscn
+res://scenes/world/spikes.gd
+res://scenes/world/spikes_parent.gd
+res://scenes/beginning_area/grappling_unlock/enemywave.tres
