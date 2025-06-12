@@ -1,11 +1,13 @@
-[gd_scene load_steps=22 format=3 uid="uid://cj71dr3c4hx3s"]
+[gd_scene load_steps=33 format=3 uid="uid://cj71dr3c4hx3s"]
 
 [ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/vfx_slash_mesh.res" id="4_4to5p"]
 [ext_resource type="Shader" uid="uid://d1ha3d63gk2h3" path="res://materials/shaders/wave_shader.gdshader" id="5_kk6rx"]
 [ext_resource type="ArrayMesh" uid="uid://ewsc3ftraf7y" path="res://meshes/vfx/vfx_cone_mesh.res" id="6_kk6rx"]
 [ext_resource type="Shader" uid="uid://bvn3m1s0pvrg3" path="res://materials/shaders/slash_shader.res" id="7_25u6b"]
+[ext_resource type="ArrayMesh" uid="uid://772yo8o36ue7" path="res://meshes/vfx/vfx_sphere_mesh.res" id="7_mx7gh"]
 [ext_resource type="Shader" uid="uid://4np5wvmrrk8g" path="res://materials/shaders/grid_shader.gdshader" id="7_oj1qg"]
 [ext_resource type="Texture2D" uid="uid://b8iw8gfyw4eay" path="res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg" id="8_25u6b"]
+[ext_resource type="ArrayMesh" uid="uid://baldyqmpqmxjm" path="res://meshes/vfx/vfx_cylinder_mesh.res" id="8_oj1qg"]
 
 [sub_resource type="Environment" id="Environment_4to5p"]
 glow_enabled = true
@@ -89,32 +91,102 @@ offsets = PackedFloat32Array(0, 0.4, 0.6, 1)
 colors = PackedColorArray(0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1)
 
 [sub_resource type="Gradient" id="Gradient_kk6rx"]
-colors = PackedColorArray(0, 1, 1, 1, 1.25, 0, 100, 1)
+offsets = PackedFloat32Array(0, 0.470297, 1)
+colors = PackedColorArray(0, 1, 1, 1, 0.980392, 0.427451, 78.6824, 1, 2, 1, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_pvuq2"]
 gradient = SubResource("Gradient_kk6rx")
 use_hdr = true
-fill_from = Vector2(0, 0.559829)
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="Gradient" id="Gradient_25u6b"]
+colors = PackedColorArray(0.0156863, 0.631373, 100, 1, 2, 1, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ux8g3"]
+gradient = SubResource("Gradient_25u6b")
+use_hdr = true
+fill_from = Vector2(0, 0.354701)
 fill_to = Vector2(0, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mx7gh"]
 render_priority = 0
 shader = ExtResource("5_kk6rx")
-shader_parameter/useVertexColor = false
+shader_parameter/useVertexColor = true
 shader_parameter/R_Interpolation = 0.0
 shader_parameter/G_Threshold = 0.5
-shader_parameter/overall_Tolerance = 0.01
-shader_parameter/base_Width = 0.6
+shader_parameter/B_Width = 0.5
+shader_parameter/overall_Tolerance = 0.1
 shader_parameter/base_TopTolerance = 0.1
 shader_parameter/base_BottomTolerance = 0.5
 shader_parameter/noise_Offset = Vector2(0, 0)
 shader_parameter/noise_Scale = Vector2(100, 10)
 shader_parameter/noise_Invert = false
-shader_parameter/noise_Offset_YTimeMultiplier = 1.0
-shader_parameter/noise_TimeMultiplier = 0.0
+shader_parameter/noise_Offset_YTimeMultiplier = -10.0
+shader_parameter/noise_TimeMultiplier = 1.0
 shader_parameter/color_FollowInterpolation = 0.5
 shader_parameter/color_Main_Texture = SubResource("GradientTexture2D_pvuq2")
+shader_parameter/useOutline = true
+shader_parameter/color_Outline_Texture = SubResource("GradientTexture2D_ux8g3")
+
+[sub_resource type="Gradient" id="Gradient_5k721"]
+offsets = PackedFloat32Array(0.2, 0.5, 1)
+colors = PackedColorArray(0.1, 0.5, 0.5, 1, 0.251, 1, 0.5, 1, 1, 1, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_liwsv"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_y12in"]
+gradient = SubResource("Gradient_liwsv")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bni7j"]
+render_priority = 0
+shader = ExtResource("5_kk6rx")
+shader_parameter/useVertexColor = true
+shader_parameter/R_Interpolation = 0.751
+shader_parameter/G_Threshold = 0.5
+shader_parameter/B_Width = 0.25
+shader_parameter/overall_Tolerance = 0.01
+shader_parameter/base_TopTolerance = 0.01
+shader_parameter/base_BottomTolerance = 0.791
+shader_parameter/noise_Offset = Vector2(0, 0)
+shader_parameter/noise_Scale = Vector2(50, 5)
+shader_parameter/noise_Invert = false
+shader_parameter/noise_Offset_YTimeMultiplier = 0.0
+shader_parameter/noise_TimeMultiplier = 0.0
+shader_parameter/color_FollowInterpolation = 0.0
+shader_parameter/color_Main_Texture = SubResource("GradientTexture2D_y12in")
 shader_parameter/useOutline = false
+
+[sub_resource type="Gradient" id="Gradient_40ce4"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.5, 0.5, 0.25, 1, 0.75, 0.5, 0.333, 1, 0.5, 1, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ffgsm"]
+render_priority = 0
+shader = ExtResource("5_kk6rx")
+shader_parameter/useVertexColor = true
+shader_parameter/R_Interpolation = 0.0
+shader_parameter/G_Threshold = 0.729
+shader_parameter/B_Width = 0.25
+shader_parameter/overall_Tolerance = 0.01
+shader_parameter/base_TopTolerance = 0.1
+shader_parameter/base_BottomTolerance = 0.1
+shader_parameter/noise_Offset = Vector2(0, 0)
+shader_parameter/noise_Scale = Vector2(100, 1)
+shader_parameter/noise_Invert = true
+shader_parameter/noise_Offset_YTimeMultiplier = 0.0
+shader_parameter/noise_TimeMultiplier = 0.0
+shader_parameter/color_FollowInterpolation = 0.0
+shader_parameter/useOutline = false
+
+[sub_resource type="Gradient" id="Gradient_0d0mn"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.447826, 1)
+colors = PackedColorArray(0.75, 0.75, 0.25, 1, 0, 0.75, 1, 1, 0, 1, 0.25, 1)
 
 [node name="vfx_scene" type="Node"]
 
@@ -154,7 +226,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
 [node name="Slash_Particle" type="CPUParticles3D" parent="Slash_VFX_Example"]
 material_override = SubResource("ShaderMaterial_pvuq2")
 amount = 1
-speed_scale = 4.0
 local_coords = true
 mesh = ExtResource("4_4to5p")
 particle_flag_rotate_y = true
@@ -166,11 +237,34 @@ angle_max = -90.0
 color_ramp = SubResource("Gradient_pvuq2")
 
 [node name="Thrust_VFX_Example" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 2)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 2, 1.5, 1.5)
 
 [node name="Thrust_Particle" type="CPUParticles3D" parent="Thrust_VFX_Example"]
 material_override = SubResource("ShaderMaterial_mx7gh")
 amount = 1
+local_coords = true
 mesh = ExtResource("6_kk6rx")
 particle_flag_rotate_y = true
 gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Gradient_5k721")
+
+[node name="Jump_VFX_Example" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 2)
+
+[node name="Jump_Particle" type="CPUParticles3D" parent="Jump_VFX_Example"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0.5, 0)
+material_override = SubResource("ShaderMaterial_bni7j")
+amount = 1
+local_coords = true
+mesh = ExtResource("7_mx7gh")
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Gradient_40ce4")
+
+[node name="Jump_Particle2" type="CPUParticles3D" parent="Jump_VFX_Example"]
+transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_ffgsm")
+amount = 1
+local_coords = true
+mesh = ExtResource("8_oj1qg")
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Gradient_0d0mn")

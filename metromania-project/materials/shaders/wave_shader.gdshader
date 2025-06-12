@@ -6,13 +6,13 @@ group_uniforms AnimationParameters;
 uniform bool useVertexColor = false;
 uniform float R_Interpolation: hint_range(0.0, 1.0) = 0.5;
 uniform float G_Threshold: hint_range(0.0, 1.0) = 0.5;
+uniform float B_Width: hint_range(0.0, 1.0) = 0.5;
 
 group_uniforms Overall;
 uniform float overall_Tolerance: hint_range(0.01, 1.0) = 0.01;
 
 
 group_uniforms Base;
-uniform float base_Width: hint_range(0.0, 1.0) = 0.5;
 uniform float base_TopTolerance: hint_range(0.01, 1.0) = 0.1;
 uniform float base_BottomTolerance: hint_range(0.01, 1.0) = 0.1;
 
@@ -186,14 +186,16 @@ void fragment() {
 	// Selection of Animation Parameters
 	float interpolation = COLOR.r;
 	float threshold = COLOR.g;
+	float width = COLOR.b;
 	if(!useVertexColor){
 		interpolation = R_Interpolation;
 		threshold = G_Threshold;
+		width = B_Width;
 	}
 	
 	// Base
 	float top_Alpha = smoothstep(interpolation - base_TopTolerance, interpolation + base_TopTolerance, UV.y);
-	float bottom_Alpha = smoothstep(interpolation + base_Width - base_BottomTolerance, interpolation + base_Width + base_BottomTolerance, UV.y);
+	float bottom_Alpha = smoothstep(interpolation + width - base_BottomTolerance, interpolation + width + base_BottomTolerance, UV.y);
 	float base_Alpha = top_Alpha - bottom_Alpha;
 	
 	// Noise
