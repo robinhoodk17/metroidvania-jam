@@ -46,10 +46,6 @@ signal break_interaction
 @export var up_down : GUIDEAction
 @export var jump_action : GUIDEAction
 @export var dash_action : GUIDEAction
-@onready var coyote_timer: Timer = $CoyoteTimer
-@onready var dash_reset_timer: Timer = $DashResetTimer
-@onready var combo_reset_timer: Timer = $ComboResetTimer
-@onready var queue_timer: Timer = $QueueTimer
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var wall_jump: ShapeCast3D = $MeshParent/MeshChild/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/MeshChild/LedgeGrab
@@ -97,7 +93,18 @@ var run_animation : AnimationNodeStateMachinePlayback
 var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
- 
+@onready var coyote_timer: Timer = create_timer()
+@onready var dash_reset_timer: Timer = create_timer()
+@onready var combo_reset_timer: Timer = create_timer()
+@onready var queue_timer: Timer = create_timer()
+
+func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
+	var timer = Timer.new()
+	timer.wait_time = wait_time
+	timer.one_shot = one_shot
+	add_child(timer)
+	return timer 
+
 func turn_off() -> void:
 	if captured:
 		return
@@ -446,7 +453,7 @@ func take_damage(amount):
 #region hit_hurt
 @export var hit_box : Area3D 
 @export var hurt_box: Area3D 
-var _damage := 10
+var _damage : int = 10
  
 func on_hit_box_entered(area: Area3D) -> void:
 	var parent: Node3D = area.get_parent()
