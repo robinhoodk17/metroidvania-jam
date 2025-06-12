@@ -42,6 +42,7 @@ signal break_interaction
 @export var ledge_grab_offset : float = -1.2
 
 @export_group("Combat")
+@export var damage_amount_from_hazards : int = 1
 @export var combo_reset : float = 1.5
 @export var knockback_of_attack : float = 0.75
 @export var max_combo : int = 3
@@ -167,7 +168,7 @@ func _ready() -> void:
 
 	checkpoint = global_position
 	checkpoint_box.area_entered.connect(store_checkpoint)
-	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
+	spike_hurtbox.area_entered.connect(take_damage_and_respawn)
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
 	SignalbusPlayer.end_retracting.connect(end_retracting)
@@ -205,6 +206,7 @@ func store_checkpoint(body : Node3D = null, _position : Vector3 = Vector3.ZERO):
 		checkpoint = body.global_position
 	if _position != Vector3.ZERO:
 		checkpoint = _position
+	print_debug("current checkpoint", checkpoint)
 
 func pick_up_child(_body : Node3D = null):
 	if carrying_child:
@@ -691,11 +693,13 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 		GlobalsPlayer.current_hp -= amount
 		SignalbusPlayer.took_damage.emit(amount, knockback)
 
-func take_damage_and_respawn(amount : int = 0) -> void:
+func take_damage_and_respawn(_body) -> void:
+	
 	await Ui.fade_to_black(0.25)
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.IDLE
-	GlobalsPlayer.current_hp -= amount
+	velocity = Vector3.ZERO
+	GlobalsPlayer.current_hp -= damage_amount_from_hazards
 	global_position = checkpoint
 	await Ui.fade_to_clear(0.25)
 	current_action_state = action_state.IDLE_ACTION

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bb7oqyp5pmvds"]
+[gd_scene load_steps=26 format=3 uid="uid://bb7oqyp5pmvds"]
 
 [ext_resource type="PackedScene" uid="uid://dhtbgoohearlq" path="res://scenes/master.tscn" id="1_xgn07"]
 [ext_resource type="PackedScene" uid="uid://fxxm2hiee7bo" path="res://scenes/beginning_area/hub/hub_area.blend" id="2_uxkil"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://d4fxkswdr5bxp" path="res://scenes/world/game_events/events/change_scene/change_scene_event.gd" id="9_auiq8"]
 [ext_resource type="PackedScene" uid="uid://t0vesgyvqqj" path="res://scenes/world/game_events/events/start_animation/start_animation.tscn" id="9_vp61v"]
 [ext_resource type="PackedScene" uid="uid://b2n7sg3bylxkm" path="res://scenes/world/game_events/triggers/enemies_killed/enemies_killed_trigger.tscn" id="11_p30ut"]
+[ext_resource type="PackedScene" uid="uid://dwe80eqt1sv5j" path="res://scenes/world/spikes.tscn" id="12_p30ut"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_eoo1u"]
 size = Vector3(32.6083, 18.2307, 2000.43)
@@ -114,6 +115,18 @@ size = Vector3(32.3964, 23.1943, 2000.43)
 [sub_resource type="BoxShape3D" id="BoxShape3D_82rf0"]
 size = Vector3(4.82367, 4.38556, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_p30ut"]
+size = Vector3(3.91205, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jbebq"]
+size = Vector3(3.91, 1, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_o7wpi"]
+viewport_path = NodePath("Sprite3D/SubViewport")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jbebq"]
+size = Vector3(8.51349, 4.00806, 1)
+
 [node name="Node" instance=ExtResource("1_xgn07")]
 
 [node name="hub_area" parent="Map" index="0" instance=ExtResource("2_uxkil")]
@@ -193,9 +206,33 @@ script = ExtResource("9_auiq8")
 new_scene = "uid://cjru168f728i1"
 triggers = [NodePath("..")]
 
+[node name="Spikes" parent="Interactables(not_in_blender)" index="4" instance=ExtResource("12_p30ut")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9999, -0.962914, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/Spikes/Area3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.15527e-05, 0, 0)
+shape = SubResource("BoxShape3D_p30ut")
+
+[node name="MeshInstance3D" parent="Interactables(not_in_blender)/Spikes" index="1"]
+mesh = SubResource("BoxMesh_jbebq")
+
+[node name="Sprite3D" parent="Interactables(not_in_blender)/Spikes" index="2"]
+texture = SubResource("ViewportTexture_o7wpi")
+
+[node name="Checkpoint" type="Area3D" parent="Interactables(not_in_blender)" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.9067, 1.65261, 0)
+collision_layer = 128
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables(not_in_blender)/Checkpoint" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4249, 0.25769, 0)
+shape = SubResource("BoxShape3D_jbebq")
+
 [node name="Flying" parent="Enemies" index="0" instance=ExtResource("4_shjvc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, 24.141, 0)
 provoked = false
 
 [node name="Myck" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.204, -0.0342698, 13.6439)
+
+[editable path="Interactables(not_in_blender)/Spikes"]
