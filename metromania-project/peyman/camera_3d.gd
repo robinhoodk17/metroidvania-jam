@@ -72,7 +72,7 @@ func _physics_process(delta):
 	match camera_mode:
 		"Celeste":
 			if in_small_area:
-				target_pos = target_pos.lerp(camera_static_position, lerp_speed_slow * delta)
+				target_pos = target_pos.lerp(camera_static_position, lerp_speed_fast * delta)
 			elif in_big_area and not in_small_area:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
@@ -88,7 +88,7 @@ func _physics_process(delta):
  
 		"HollowKnight":
 			if in_big_area:
-				target_pos = target_pos.lerp(camera_static_position, lerp_speed_slow * delta)
+				target_pos = target_pos.lerp(camera_static_position, lerp_speed_fast * delta)
 			else:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
