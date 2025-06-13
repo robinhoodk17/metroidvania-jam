@@ -154,13 +154,14 @@ func instantiate_child(scene_path: String) -> Node:
 	return instance
 
 func _ready() -> void:
-#region Setting up combat
-	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
+	add_to_group("player")
+	$MeshParent/Myck2.rotation = Vector3(0, -90, 0)
+	$MeshParent/Myck2.position = Vector3(0, -0.985, 0)
+	axis_lock_linear_z = true
+ 
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
-		
-#endregion
-	
+
 	jump_action.triggered.connect(queue_jump)
 	attack_action.triggered.connect(queue_attack)
 	throw_action.triggered.connect(queue_throw)

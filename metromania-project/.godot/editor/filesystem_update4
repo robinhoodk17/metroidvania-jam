@@ -1,12 +1,14 @@
-res://aa&&root/player.tscn
+res://meshes/vfx/slash_mesh.res
+res://scenes/master.tscn
 res://ui/ui_theme.tres
 res://input/controller.tres
 res://input/keyboard.tres
+res://peyman/enemy_tree.tres
 res://entities/Myck/Myck_Animations/animation_tree.tres
 res://materials/shader_materials/vfx.tres
-res://peyman/enemy_tree.tres
 res://entities/player/animation_tree.tres
-res://scenes/master.tscn
+res://peyman/camera_3d.gd
+res://aa&&root/player.tscn
 res://peyman/enemy_rigid.tscn
 res://scenes/world/prompt.tscn
 res://scenes/world/game_events/triggers/lever/lever.tscn
@@ -22,4 +24,4 @@ res://ui/main_menu/main_menu.tscn
 res://scenes/beginning_area/hub/hub_area.tscn
 res://scenes/beginning_area/grappling_unlock/grappling_unlock.tscn
 res://scenes/world/spikes.tscn
-res://peyman/camera_3d.gd
+res://entities/player/player.gd

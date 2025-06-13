@@ -9,8 +9,7 @@ var zoom_tween: Tween
 
 @onready var default_fov : float = fov 
 @onready var player : Node3D = get_parent()
-@onready var first_timer = create_timer(0.1)
-@onready var second_timer = create_timer(5.0)
+@onready var second_timer = create_timer(7.0)
 @onready var small_area: Area3D = create_area_with_collision(Vector3(3, 3, 3,)) 
 @onready var big_area: Area3D = create_area_with_collision(Vector3(8, 8, 8,))
 @onready var camera_static_position: Vector3 = global_transform.origin 
@@ -19,8 +18,6 @@ var zoom_tween: Tween
 
 var in_small_area : bool = true:
 	set(value):
-		first_timer.start()
-		await first_timer.timeout
 		camera_static_position = _desired_pos
 		in_small_area = value
 var in_big_area : bool = true 
@@ -106,8 +103,7 @@ func _physics_process(delta):
 func switch_player(parent: Node3D) -> void:
 	reparent(parent)
 	player = parent
- 
-#region cam_signals
+  
 func on_cam_shake(duration: float = 0.3) -> void:
 	if shake_active:
 		return
@@ -173,8 +169,6 @@ func on_cam_pan(direction: float, amount: float) -> void:
 	### use only 1 and -1 for direction, 1 for right and -1 for left 
 	var right : Vector3 = global_transform.basis.x.normalized()
 	global_translate(right * direction * amount)
- 
-#endregion 
  
 func on_second_timer_timeout () -> void:
 	small_area.monitoring = false

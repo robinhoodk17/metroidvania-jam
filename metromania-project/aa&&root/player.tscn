@@ -52,10 +52,9 @@ height = 2.04704
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
 radius = 0.969567
 
-[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX_anim_player", "Hit_VFX", "camera_3d", "hit_box", "hurt_box") groups=["player"]]
+[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX_anim_player", "Hit_VFX", "camera_3d", "hit_box", "hurt_box")]
 collision_layer = 4
 collision_mask = 3
-axis_lock_linear_z = true
 script = ExtResource("1_symyc")
 speed = 18.0
 acceleration_curve = SubResource("Curve_symyc")
@@ -135,7 +134,6 @@ shape = SubResource("BoxShape3D_8fjmc")
 target_position = Vector3(0.555, 0, 0)
 
 [node name="Myck2" parent="MeshParent" instance=ExtResource("9_ecg3u")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, -0.985252, 0)
 
 [node name="Myck" parent="MeshParent/Myck2/Deform Armature/Skeleton3D" index="0"]
 surface_material_override/0 = ExtResource("11_8lqrv")
