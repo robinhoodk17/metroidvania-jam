@@ -52,7 +52,7 @@ height = 2.04704
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
 radius = 0.969567
 
-[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX_anim_player", "Hit_VFX", "camera_3d", "hit_box", "hurt_box")]
+[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX_anim_player", "Hit_VFX", "hit_box", "hurt_box")]
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_symyc")
@@ -70,7 +70,6 @@ jump_action = ExtResource("4_a1qjk")
 dash_action = ExtResource("5_j3ovn")
 throw_action = ExtResource("6_afbqv")
 attack_action = ExtResource("7_gx6sm")
-camera_3d = NodePath("Camera3D")
 hit_box = NodePath("Hitbox")
 hurt_box = NodePath("hurt_box")
 

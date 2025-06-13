@@ -73,7 +73,7 @@ signal break_interaction
 @export var dash_action : GUIDEAction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
-@export var camera_3d: Camera3D  
+ 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
@@ -135,6 +135,7 @@ var oneshot_animation : AnimationNode
 @onready var queue_timer: Timer = create_timer()
 @onready var landing_timer: Timer = create_timer()
 @onready var down_timer : Timer = create_timer(0.2)
+@onready var anim_player: AnimationPlayer = find_child("AnimationPlayer")
 @onready var alice: CharacterBody3D = instantiate_child("res://entities/player/alice.tscn")
 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
@@ -152,6 +153,14 @@ func instantiate_child(scene_path: String) -> Node:
 	var instance = scene.instantiate()
 	$MeshParent/ChildContainer.add_child(instance)
 	return instance
+
+func set_animations_loop(animation_names: Array) -> void:
+	for anim_name in animation_names:
+		var animation = anim_player.get_animation(anim_name)
+		if animation:
+			animation.loop = true
+		else:
+			push_warning("Animation not found: " + anim_name)
 
 func _ready() -> void:
 	add_to_group("player")
@@ -225,7 +234,7 @@ func _physics_process(delta: float) -> void:
 		Engine.time_scale = 0.25
 	if queue_timer.is_stopped():
 		input_queued = inputs.NONE
-	#position_camera(delta)
+ 
 	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
@@ -236,27 +245,6 @@ func attach_camera() -> void:
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
  
-func position_camera(delta: float) -> void:
-	current_y = (current_y + 1) % dampened_y_array.size()
-	dampened_y_array[current_y] = global_position.y
-	var running_sum : float = 0.0
-	for i : float in dampened_y_array:
-		running_sum += i
-	averaged_y = running_sum/dampened_y_array.size()
-	var target_position : Vector3
-	var target_z : float
-	if alice.captured:
-		target_position = Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z)
-		target_z = camera_zoom_min
-	else:
-		target_position = (Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z) + alice.global_position)/2
-		target_z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
-	target_position = Vector3(target_position.x, target_position.y, target_z)
-	if is_on_floor():
-		lerp_power = lerp(lerp_power, 5.0, delta * 10)
-	else:
-		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
-
 func manage_action_inputs() -> void:
 	return
 	if jump_action.is_triggered():
@@ -695,7 +683,6 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 		SignalbusPlayer.took_damage.emit(amount, knockback)
 
 func take_damage_and_respawn(_body) -> void:
-	
 	await Ui.fade_to_black(0.25)
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.IDLE
@@ -735,7 +722,7 @@ func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = false
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
-	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
+	var animation : Animation = anim_player.get_animation(animation_name)
 	if animation == null:
 		push_error("Animation % not found!" % animation_name)
 		return 0.0
@@ -745,90 +732,6 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	animation.track_set_path(track_index, relative_path)
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("g"):
-		set_oneshot_animation("Robot_Punch")
-		await get_tree().create_timer(0.25).timeout
-		enable_hit_box(0.2)
+ 
 #endregion 
-#region camera_moves
-var shake_active: bool
-var slowmo_active: bool
-var title_active: bool
-var zoom_active: bool
-@onready var default_rotation : Vector3 = rotation_degrees
-@onready var default_fov : float = 90
  
-func _camera_shake(duration: float = 0.3) -> void:
-	if shake_active:
-		return
-	else:
-		shake_active = true
-		handle_camera_shake(duration)
-
-func _camera_slowmo(duration: float = 0.5) -> void:
-	if slowmo_active:
-		return 
-	else:
-		slowmo_active = true
-		await handle_cam_slowmo(duration)
-		slowmo_active = false
- 
-func _camera_tilt(duration: float = 0.15) -> void:
-	if title_active:
-		return
-	else:
-		title_active = true
-		await handle_camera_tilt(duration)
-		title_active = false
-		
-func _camera_zoom(duration: float = 0.15) -> void:
-	if zoom_active:
-		return
-	else:
-		zoom_active = true
-		await handle_camera_zoom(duration)
-		zoom_active = false 
-
-func handle_camera_shake(duration : float) -> void:
-	var period : float = duration
-	var magnitude : float = 0.4
-	var initial_transform = camera_3d.transform
-	var elapsed_time : float = 0.0
-	while elapsed_time < period:
-		var offset : Vector3 = Vector3(
-			randf_range(-magnitude, magnitude),
-			randf_range(-magnitude, magnitude),
-			0.0
-		)
-		camera_3d.transform.origin = initial_transform.origin + offset
-		elapsed_time += get_process_delta_time()
-		#await get_tree().process_frame
-	camera_3d.transform = initial_transform
-	shake_active = false
- 
-func handle_cam_slowmo(duration : float) -> Signal:
-	var _tween: Tween = get_tree().create_tween()
-	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
-	_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
-	return _tween.finished
-
-func handle_camera_tilt(duration : float) -> Signal:
-	var tilt_degrees : float = 5.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var target_rotation = default_rotation
-	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
-	tween.tween_property(camera_3d, "rotation_degrees", target_rotation, duration)
-	tween.tween_property(camera_3d, "rotation_degrees", default_rotation, duration)
-	return tween.finished
-
-func handle_camera_zoom(duration: float) -> Signal:
-	var zoom_amount : float = 10.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
-	tween.tween_property(camera_3d, "fov", target_fov, duration)
-	tween.tween_property(camera_3d, "fov", default_fov, duration)
-	return tween.finished 
-
-#endregion  
