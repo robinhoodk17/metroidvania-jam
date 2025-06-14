@@ -148,6 +148,7 @@ var oneshot_animation : AnimationNode
 @onready var anim_player: AnimationPlayer = find_child("AnimationPlayer")
 @onready var alice: CharacterBody3D = instantiate_child("res://entities/player/alice.tscn")
 
+#region onready_functions
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
@@ -172,21 +173,22 @@ func set_animations_loop(animation_names: Array) -> void:
 		else:
 			push_warning("Animation not found: " + anim_name)
 			
-const SURFACE_0 = preload("res://materials/shader_materials/surface0.tres")
-const SURFACE_1 = preload("res://materials/shader_materials/surface0.tres")
-const SURFACE_2 = preload("res://materials/shader_materials/surface0.tres")
-
-@onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
 func set_material_override_recursive(num: int, material: Material) -> void: 
 	for child in Skeleton.get_children(): 
 		if child is MeshInstance3D: 
 			child.set_surface_override_material(num, material)
+#endregion
+
+const SURFACE_0 = preload("res://materials/shader_materials/surface0.tres")
+const SURFACE_1 = preload("res://materials/shader_materials/surface0.tres")
+const SURFACE_2 = preload("res://materials/shader_materials/surface0.tres")
+@onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
  
 func _ready() -> void:
 	set_material_override_recursive(0, SURFACE_0)
 	set_material_override_recursive(1, SURFACE_1)
 	set_material_override_recursive(2, SURFACE_2)
-	
+
 	add_to_group("player")
 	$MeshParent/Myck2.rotation = Vector3(0, -90, 0)
 	$MeshParent/Myck2.position = Vector3(0, -0.985, 0)
