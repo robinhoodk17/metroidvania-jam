@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://oxai088rvxy"
-path="res://.godot/imported/EnemyCry.wav-ed37eb22e560def3930df5ce4c5e80ef.sample"
+uid="uid://cwox34b351ki"
+path="res://.godot/imported/footstep6.wav-182b44e2f383f76a951ef8d93466810a.sample"
 
 [deps]
 
-source_file="res://sfx/EnemyCry.wav"
-dest_files=["res://.godot/imported/EnemyCry.wav-ed37eb22e560def3930df5ce4c5e80ef.sample"]
+source_file="res://sfx/footstep6.wav"
+dest_files=["res://.godot/imported/footstep6.wav-182b44e2f383f76a951ef8d93466810a.sample"]
 
 [params]
 

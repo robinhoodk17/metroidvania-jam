@@ -166,6 +166,7 @@ const SURFACE_3 = preload("res://materials/shader_materials/surface3.tres")
 func _ready() -> void:
 	set_material_override_recursive(0, SURFACE_3)
 	set_animations_loop(["Mounted_Idle", "Amelia_WallSlide", "Amelia_Walk", "Amelia_Run", "Amelia_Idle"])
+	
 	SignalbusPlayer.child_captured.connect(func capture(): captured = true)
 	SignalbusPlayer.child_released.connect(func release(): captured = false)
 	

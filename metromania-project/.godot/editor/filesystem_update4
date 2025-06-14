@@ -21,3 +21,5 @@ res://aa&&root/main.tscn
 res://materials/shaders/toon_shader.gdshader
 res://materials/shader_materials/surface3.tres
 res://entities/player/alice.gd
+res://scripts/AutoLoads/Music.gd
+res://entities/player/player.gd

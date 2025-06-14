@@ -691,8 +691,10 @@ func attack(_x : float, _y : float) -> void:
 			set_oneshot_animation("Myck_HoriAttack2")
 			HoriAttack1_VFX.VFX_Playing = false
 			HoriAttack2_VFX.VFX_Playing = true
+			Music.play_sfx($AudioStreamPlayer3D, "attack1")
 		else:
 			set_oneshot_animation("Myck_HoriAttack1")
+			Music.play_sfx($AudioStreamPlayer3D, "attack2")
 			HoriAttack1_VFX.VFX_Playing = true
 			HoriAttack2_VFX.VFX_Playing = false
 			
@@ -705,10 +707,12 @@ func attack(_x : float, _y : float) -> void:
 			hit_box.rotation = Vector3(0,0,PI/2)
 			UpAttack_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_UpAttack")
+			Music.play_sfx($AudioStreamPlayer3D, "attack3-uppercut")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
 			DownAttack_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_DownAttack")
+			Music.play_sfx($AudioStreamPlayer3D, "attack4-slam")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
