@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://k1eg7merpdj8" path="res://scripts/Johann/vfx_element.gd" id="1_u54ip"]
 [ext_resource type="Shader" uid="uid://bvn3m1s0pvrg3" path="res://materials/shaders/slash_shader.res" id="2_grd4h"]
-[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/vfx_slash_mesh.res" id="3_l5nex"]
+[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/slash_mesh.res" id="3_l5nex"]
 
 [sub_resource type="Gradient" id="Gradient_4to5p"]
 colors = PackedColorArray(0, 0.5, 1, 1, 1, 0.5, 1, 1)

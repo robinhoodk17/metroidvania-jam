@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://h8a8r2wb5lu3"]
+[gd_scene load_steps=33 format=3 uid="uid://h8a8r2wb5lu3"]
 
 [ext_resource type="Script" uid="uid://bcji03sv3g5eh" path="res://entities/player/player.gd" id="1_symyc"]
 [ext_resource type="Resource" uid="uid://d0781vuxbhofs" path="res://input/left_right.tres" id="2_wvtmh"]
@@ -12,9 +12,14 @@
 [ext_resource type="Material" uid="uid://b0gg4eyj3yc7q" path="res://materials/shader_materials/surface0.tres" id="11_8lqrv"]
 [ext_resource type="Material" uid="uid://bc1xo71qbof0p" path="res://materials/shader_materials/surface1.tres" id="12_870r4"]
 [ext_resource type="Material" uid="uid://3och035os5v1" path="res://materials/shader_materials/surface2.tres" id="13_ehk3w"]
+[ext_resource type="PackedScene" uid="uid://dt14j1yf2csfx" path="res://vfx/Myck/Myck_WallJumpVFX.tscn" id="13_i7eyy"]
+[ext_resource type="PackedScene" uid="uid://dygnxlbqpq4yu" path="res://vfx/Myck/Myck_DashVFX.tscn" id="14_4elfr"]
 [ext_resource type="AnimationNodeBlendTree" uid="uid://dwh5faypa8v5s" path="res://entities/Myck/Myck_Animations/animation_tree.tres" id="14_pp3wn"]
 [ext_resource type="PackedScene" uid="uid://gbaybbokp4yw" path="res://materials/shader_materials/slash_vfx.tscn" id="16_870r4"]
+[ext_resource type="PackedScene" uid="uid://bs2bvyuvx3bai" path="res://vfx/Myck/Myck_SlashVFX.tscn" id="16_ehk3w"]
 [ext_resource type="PackedScene" uid="uid://t8ldqeok401r" path="res://materials/shader_materials/hit_vfx.tscn" id="17_ehk3w"]
+[ext_resource type="PackedScene" uid="uid://b42je3qqfnf1b" path="res://vfx/Myck/Myck_JumpVFX.tscn" id="18_pp3wn"]
+[ext_resource type="PackedScene" uid="uid://5pbmrl7irbse" path="res://vfx/Myck/Myck_LandVFX.tscn" id="19_pp3wn"]
 [ext_resource type="Script" uid="uid://db4gpvhogqsb2" path="res://peyman/camera_3d.gd" id="24_nb4kq"]
 
 [sub_resource type="Curve" id="Curve_symyc"]
@@ -52,7 +57,7 @@ height = 2.04704
 [sub_resource type="SphereShape3D" id="SphereShape3D_rioum"]
 radius = 0.969567
 
-[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "VFX_anim_player", "Hit_VFX", "hit_box", "hurt_box")]
+[node name="Myck" type="CharacterBody3D" node_paths=PackedStringArray("mesh", "Jump1_VFX", "Jump2_VFX", "Land_VFX", "WallJump1_VFX", "WallJump2_VFX", "Dash_VFX", "Slash_VFX", "Hit_VFX", "hit_box", "hurt_box")]
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_symyc")
@@ -62,7 +67,13 @@ deceleration_curve = SubResource("Curve_abrql")
 camera_zoom_min = 0.0
 camera_zoom_max = 10.0
 mesh = NodePath("MeshParent")
-VFX_anim_player = NodePath("Hitbox/Slash_VFX/AnimationPlayer")
+Jump1_VFX = NodePath("Jump1_VFX")
+Jump2_VFX = NodePath("Jump2_VFX")
+Land_VFX = NodePath("Land_VFX")
+WallJump1_VFX = NodePath("MeshParent/Myck2/WallJump1_VFX")
+WallJump2_VFX = NodePath("MeshParent/Myck2/WallJump2_VFX")
+Dash_VFX = NodePath("MeshParent/Myck2/Dash_VFX")
+Slash_VFX = NodePath("Hitbox/Slash_VFX2")
 Hit_VFX = NodePath("Hitbox/Slash_VFX/Hit_VFX")
 left_right = ExtResource("2_wvtmh")
 up_down = ExtResource("3_7thud")
@@ -139,6 +150,14 @@ surface_material_override/0 = ExtResource("11_8lqrv")
 surface_material_override/1 = ExtResource("12_870r4")
 surface_material_override/2 = ExtResource("13_ehk3w")
 
+[node name="WallJump1_VFX" parent="MeshParent/Myck2" instance=ExtResource("13_i7eyy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="WallJump2_VFX" parent="MeshParent/Myck2" instance=ExtResource("13_i7eyy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Dash_VFX" parent="MeshParent/Myck2" instance=ExtResource("14_4elfr")]
+
 [node name="WallJumpFreezeTimer" type="Timer" parent="."]
 one_shot = true
 
@@ -182,10 +201,24 @@ transform = Transform3D(-0.707104, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.707104, 
 transform = Transform3D(1, -5.34908e-09, 8.94067e-08, 1.6843e-08, 1, -2.98023e-08, -1.12345e-07, 2.98023e-08, 1, 0.694143, 0.343748, 0.595388)
 visible = false
 
+[node name="Slash_VFX2" parent="Hitbox" instance=ExtResource("16_ehk3w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -4.37114e-08, -1)
+
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10)
 fov = 90.0
 script = ExtResource("24_nb4kq")
+
+[node name="Jump1_VFX" parent="." instance=ExtResource("18_pp3wn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+VFX_SpeedScale = 4.0
+
+[node name="Jump2_VFX" parent="." instance=ExtResource("18_pp3wn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+VFX_SpeedScale = 4.0
+
+[node name="Land_VFX" parent="." instance=ExtResource("19_pp3wn")]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.5, 0)
 
 [editable path="MeshParent/Myck2"]
 [editable path="Hitbox/Slash_VFX"]

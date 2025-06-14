@@ -65,8 +65,17 @@ signal break_interaction
 
 @export_group("Nodes")
 @export var mesh : Marker3D
-@export var VFX_anim_player : AnimationPlayer
-@export var Hit_VFX : Node3D
+
+@export var Jump1_VFX: VFXElement
+@export var Jump2_VFX: VFXElement
+@export var Land_VFX: VFXElement
+@export var WallJump1_VFX : VFXElement
+@export var WallJump2_VFX : VFXElement
+@export var Dash_VFX: VFXElement
+@export var Slash_VFX: VFXElement
+@export var Thrust_VFX: VFXElement
+@export var Hit_VFX : VFXElement
+
 @export var left_right : GUIDEAction
 @export var up_down : GUIDEAction
 @export var jump_action : GUIDEAction
@@ -337,6 +346,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
+			Land_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_Land")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
@@ -394,11 +404,18 @@ func jump() -> void:
 		second_jump = true
 	SignalbusPlayer.jumped.emit()
 	coyote_timer.stop()
-	
+	if(!Jump1_VFX.VFX_Playing):
+		Jump1_VFX.VFX_Playing = true;
+	else:
+		Jump2_VFX.VFX_Playing = true;
+		
 	set_oneshot_animation("Myck_Jump")
 
 func do_wall_jump() -> void:
-	
+	if(!WallJump1_VFX.VFX_Playing):
+		WallJump1_VFX.VFX_Playing = true;
+	else:
+		WallJump2_VFX.VFX_Playing = true;
 	set_oneshot_animation("Myck_WallJump")
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.WALKING
@@ -422,6 +439,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
+	Dash_VFX.VFX_Playing = true
 	set_oneshot_animation("Myck_Dash")
 	SignalbusPlayer.dashed.emit()
 
@@ -667,7 +685,7 @@ func attack(_x : float, _y : float) -> void:
 	attack_direction = Vector2(_x,_y)
 	enable_hit_box(.15)
 	hit_box.show()
-	VFX_anim_player.play("slash1")
+	Slash_VFX.Play_VFX();
 	await get_tree().create_timer(.15).timeout
 	hit_box.hide()
 
