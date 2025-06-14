@@ -38,7 +38,7 @@ var is_teleport: bool
 @onready var call_method_timer: Timer =  create_timer(0.26)
 @onready var delay_timer: Timer =  create_timer(0.3)
 @onready var slommo_timer: Timer =  create_timer(0.5)
-
+ 
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
