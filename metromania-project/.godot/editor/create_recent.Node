@@ -1,14 +1,2 @@
 CPUParticles3D
 Node3D
-MeshInstance3D
-GPUParticles3D
-Marker3D
-CollisionShape3D
-AnimationPlayer
-ShapeCast3D
-NavigationAgent3D
-Node
-AnimationTree
-CharacterBody3D
-Area3D
-BoneAttachment3D
