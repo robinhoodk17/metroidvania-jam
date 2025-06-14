@@ -149,13 +149,23 @@ func set_material_override_recursive(num: int, material: Material) -> void:
 	for child in Skeleton.get_children():
 		if child is MeshInstance3D:
 			child.set_surface_override_material(num, material)
+			
+func set_animations_loop(animation_names: Array) -> void:
+	for anim_name in animation_names:
+		var animation = anim_player.get_animation(anim_name)
+		if animation:
+			animation.loop = true
+		else:
+			push_warning("Animation not found: " + anim_name)
 #endregion
 
+@onready var anim_player: AnimationPlayer = find_child("AnimationPlayer")
 const SURFACE_3 = preload("res://materials/shader_materials/surface3.tres")
 @onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
  
 func _ready() -> void:
 	set_material_override_recursive(0, SURFACE_3)
+	set_animations_loop(["Mounted_Idle", "Amelia_WallSlide", "Amelia_Walk", "Amelia_Run", "Amelia_Idle"])
 	SignalbusPlayer.child_captured.connect(func capture(): captured = true)
 	SignalbusPlayer.child_released.connect(func release(): captured = false)
 	
