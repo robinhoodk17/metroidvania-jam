@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0s12g7xaoyym"
-path.s3tc="res://.godot/imported/Amelia(formerly known as Alice)_GirlTexture.png-9116fed565adf5c2c3cca2353aa1c18c.s3tc.ctex"
-path.etc2="res://.godot/imported/Amelia(formerly known as Alice)_GirlTexture.png-9116fed565adf5c2c3cca2353aa1c18c.etc2.ctex"
+uid="uid://cgiobos7ikbrf"
+path.s3tc="res://.godot/imported/amelia_GirlTexture.png-671f6eb866a54e994af37dea2a0d88a2.s3tc.ctex"
+path.etc2="res://.godot/imported/amelia_GirlTexture.png-671f6eb866a54e994af37dea2a0d88a2.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -15,8 +15,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://entities/amelia/Amelia(formerly known as Alice)_GirlTexture.png"
-dest_files=["res://.godot/imported/Amelia(formerly known as Alice)_GirlTexture.png-9116fed565adf5c2c3cca2353aa1c18c.s3tc.ctex", "res://.godot/imported/Amelia(formerly known as Alice)_GirlTexture.png-9116fed565adf5c2c3cca2353aa1c18c.etc2.ctex"]
+source_file="res://entities/amelia/amelia_GirlTexture.png"
+dest_files=["res://.godot/imported/amelia_GirlTexture.png-671f6eb866a54e994af37dea2a0d88a2.s3tc.ctex", "res://.godot/imported/amelia_GirlTexture.png-671f6eb866a54e994af37dea2a0d88a2.etc2.ctex"]
 
 [params]
 

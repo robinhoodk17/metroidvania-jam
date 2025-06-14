@@ -502,7 +502,7 @@ monitorable = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource("SphereShape3D_rioum")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D2" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10)
 fov = 90.0
 script = ExtResource("24_nb4kq")

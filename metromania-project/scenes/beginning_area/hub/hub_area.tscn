@@ -232,7 +232,7 @@ shape = SubResource("BoxShape3D_jbebq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, 24.141, 0)
 provoked = false
 
-[node name="Myck" parent="." index="6"]
+[node name="Myck" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.204, -0.0342698, 13.6439)
 
 [editable path="Interactables(not_in_blender)/Spikes"]

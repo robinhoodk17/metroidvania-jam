@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cpc5svrvwu45e"]
+
+[ext_resource type="Shader" uid="uid://1ubhfq3bbpak" path="res://materials/shaders/toon_shader.gdshader" id="1_ovcxt"]
+[ext_resource type="Texture2D" uid="uid://cgiobos7ikbrf" path="res://entities/amelia/amelia_GirlTexture.png" id="2_ovcxt"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ovcxt")
+shader_parameter/base_color = Color(1, 1, 1, 1)
+shader_parameter/base_texture = ExtResource("2_ovcxt")
+shader_parameter/lit_color = Color(1, 1, 1, 1)
+shader_parameter/unlit_color = Color(0.74558, 0.74558, 0.74558, 1)
+shader_parameter/cel_threshold = 0.5
+shader_parameter/cel_sharpness = 0.0

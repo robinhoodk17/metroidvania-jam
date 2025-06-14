@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bfawxn70re0mu"
-path="res://.godot/imported/Amelia(formerly known as Alice).glb-ab8d90342e9b8ef42ec8b1c002fc5df2.scn"
+uid="uid://b3ohyokacqqt6"
+path="res://.godot/imported/amelia.glb-b5929bb4bc8c6f07bf61d98ba2da9bc0.scn"
 
 [deps]
 
-source_file="res://entities/amelia/Amelia(formerly known as Alice).glb"
-dest_files=["res://.godot/imported/Amelia(formerly known as Alice).glb-ab8d90342e9b8ef42ec8b1c002fc5df2.scn"]
+source_file="res://entities/amelia/amelia.glb"
+dest_files=["res://.godot/imported/amelia.glb-b5929bb4bc8c6f07bf61d98ba2da9bc0.scn"]
 
 [params]
 

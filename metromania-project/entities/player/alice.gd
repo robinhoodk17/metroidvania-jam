@@ -98,6 +98,7 @@ var oneshot_animation : AnimationNode
 @onready var combo_reset_timer: Timer = create_timer()
 @onready var queue_timer: Timer = create_timer()
 
+#region onready_functions
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
@@ -144,7 +145,17 @@ func turn_on() -> void:
 	set_physics_process(true)
 	top_level = true
 
+func set_material_override_recursive(num: int, material: Material) -> void: 
+	for child in Skeleton.get_children():
+		if child is MeshInstance3D:
+			child.set_surface_override_material(num, material)
+#endregion
+
+const SURFACE_3 = preload("res://materials/shader_materials/surface3.tres")
+@onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
+ 
 func _ready() -> void:
+	set_material_override_recursive(0, SURFACE_3)
 	SignalbusPlayer.child_captured.connect(func capture(): captured = true)
 	SignalbusPlayer.child_released.connect(func release(): captured = false)
 	
@@ -157,8 +168,7 @@ func _ready() -> void:
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
 	dash_reset_timer.timeout.connect(change_action_state)
 	call_deferred("turn_off")
- 
-
+  
 func _physics_process(delta: float) -> void:
 	if off:
 		return
