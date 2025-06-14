@@ -182,6 +182,7 @@ func set_material_override_recursive(num: int, material: Material) -> void:
 const SURFACE_0 = preload("res://materials/shader_materials/surface0.tres")
 const SURFACE_1 = preload("res://materials/shader_materials/surface1.tres")
 const SURFACE_2 = preload("res://materials/shader_materials/surface2.tres")
+
 @onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
  
 func _ready() -> void:
