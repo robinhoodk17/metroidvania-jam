@@ -72,9 +72,10 @@ signal break_interaction
 @export var WallJump1_VFX : VFXElement
 @export var WallJump2_VFX : VFXElement
 @export var Dash_VFX: VFXElement
-@export var Slash_VFX: VFXElement
-@export var Thrust_VFX: VFXElement
-@export var Hit_VFX : VFXElement
+@export var HoriAttack1_VFX: VFXElement
+@export var HoriAttack2_VFX: VFXElement
+@export var DownAttack_VFX: VFXElement
+@export var UpAttack_VFX: VFXElement
 
 @export var left_right : GUIDEAction
 @export var up_down : GUIDEAction
@@ -668,16 +669,27 @@ func attack(_x : float, _y : float) -> void:
 	_x = looking
 	if abs(_y) < 0.5:
 		_y = 0
-		set_oneshot_animation("Myck_HoriAttack")
+		if(HoriAttack1_VFX.VFX_Playing):
+			set_oneshot_animation("Myck_HoriAttack2")
+			HoriAttack1_VFX.VFX_Playing = false
+			HoriAttack2_VFX.VFX_Playing = true
+		else:
+			set_oneshot_animation("Myck_HoriAttack1")
+			HoriAttack1_VFX.VFX_Playing = true
+			HoriAttack2_VFX.VFX_Playing = false
+			
+		
 		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
 		if _y > 0:
 			hit_box.rotation = Vector3(0,0,PI/2)
+			UpAttack_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_UpAttack")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
+			DownAttack_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_DownAttack")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
@@ -685,7 +697,6 @@ func attack(_x : float, _y : float) -> void:
 	attack_direction = Vector2(_x,_y)
 	enable_hit_box(.15)
 	hit_box.show()
-	Slash_VFX.Play_VFX();
 	await get_tree().create_timer(.15).timeout
 	hit_box.hide()
 
@@ -726,13 +737,13 @@ func on_hit_box_entered(area: Area3D) -> void:
 	current_run_state = run_state.STAGGERING
 	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
 	staggering_distance = self_stagger_distance
-	Hit_VFX.show()
+	#Hit_VFX.show()
 	var parent: Node3D = area.get_parent()
 	print_debug(parent)
 	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
 		parent.take_damage(_damage, knockback_of_attack, global_position)
 	await get_tree().create_timer(0.25).timeout
-	Hit_VFX.hide()
+	#Hit_VFX.hide()
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true

@@ -1,3 +1,5 @@
+CPUParticles3D
+Node3D
 CollisionShape3D
 Marker3D
 AnimationPlayer
@@ -7,8 +9,6 @@ Label
 SubViewport
 Sprite3D
 MeshInstance3D
-Node3D
 RemoteTransform3D
 Node
 ShapeCast3D
-NavigationAgent3D
