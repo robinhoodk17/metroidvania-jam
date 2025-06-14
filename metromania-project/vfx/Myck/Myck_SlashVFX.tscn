@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://bs2bvyuvx3bai"]
+
+[ext_resource type="Script" uid="uid://k1eg7merpdj8" path="res://scripts/Johann/vfx_element.gd" id="1_u54ip"]
+[ext_resource type="Shader" uid="uid://bvn3m1s0pvrg3" path="res://materials/shaders/slash_shader.res" id="2_grd4h"]
+[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/vfx_slash_mesh.res" id="3_l5nex"]
+
+[sub_resource type="Gradient" id="Gradient_4to5p"]
+colors = PackedColorArray(0, 0.5, 1, 1, 1, 0.5, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3bc0q"]
+gradient = SubResource("Gradient_4to5p")
+use_hdr = true
+fill_from = Vector2(0.230769, 0)
+fill_to = Vector2(0.775641, 0)
+
+[sub_resource type="Gradient" id="Gradient_3bc0q"]
+colors = PackedColorArray(2, 1, 0, 1, 0, 2, 2, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_kk6rx"]
+gradient = SubResource("Gradient_3bc0q")
+use_hdr = true
+fill_from = Vector2(0.782051, 0)
+fill_to = Vector2(0.241453, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pvuq2"]
+render_priority = 0
+shader = ExtResource("2_grd4h")
+shader_parameter/useVertexColor = true
+shader_parameter/R_Threshold = 1.0
+shader_parameter/top_Texture = SubResource("GradientTexture2D_kk6rx")
+shader_parameter/top_Threshold = 0.25
+shader_parameter/top_Tolerance = 0.0
+shader_parameter/top_Base_Position = Vector2(0.5, 0)
+shader_parameter/top_Base_Scale = Vector2(1, 3.535)
+shader_parameter/top_Noise_Offset = Vector2(0, 0)
+shader_parameter/top_Noise_Scale = Vector2(5, 25)
+shader_parameter/top_Noise_Invert = false
+shader_parameter/top_Noise_TimeScale = 1.0
+shader_parameter/mid_Texture = SubResource("GradientTexture2D_kk6rx")
+shader_parameter/mid_Threshold = 0.5
+shader_parameter/mid_Tolerance = 0.0
+shader_parameter/mid_Base_Position = Vector2(0.5, 0.15)
+shader_parameter/mid_Base_Scale = Vector2(0.75, 0.75)
+shader_parameter/mid_Noise_Offset = Vector2(0, 0)
+shader_parameter/mid_Noise_Scale = Vector2(5, 50)
+shader_parameter/mid_Noise_Invert = true
+shader_parameter/mid_Noise_TimeScale = 0.5
+shader_parameter/bot_Texture = SubResource("GradientTexture2D_3bc0q")
+shader_parameter/bot_Threshold = 0.25
+shader_parameter/bot_Tolerance = 0.0
+shader_parameter/bot_Base_Position = Vector2(0.5, 0)
+shader_parameter/bot_Base_Scale = Vector2(1.25, 0.75)
+shader_parameter/bot_Noise_Offset = Vector2(0, 0)
+shader_parameter/bot_Noise_Scale = Vector2(10, 50)
+shader_parameter/bot_Noise_Invert = false
+shader_parameter/bot_Noise_TimeScale = 0.0
+
+[sub_resource type="Gradient" id="Gradient_pvuq2"]
+offsets = PackedFloat32Array(0, 0.4, 0.6, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1)
+
+[node name="Slash_VFX" type="Node3D"]
+script = ExtResource("1_u54ip")
+VFX_SpeedScale = 4.0
+
+[node name="Slash_Particle" type="CPUParticles3D" parent="."]
+material_override = SubResource("ShaderMaterial_pvuq2")
+emitting = false
+amount = 1
+one_shot = true
+speed_scale = 4.0
+local_coords = true
+mesh = ExtResource("3_l5nex")
+particle_flag_rotate_y = true
+gravity = Vector3(0, 0, 0)
+angular_velocity_min = 180.0
+angular_velocity_max = 180.0
+angle_min = -90.0
+angle_max = -90.0
+color_ramp = SubResource("Gradient_pvuq2")

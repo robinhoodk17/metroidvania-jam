@@ -72,12 +72,12 @@ states/Walk/position = Vector2(210.625, 28.975)
 states/WallSlide/node = SubResource("AnimationNodeAnimation_yidw8")
 states/WallSlide/position = Vector2(337.625, 276.975)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_dufuv"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_wr7dr"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_v7ujq"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_ghbgs"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_sf3wb"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_f3u4u"), "Idle", "Run", SubResource("AnimationNodeStateMachineTransition_40uk0"), "Idle", "Air", SubResource("AnimationNodeStateMachineTransition_21t7h"), "Run", "Air", SubResource("AnimationNodeStateMachineTransition_rvfvm"), "Walk", "Air", SubResource("AnimationNodeStateMachineTransition_4kt3e"), "Air", "WallSlide", SubResource("AnimationNodeStateMachineTransition_2ob0p"), "WallSlide", "Air", SubResource("AnimationNodeStateMachineTransition_e3kmj"), "Air", "Idle", SubResource("AnimationNodeStateMachineTransition_qhddb"), "WallSlide", "LedgeGrab", SubResource("AnimationNodeStateMachineTransition_6our7"), "LedgeGrab", "Air", SubResource("AnimationNodeStateMachineTransition_ba3wd"), "Air", "LedgeGrab", SubResource("AnimationNodeStateMachineTransition_j6efb")]
-graph_offset = Vector2(-156.375, 101.475)
+graph_offset = Vector2(-21.375, 6.47501)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
 
 [resource]
-graph_offset = Vector2(-551.328, 5.52263)
+graph_offset = Vector2(-575.007, 38.2024)
 nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
 nodes/OneShotAnimation/position = Vector2(-510, 290)
 nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_yidw8")

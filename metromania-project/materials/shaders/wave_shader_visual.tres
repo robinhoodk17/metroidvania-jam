@@ -1,0 +1,180 @@
+[gd_resource type="VisualShader" load_steps=18 format=3 uid="uid://c6ofrlayjpaha"]
+
+[ext_resource type="Script" uid="uid://bg8qft4revg8t" path="res://addons/shaderV/rgba/gradient4corners.gd" id="1_1t3qv"]
+[ext_resource type="Script" uid="uid://cp8v83mqjsldo" path="res://addons/shaderV/rgba/noise/worley3d.gd" id="2_svx4y"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_ivs4j"]
+parameter_name = "Width"
+hint = 1
+default_value_enabled = true
+default_value = 0.1
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_wosse"]
+parameter_name = "Bottom_Tolerance"
+hint = 1
+min = 0.01
+default_value_enabled = true
+default_value = 0.5
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_svx4y"]
+operator = 1
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_jyypt"]
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_x4w74"]
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_gsam3"]
+operator = 1
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_xhgf5"]
+operator = 1
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_uamux"]
+default_input_values = [1, Vector3(1, 1, 1), 2, 1.0, 3, Vector3(1, 1, 1), 4, 1.0, 5, Vector3(1, 1, 1), 6, 0.0, 7, Vector3(1, 1, 1), 8, 0.0]
+initialized = true
+script = ExtResource("1_1t3qv")
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_686hg"]
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_0slpe"]
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_or7q8"]
+operator = 1
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_jyypt"]
+default_input_values = [1, Vector3(0, 0, 0), 2, 5.0, 3, 1.0, 4, 0.0]
+initialized = true
+script = ExtResource("2_svx4y")
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_svx4y"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_oetng"]
+parameter_name = "Interpolation"
+hint = 1
+default_value_enabled = true
+default_value = 0.5
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_dhwa8"]
+parameter_name = "Top_Tolerance"
+hint = 1
+min = 0.01
+default_value_enabled = true
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform float Interpolation : hint_range(0.0, 1.0) = 0.5;
+uniform float Width : hint_range(0.0, 1.0) = 0.10000000149012;
+uniform float Bottom_Tolerance : hint_range(0.00999999977648, 1.0) = 0.5;
+uniform float Top_Tolerance : hint_range(0.00999999977648, 1.0) = 0.0;
+
+
+// Gradient4Corners
+#include \"res://addons/shaderV/rgba/gradient4corners.gdshaderinc\"
+
+void fragment() {
+// FloatParameter:4
+	float n_out4p0 = Interpolation;
+
+
+// FloatParameter:10
+	float n_out10p0 = Width;
+
+
+// FloatOp:18
+	float n_out18p0 = n_out4p0 - n_out10p0;
+
+
+// FloatParameter:14
+	float n_out14p0 = Bottom_Tolerance;
+
+
+// FloatOp:15
+	float n_out15p0 = n_out18p0 - n_out14p0;
+
+
+// FloatOp:16
+	float n_out16p0 = n_out14p0 + n_out18p0;
+
+
+	vec3 n_out2p0;
+	float n_out2p1;
+// Gradient4Corners:2
+	vec3 n_in2p1 = vec3(1.00000, 1.00000, 1.00000);
+	float n_in2p2 = 1.00000;
+	vec3 n_in2p3 = vec3(1.00000, 1.00000, 1.00000);
+	float n_in2p4 = 1.00000;
+	vec3 n_in2p5 = vec3(1.00000, 1.00000, 1.00000);
+	float n_in2p6 = 0.00000;
+	vec3 n_in2p7 = vec3(1.00000, 1.00000, 1.00000);
+	float n_in2p8 = 0.00000;
+	{
+		vec4 n_out2p0n_out2p1 = _gradient4cornersFunc(UV.xy, vec4(n_in2p1, n_in2p2), vec4(n_in2p3, n_in2p4), vec4(n_in2p5, n_in2p6), vec4(n_in2p7, n_in2p8));
+		n_out2p0 = n_out2p0n_out2p1.rgb;
+		n_out2p1 = n_out2p0n_out2p1.a;
+	}
+
+
+// SmoothStep:17
+	float n_out17p0 = smoothstep(n_out15p0, n_out16p0, n_out2p1);
+
+
+// FloatParameter:5
+	float n_out5p0 = Top_Tolerance;
+
+
+// FloatOp:19
+	float n_out19p0 = n_out4p0 - n_out5p0;
+
+
+// FloatOp:20
+	float n_out20p0 = n_out4p0 + n_out5p0;
+
+
+// SmoothStep:21
+	float n_out21p0 = smoothstep(n_out19p0, n_out20p0, n_out2p1);
+
+
+// FloatOp:22
+	float n_out22p0 = n_out17p0 - n_out21p0;
+
+
+// Output:0
+	ALPHA = n_out22p0;
+
+
+}
+"
+nodes/fragment/0/position = Vector2(3040, 400)
+nodes/fragment/2/node = SubResource("VisualShaderNodeCustom_uamux")
+nodes/fragment/2/position = Vector2(-2240, 280)
+nodes/fragment/4/node = SubResource("VisualShaderNodeFloatParameter_oetng")
+nodes/fragment/4/position = Vector2(-2260, 1680)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFloatParameter_dhwa8")
+nodes/fragment/5/position = Vector2(-2260, 3040)
+nodes/fragment/10/node = SubResource("VisualShaderNodeFloatParameter_ivs4j")
+nodes/fragment/10/position = Vector2(-2260, 1080)
+nodes/fragment/14/node = SubResource("VisualShaderNodeFloatParameter_wosse")
+nodes/fragment/14/position = Vector2(-2260, 2260)
+nodes/fragment/15/node = SubResource("VisualShaderNodeFloatOp_svx4y")
+nodes/fragment/15/position = Vector2(-1000, 1720)
+nodes/fragment/16/node = SubResource("VisualShaderNodeFloatOp_jyypt")
+nodes/fragment/16/position = Vector2(-1000, 2060)
+nodes/fragment/17/node = SubResource("VisualShaderNodeSmoothStep_x4w74")
+nodes/fragment/17/position = Vector2(220, 1800)
+nodes/fragment/18/node = SubResource("VisualShaderNodeFloatOp_gsam3")
+nodes/fragment/18/position = Vector2(-1560, 1320)
+nodes/fragment/19/node = SubResource("VisualShaderNodeFloatOp_xhgf5")
+nodes/fragment/19/position = Vector2(-1013.63, 2702.86)
+nodes/fragment/20/node = SubResource("VisualShaderNodeFloatOp_686hg")
+nodes/fragment/20/position = Vector2(-1013.63, 3042.86)
+nodes/fragment/21/node = SubResource("VisualShaderNodeSmoothStep_0slpe")
+nodes/fragment/21/position = Vector2(231.587, 2714.27)
+nodes/fragment/22/node = SubResource("VisualShaderNodeFloatOp_or7q8")
+nodes/fragment/22/position = Vector2(1020, 2060)
+nodes/fragment/23/node = SubResource("VisualShaderNodeCustom_jyypt")
+nodes/fragment/23/position = Vector2(1040, 1260)
+nodes/fragment/24/node = SubResource("VisualShaderNodeFloatFunc_svx4y")
+nodes/fragment/24/position = Vector2(651, 469)
+nodes/fragment/connections = PackedInt32Array(14, 0, 15, 1, 14, 0, 16, 0, 15, 0, 17, 0, 16, 0, 17, 1, 2, 1, 17, 2, 18, 0, 15, 0, 18, 0, 16, 1, 4, 0, 18, 0, 10, 0, 18, 1, 4, 0, 19, 0, 4, 0, 20, 0, 5, 0, 19, 1, 5, 0, 20, 1, 19, 0, 21, 0, 20, 0, 21, 1, 2, 1, 21, 2, 17, 0, 22, 0, 21, 0, 22, 1, 22, 0, 0, 1)
