@@ -16,7 +16,7 @@
 [ext_resource type="Shader" uid="uid://bvn3m1s0pvrg3" path="res://materials/shaders/slash_shader.res" id="18_atw4w"]
 [ext_resource type="PackedScene" uid="uid://b42je3qqfnf1b" path="res://vfx/Myck/Myck_JumpVFX.tscn" id="18_pp3wn"]
 [ext_resource type="PackedScene" uid="uid://5pbmrl7irbse" path="res://vfx/Myck/Myck_LandVFX.tscn" id="19_pp3wn"]
-[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/slash_mesh.res" id="19_t3axx"]
+[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/vfx_slash_mesh.res" id="19_t3axx"]
 [ext_resource type="Shader" uid="uid://d1ha3d63gk2h3" path="res://materials/shaders/wave_shader.gdshader" id="20_t3axx"]
 [ext_resource type="ArrayMesh" uid="uid://772yo8o36ue7" path="res://meshes/vfx/vfx_sphere_mesh.res" id="21_uma64"]
 [ext_resource type="Script" uid="uid://db4gpvhogqsb2" path="res://peyman/camera_3d.gd" id="24_nb4kq"]

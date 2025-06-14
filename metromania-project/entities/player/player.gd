@@ -189,7 +189,8 @@ func _ready() -> void:
 	set_material_override_recursive(0, SURFACE_0)
 	set_material_override_recursive(1, SURFACE_1)
 	set_material_override_recursive(2, SURFACE_2)
-
+	create_sun_envio()
+	
 	add_to_group("player")
 	$MeshParent/Myck2.rotation = Vector3(0, -90, 0)
 	$MeshParent/Myck2.position = Vector3(0, -0.985, 0)
@@ -778,6 +779,35 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	animation.track_set_path(track_index, relative_path)
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
- 
+
 #endregion 
  
+
+func create_sun_envio():
+	var sun : DirectionalLight3D = DirectionalLight3D.new()
+	sun.light_color = Color(1.0, 0.95, 0.8)  
+	sun.light_energy = 0.8
+	sun.light_indirect_energy = 0.5 
+	sun.shadow_enabled = true
+	sun.shadow_bias = 0.05 
+	sun.shadow_normal_bias = 0.8
+	sun.shadow_blur = 2.0 
+	sun.rotation_degrees = Vector3(-45, 30, 0)
+	add_child(sun)
+	var environment : Environment = Environment.new()
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color(0.6, 0.8, 1.0)  
+	environment.ambient_light_color = Color(0.3, 0.35, 0.4)
+	environment.ambient_light_energy = 0.8
+	environment.ambient_light_sky_contribution = 0.5
+	environment.fog_enabled = true
+	environment.fog_light_color = Color(0.6, 0.8, 1.0)
+	environment.fog_depth_begin = 10.0
+	environment.fog_depth_end = 50.0
+	var world_env : WorldEnvironment = WorldEnvironment.new()
+	world_env.environment = environment
+	add_child(world_env)
+	environment.tonemap_mode = Environment.TONE_MAPPER_ACES
+	environment.glow_enabled = true
+	environment.glow_intensity = 0.3
+	environment.glow_strength = 0.5
