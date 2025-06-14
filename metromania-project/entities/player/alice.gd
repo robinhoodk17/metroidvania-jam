@@ -487,8 +487,5 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	animation.track_set_path(track_index, relative_path)
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("g"):
-		pass
+ 
 #endregion 
