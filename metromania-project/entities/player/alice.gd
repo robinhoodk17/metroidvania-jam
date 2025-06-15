@@ -90,7 +90,7 @@ var airborne : bool = false
 
 """animation"""
 var run_animation : AnimationNodeStateMachinePlayback
-var action_animation : AnimationNodeStateMachinePlayback
+#var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
 @onready var coyote_timer: Timer = create_timer()
@@ -175,7 +175,7 @@ func _ready() -> void:
 	hurt_box.body_entered.connect(check_body)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
-	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
+	#action_animation = animation_tree.get("parameters/StateMachine_action/playback")
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
 	dash_reset_timer.timeout.connect(change_action_state)
 	call_deferred("turn_off")
@@ -200,7 +200,7 @@ func run_state_machine(delta: float) -> void:
 
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
-		run_animation.travel("idle")
+		run_animation.travel("Amelia_Idle")
 		flown_distance += velocity.length() * delta
 		var collisions : KinematicCollision3D = move_and_collide(velocity * delta, true)
 		if collisions or flown_distance >= throw_range:
@@ -209,7 +209,7 @@ func run_state_machine(delta: float) -> void:
 
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
-		run_animation.travel("idle")
+		run_animation.travel("Amelia_Idle")
 		return
 		
 	var run_direction = left_right.value_axis_1d
@@ -247,7 +247,7 @@ func run_state_machine(delta: float) -> void:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
 			if !animating:
-				run_animation.travel("idle")
+				run_animation.travel("Amelia_Idle")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -265,7 +265,7 @@ func run_state_machine(delta: float) -> void:
 			else:
 				velocity.x = abs(velocity.x) * run_direction
 			if !animating:
-				run_animation.travel("walk")
+				run_animation.travel("Amelia_Walk")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				current_run_state = run_state.IDLE
 				running_time = 0.0
@@ -276,7 +276,7 @@ func run_state_machine(delta: float) -> void:
 			if !is_on_floor():
 				current_run_state = run_state.WALKING
 			if !animating:
-				run_animation.travel("run")
+				run_animation.travel("Amelia_Run")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
 				braking_time = 0.0
@@ -288,7 +288,7 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, sign(velocity.x) * speed, delta * 5.0)
 
 		run_state.BRAKING:
-			run_animation.travel("walk")
+			run_animation.travel("Amelia_Walk")
 			velocity.x = sign(velocity.x) * speed * deceleration_curve.sample(braking_time/deceleration)
 			braking_time += delta
 			if braking_time >= deceleration:
@@ -300,7 +300,7 @@ func run_state_machine(delta: float) -> void:
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
-			run_animation.travel("Ledge_Grab")
+			run_animation.travel("Amelia_LedgeGrab")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE

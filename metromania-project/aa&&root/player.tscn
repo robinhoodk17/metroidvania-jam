@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://h8a8r2wb5lu3"]
+[gd_scene load_steps=60 format=3 uid="uid://h8a8r2wb5lu3"]
 
 [ext_resource type="Script" uid="uid://bcji03sv3g5eh" path="res://entities/player/player.gd" id="1_symyc"]
 [ext_resource type="Resource" uid="uid://d0781vuxbhofs" path="res://input/left_right.tres" id="2_wvtmh"]
@@ -9,6 +9,9 @@
 [ext_resource type="Resource" uid="uid://dscups0415vf3" path="res://input/attack.tres" id="7_gx6sm"]
 [ext_resource type="Script" uid="uid://cgrmmvxxkccrt" path="res://entities/player/auto_aim.gd" id="8_7thud"]
 [ext_resource type="PackedScene" uid="uid://c3apf5nk6yw5c" path="res://entities/Myck/Myck.glb" id="9_ecg3u"]
+[ext_resource type="Material" uid="uid://b0gg4eyj3yc7q" path="res://materials/shader_materials/surface0.tres" id="10_t3axx"]
+[ext_resource type="Material" uid="uid://bc1xo71qbof0p" path="res://materials/shader_materials/surface1.tres" id="11_uma64"]
+[ext_resource type="Material" uid="uid://3och035os5v1" path="res://materials/shader_materials/surface2.tres" id="12_w4m5h"]
 [ext_resource type="PackedScene" uid="uid://dt14j1yf2csfx" path="res://vfx/Myck/Myck_WallJumpVFX.tscn" id="13_i7eyy"]
 [ext_resource type="PackedScene" uid="uid://dygnxlbqpq4yu" path="res://vfx/Myck/Myck_DashVFX.tscn" id="14_4elfr"]
 [ext_resource type="AnimationNodeBlendTree" uid="uid://dwh5faypa8v5s" path="res://entities/Myck/Myck_Animations/animation_tree.tres" id="14_pp3wn"]
@@ -368,6 +371,11 @@ shape = SubResource("BoxShape3D_8fjmc")
 target_position = Vector3(0.555, 0, 0)
 
 [node name="Myck2" parent="MeshParent" instance=ExtResource("9_ecg3u")]
+
+[node name="Myck" parent="MeshParent/Myck2/Deform Armature/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("10_t3axx")
+surface_material_override/1 = ExtResource("11_uma64")
+surface_material_override/2 = ExtResource("12_w4m5h")
 
 [node name="WallJump1_VFX" parent="MeshParent/Myck2" instance=ExtResource("13_i7eyy")]
 

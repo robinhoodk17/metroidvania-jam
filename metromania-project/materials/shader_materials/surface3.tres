@@ -6,7 +6,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_ovcxt")
-shader_parameter/base_color = Color(1, 1, 1, 1)
+shader_parameter/base_color = Color(0.5, 0.5, 0.5, 1)
 shader_parameter/base_texture = ExtResource("2_ovcxt")
 shader_parameter/lit_color = Color(1, 1, 1, 1)
 shader_parameter/unlit_color = Color(0.74558, 0.74558, 0.74558, 1)

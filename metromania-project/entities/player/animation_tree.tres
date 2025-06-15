@@ -1,33 +1,38 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=37 format=3 uid="uid://xrph22dtmo0l"]
-
-[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_05bod"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=43 format=3 uid="uid://xrph22dtmo0l"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kmjeu"]
-animation = &"AmeliaGrapple"
+animation = &"Amelia_Grapple"
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_ftwnj"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_66dil"]
-animation = &"Robot_Jump"
+animation = &"Amelia_AirIdle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_lpckl"]
-animation = &"Robot_Punch"
+animation = &"Amelia_Grapple"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_05bod"]
+animation = &"Amelia_Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bls4j"]
+animation = &"Amelia_LedgeGrab"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1u1xl"]
-animation = &"Robot_Wave"
+animation = &"Amelia_Lever"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vsfr3"]
-advance_mode = 2
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vsfr3"]
+animation = &"Amelia_Run"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fowm0"]
-switch_mode = 2
-advance_mode = 2
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hv4gf"]
+animation = &"Amelia_Standby"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hv4gf"]
-advance_mode = 2
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fowm0"]
+animation = &"Amelia_Walk"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b005u"]
-switch_mode = 2
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b005u"]
+animation = &"Amelia_WallSlide"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xtfgc"]
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hvy0c"]
@@ -35,11 +40,8 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o1rvb"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_igwd3"]
-advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_oosq7"]
-switch_mode = 2
-advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ha0b0"]
 
@@ -49,85 +51,79 @@ advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hxva3"]
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_xtfgc"]
-states/Robot_Jump/node = SubResource("AnimationNodeAnimation_66dil")
-states/Robot_Jump/position = Vector2(492, 192.667)
-states/Robot_Punch/node = SubResource("AnimationNodeAnimation_lpckl")
-states/Robot_Punch/position = Vector2(410.667, 79.3333)
-states/Robot_Wave/node = SubResource("AnimationNodeAnimation_1u1xl")
-states/Robot_Wave/position = Vector2(620, -24.6667)
-states/Start/position = Vector2(180, 79.5556)
-transitions = ["Start", "Robot_Punch", SubResource("AnimationNodeStateMachineTransition_vsfr3"), "Robot_Punch", "End", SubResource("AnimationNodeStateMachineTransition_fowm0"), "Start", "Robot_Jump", SubResource("AnimationNodeStateMachineTransition_hv4gf"), "Robot_Jump", "End", SubResource("AnimationNodeStateMachineTransition_b005u"), "Robot_Punch", "Robot_Jump", SubResource("AnimationNodeStateMachineTransition_hvy0c"), "Robot_Jump", "Robot_Punch", SubResource("AnimationNodeStateMachineTransition_o1rvb"), "Start", "Robot_Wave", SubResource("AnimationNodeStateMachineTransition_igwd3"), "Robot_Wave", "End", SubResource("AnimationNodeStateMachineTransition_oosq7"), "Robot_Wave", "Robot_Punch", SubResource("AnimationNodeStateMachineTransition_ha0b0"), "Robot_Punch", "Robot_Wave", SubResource("AnimationNodeStateMachineTransition_85a73"), "Robot_Wave", "Robot_Jump", SubResource("AnimationNodeStateMachineTransition_pdqh3"), "Robot_Jump", "Robot_Wave", SubResource("AnimationNodeStateMachineTransition_hxva3")]
-graph_offset = Vector2(-104, -40)
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bls4j"]
-animation = &"Robot_Standing"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_05bod"]
-animation = &"Robot_Idle"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vsfr3"]
-animation = &"Robot_Running"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fowm0"]
-animation = &"Robot_Walking"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xtfgc"]
-advance_mode = 2
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hlx2b"]
-xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_764mo"]
-xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_61rmo"]
-xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8rhtf"]
-xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tsq4r"]
-xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t82xd"]
-xfade_time = 0.3
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fkugw"]
-xfade_time = 0.3
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_s60ny"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8fjmc"]
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_plk0j"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qiwj3"]
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mfq1r"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_26q78"]
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yk1j5"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f6584"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3q2w0"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_p7yl5"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2jvio"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xua3g"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w115s"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_urj26"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_02myl"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_a1ea3"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_12g2t"]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ur8kk"]
-states/Ledge_Grab/node = SubResource("AnimationNodeAnimation_bls4j")
-states/Ledge_Grab/position = Vector2(396.292, 58.3471)
+states/Amelia_AirIdle/node = SubResource("AnimationNodeAnimation_66dil")
+states/Amelia_AirIdle/position = Vector2(-64.375, -146.915)
+states/Amelia_Grapple/node = SubResource("AnimationNodeAnimation_lpckl")
+states/Amelia_Grapple/position = Vector2(113.625, -281.915)
+states/Amelia_Idle/node = SubResource("AnimationNodeAnimation_05bod")
+states/Amelia_Idle/position = Vector2(157, -82.9146)
+states/Amelia_LedgeGrab/node = SubResource("AnimationNodeAnimation_bls4j")
+states/Amelia_LedgeGrab/position = Vector2(-75.708, -267.653)
+states/Amelia_Lever/node = SubResource("AnimationNodeAnimation_1u1xl")
+states/Amelia_Lever/position = Vector2(375.625, -253.915)
+states/Amelia_Run/node = SubResource("AnimationNodeAnimation_vsfr3")
+states/Amelia_Run/position = Vector2(294.625, -146.915)
+states/Amelia_Standby/node = SubResource("AnimationNodeAnimation_hv4gf")
+states/Amelia_Standby/position = Vector2(472.625, -129.653)
+states/Amelia_Walk/node = SubResource("AnimationNodeAnimation_fowm0")
+states/Amelia_Walk/position = Vector2(157, -199.915)
+states/Amelia_WallSlide/node = SubResource("AnimationNodeAnimation_b005u")
+states/Amelia_WallSlide/position = Vector2(-167.375, -62.9146)
 states/Start/position = Vector2(52, 45.3333)
-states/idle/node = SubResource("AnimationNodeAnimation_05bod")
-states/idle/position = Vector2(257, 164)
-states/run/node = SubResource("AnimationNodeAnimation_vsfr3")
-states/run/position = Vector2(670.333, 68)
-states/walk/node = SubResource("AnimationNodeAnimation_fowm0")
-states/walk/position = Vector2(354.333, -60)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_xtfgc"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_hlx2b"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_764mo"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_61rmo"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_8rhtf"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_tsq4r"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_t82xd"), "Ledge_Grab", "idle", SubResource("AnimationNodeStateMachineTransition_fkugw"), "walk", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_8fjmc"), "run", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_qiwj3"), "idle", "Ledge_Grab", SubResource("AnimationNodeStateMachineTransition_26q78")]
-graph_offset = Vector2(-146.375, -38.9146)
+transitions = ["Start", "Amelia_Idle", SubResource("AnimationNodeStateMachineTransition_xtfgc"), "Amelia_Idle", "Amelia_Walk", SubResource("AnimationNodeStateMachineTransition_hvy0c"), "Amelia_Walk", "Amelia_Idle", SubResource("AnimationNodeStateMachineTransition_o1rvb"), "Amelia_Run", "Amelia_Walk", SubResource("AnimationNodeStateMachineTransition_igwd3"), "Amelia_Walk", "Amelia_Run", SubResource("AnimationNodeStateMachineTransition_oosq7"), "Amelia_Run", "Amelia_Idle", SubResource("AnimationNodeStateMachineTransition_ha0b0"), "Amelia_Idle", "Amelia_Run", SubResource("AnimationNodeStateMachineTransition_85a73"), "Amelia_Walk", "Amelia_AirIdle", SubResource("AnimationNodeStateMachineTransition_pdqh3"), "Amelia_Idle", "Amelia_AirIdle", SubResource("AnimationNodeStateMachineTransition_hxva3"), "Amelia_Run", "Amelia_AirIdle", SubResource("AnimationNodeStateMachineTransition_hlx2b"), "Amelia_AirIdle", "Amelia_Idle", SubResource("AnimationNodeStateMachineTransition_764mo"), "Amelia_AirIdle", "Amelia_WallSlide", SubResource("AnimationNodeStateMachineTransition_61rmo"), "Amelia_WallSlide", "Amelia_AirIdle", SubResource("AnimationNodeStateMachineTransition_8rhtf"), "Amelia_Idle", "Amelia_Lever", SubResource("AnimationNodeStateMachineTransition_tsq4r"), "Amelia_Run", "Amelia_Lever", SubResource("AnimationNodeStateMachineTransition_t82xd"), "Amelia_Walk", "Amelia_Lever", SubResource("AnimationNodeStateMachineTransition_s60ny"), "Amelia_WallSlide", "Amelia_LedgeGrab", SubResource("AnimationNodeStateMachineTransition_plk0j"), "Amelia_LedgeGrab", "Amelia_AirIdle", SubResource("AnimationNodeStateMachineTransition_mfq1r"), "Amelia_AirIdle", "Amelia_LedgeGrab", SubResource("AnimationNodeStateMachineTransition_yk1j5"), "Amelia_AirIdle", "Amelia_Grapple", SubResource("AnimationNodeStateMachineTransition_f6584"), "Amelia_Grapple", "Amelia_AirIdle", SubResource("AnimationNodeStateMachineTransition_3q2w0"), "Amelia_Lever", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_p7yl5"), "Amelia_Run", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_2jvio"), "Amelia_Walk", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_xua3g"), "Amelia_Idle", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_w115s"), "Amelia_Grapple", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_urj26"), "Amelia_AirIdle", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_02myl"), "Amelia_LedgeGrab", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_a1ea3"), "Amelia_WallSlide", "Amelia_Standby", SubResource("AnimationNodeStateMachineTransition_12g2t")]
+graph_offset = Vector2(-332.375, -380.915)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_2dkur"]
 
 [resource]
-nodes/Add2/node = SubResource("AnimationNodeAdd2_05bod")
-nodes/Add2/position = Vector2(-613.333, 133.333)
+graph_offset = Vector2(-549.283, -33.3469)
 nodes/OneShotAnimation/node = SubResource("AnimationNodeAnimation_kmjeu")
 nodes/OneShotAnimation/position = Vector2(-400, 320)
 nodes/OneShotBlend/node = SubResource("AnimationNodeOneShot_ftwnj")
 nodes/OneShotBlend/position = Vector2(-80, 106.667)
-nodes/StateMachine_action/node = SubResource("AnimationNodeStateMachine_xtfgc")
-nodes/StateMachine_action/position = Vector2(-1013.33, 320)
 nodes/StateMachine_running/node = SubResource("AnimationNodeStateMachine_ur8kk")
-nodes/StateMachine_running/position = Vector2(-933.333, 80)
+nodes/StateMachine_running/position = Vector2(-420, 120)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_2dkur")
 nodes/TimeScale/position = Vector2(133.333, 160)
-node_connections = [&"Add2", 0, &"StateMachine_running", &"Add2", 1, &"StateMachine_action", &"OneShotBlend", 0, &"Add2", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]
+node_connections = [&"OneShotBlend", 0, &"StateMachine_running", &"OneShotBlend", 1, &"OneShotAnimation", &"TimeScale", 0, &"OneShotBlend", &"output", 0, &"TimeScale"]
