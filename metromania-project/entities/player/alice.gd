@@ -296,6 +296,7 @@ func run_state_machine(delta: float) -> void:
 				running_time = deceleration
 
 		run_state.WALL_SLIDING:
+			run_animation.travel("Amelia_WallSlide")
 			if !wall_jump.is_colliding() or is_on_floor():
 				current_run_state = run_state.WALKING
 		
@@ -371,7 +372,7 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Robot_Jump")
+	set_oneshot_animation("Amelia_Jump")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	velocity += get_platform_velocity()/4.0
@@ -425,10 +426,13 @@ func handle_gravity(delta: float) -> void:
 		if jump_action.value_bool:
 			velocity.y = jump_velocity
 	if is_on_floor():
+		
 		second_jump = false
 		dash_spent = false
 		if airborne:
+			set_oneshot_animation("Amelia_Landing")
 			velocity.x *= .8
+			
 		airborne = false
 		coyote_timer.start(coyote_time)
 	else:
