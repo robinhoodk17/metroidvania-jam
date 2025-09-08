@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwe80eqt1sv5j"]
+
+[ext_resource type="Script" uid="uid://dkvdw4f8h3q51" path="res://scenes/world/spikes_parent.gd" id="1_btssp"]
+[ext_resource type="PackedScene" uid="uid://cnjw54m0awi81" path="res://scenes/world/prompt.tscn" id="3_djayh"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_j7u65"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Spikes" type="Node3D"]
+script = ExtResource("1_btssp")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 288
+collision_mask = 0
+monitoring = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="Sprite3D" parent="." instance=ExtResource("3_djayh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.44776)
+texture = SubResource("ViewportTexture_j7u65")
+interact_action = null
+message = "Spikes"

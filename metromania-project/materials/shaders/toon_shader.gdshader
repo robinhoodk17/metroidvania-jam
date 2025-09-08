@@ -3,7 +3,7 @@ render_mode cull_back;
 
 group_uniforms Basic;
 uniform vec4 base_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform sampler2D base_texture: filter_nearest; 
+uniform sampler2D base_texture: filter_nearest;
 
 group_uniforms CelShading;
 uniform vec4 lit_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);

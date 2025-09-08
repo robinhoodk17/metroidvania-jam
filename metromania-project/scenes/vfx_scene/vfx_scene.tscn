@@ -1,79 +1,17 @@
-[gd_scene load_steps=16 format=3 uid="uid://cj71dr3c4hx3s"]
+[gd_scene load_steps=9 format=3 uid="uid://cj71dr3c4hx3s"]
 
-[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/slash_mesh.res" id="1_j4gxk"]
-[ext_resource type="Shader" uid="uid://bvn3m1s0pvrg3" path="res://materials/shaders/slash_shader.res" id="7_25u6b"]
-[ext_resource type="Shader" uid="uid://4np5wvmrrk8g" path="res://materials/shaders/grid_shader.gdshader" id="7_oj1qg"]
-[ext_resource type="Texture2D" uid="uid://b8iw8gfyw4eay" path="res://materials/textures/6qhd2mwv0o2djuj7lux8q.jpg" id="8_25u6b"]
+[ext_resource type="PackedScene" uid="uid://b42je3qqfnf1b" path="res://vfx/Myck/Myck_JumpVFX.tscn" id="1_4to5p"]
+[ext_resource type="PackedScene" uid="uid://bs2bvyuvx3bai" path="res://vfx/Myck/Myck_SlashVFX.tscn" id="2_3bc0q"]
+[ext_resource type="PackedScene" uid="uid://dl1u1tletnre3" path="res://vfx/Myck/Myck_ThrustVFX.tscn" id="3_kk6rx"]
+[ext_resource type="PackedScene" uid="uid://5pbmrl7irbse" path="res://vfx/Myck/Myck_LandVFX.tscn" id="4_pvuq2"]
+[ext_resource type="PackedScene" uid="uid://dt14j1yf2csfx" path="res://vfx/Myck/Myck_WallJumpVFX.tscn" id="5_3bc0q"]
+[ext_resource type="PackedScene" uid="uid://dygnxlbqpq4yu" path="res://vfx/Myck/Myck_DashVFX.tscn" id="6_kk6rx"]
 
 [sub_resource type="Environment" id="Environment_4to5p"]
 glow_enabled = true
 glow_bloom = 0.5
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_oj1qg"]
-
-[sub_resource type="Gradient" id="Gradient_4to5p"]
-colors = PackedColorArray(1, 0, 100, 1, 1, 1, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_3bc0q"]
-gradient = SubResource("Gradient_4to5p")
-use_hdr = true
-
-[sub_resource type="Gradient" id="Gradient_3bc0q"]
-colors = PackedColorArray(9.836, 0, 96.722, 1, 1.80784, 0, 100, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_kk6rx"]
-gradient = SubResource("Gradient_3bc0q")
-use_hdr = true
-
-[sub_resource type="Gradient" id="Gradient_kk6rx"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_pvuq2"]
-gradient = SubResource("Gradient_kk6rx")
-use_hdr = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4to5p"]
-render_priority = 0
-shader = ExtResource("7_25u6b")
-shader_parameter/top_Texture = SubResource("GradientTexture1D_pvuq2")
-shader_parameter/top_BasePosition = Vector2(0.5, -0.25)
-shader_parameter/top_BaseScale = Vector2(1, 1)
-shader_parameter/top_NoiseOffset = Vector2(0, 0)
-shader_parameter/top_NoiseScale = Vector2(10, 25)
-shader_parameter/top_NoiseInvert = false
-shader_parameter/top_Threshold = 0.15
-shader_parameter/top_Tolerance = 0.0
-shader_parameter/mid_Texture = SubResource("GradientTexture1D_kk6rx")
-shader_parameter/mid_BasePosition = Vector2(0.5, 0.15)
-shader_parameter/mid_BaseScale = Vector2(0.765, 0.75)
-shader_parameter/mid_NoiseOffset = Vector2(0, 0)
-shader_parameter/mid_NoiseScale = Vector2(10, 50)
-shader_parameter/mid_NoiseInvert = true
-shader_parameter/mid_Threshold = 0.5
-shader_parameter/mid_Tolerance = 0.15
-shader_parameter/bot_Texture = SubResource("GradientTexture1D_3bc0q")
-shader_parameter/bot_BasePosition = Vector2(0.5, 0)
-shader_parameter/bot_BaseScale = Vector2(1, 0.5)
-shader_parameter/bot_NoiseOffset = Vector2(0, 0)
-shader_parameter/bot_NoiseScale = Vector2(10, 15)
-shader_parameter/bot_NoiseInvert = false
-shader_parameter/bot_Threshold = 0.3
-shader_parameter/bot_Tolerance = 0.0
-
-[sub_resource type="BoxMesh" id="BoxMesh_ux8g3"]
-size = Vector3(10, 1, 10)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5k721"]
-render_priority = 0
-shader = ExtResource("7_oj1qg")
-shader_parameter/grid_texture = ExtResource("8_25u6b")
-shader_parameter/grid_scale = 1.0
-shader_parameter/gridBase_color = Color(1, 1, 1, 1)
-shader_parameter/gridLine_color = Color(0, 0, 0, 1)
-shader_parameter/lit_color = Color(1, 1, 1, 1)
-shader_parameter/unlit_color = Color(0, 0, 0, 1)
-shader_parameter/cel_threshold = 0.5
-shader_parameter/cel_sharpness = 0.0
 
 [node name="vfx_scene" type="Node"]
 
@@ -89,22 +27,19 @@ camera_attributes = SubResource("CameraAttributesPractical_oj1qg")
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Slash1_VFX" type="Node3D" parent="."]
-transform = Transform3D(-8.74228e-08, 0, 2, 0, 2, 0, -2, 0, -8.74228e-08, 0, 1.5, 0)
+[node name="Jump_VFX" parent="." instance=ExtResource("1_4to5p")]
 
-[node name="CPUParticles3D" type="CPUParticles3D" parent="Slash1_VFX"]
-transform = Transform3D(-0.83961, 0, 0.543189, 0, 1, 0, -0.543189, 0, -0.83961, 0, 0, 0)
-material_override = SubResource("ShaderMaterial_4to5p")
-amount = 1
-local_coords = true
-mesh = ExtResource("1_j4gxk")
-particle_flag_rotate_y = true
-gravity = Vector3(0, 0, 0)
+[node name="Slash_VFX" parent="." instance=ExtResource("2_3bc0q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
-[node name="Environment" type="Node3D" parent="."]
-visible = false
+[node name="Thrust_VFX" parent="." instance=ExtResource("3_kk6rx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
 
-[node name="Floor" type="MeshInstance3D" parent="Environment"]
-mesh = SubResource("BoxMesh_ux8g3")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_5k721")
+[node name="Land_VFX" parent="." instance=ExtResource("4_pvuq2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 0)
+
+[node name="WallJump_VFX" parent="." instance=ExtResource("5_3bc0q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+
+[node name="Dash_VFX" parent="." instance=ExtResource("6_kk6rx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)

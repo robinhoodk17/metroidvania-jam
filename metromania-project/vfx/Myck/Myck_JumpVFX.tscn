@@ -1,0 +1,89 @@
+[gd_scene load_steps=11 format=3 uid="uid://b42je3qqfnf1b"]
+
+[ext_resource type="Script" uid="uid://k1eg7merpdj8" path="res://scripts/Johann/vfx_element.gd" id="1_fybgm"]
+[ext_resource type="Shader" uid="uid://d1ha3d63gk2h3" path="res://materials/shaders/wave_shader.gdshader" id="2_23ali"]
+[ext_resource type="ArrayMesh" uid="uid://772yo8o36ue7" path="res://meshes/vfx/vfx_sphere_mesh.res" id="3_3718q"]
+[ext_resource type="ArrayMesh" uid="uid://baldyqmpqmxjm" path="res://meshes/vfx/vfx_cylinder_mesh.res" id="4_ysj21"]
+
+[sub_resource type="Gradient" id="Gradient_liwsv"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_y12in"]
+gradient = SubResource("Gradient_liwsv")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bni7j"]
+render_priority = 0
+shader = ExtResource("2_23ali")
+shader_parameter/useVertexColor = true
+shader_parameter/R_Interpolation = 0.751
+shader_parameter/G_Threshold = 0.5
+shader_parameter/B_Width = 0.25
+shader_parameter/overall_Tolerance = 0.01
+shader_parameter/base_TopTolerance = 0.01
+shader_parameter/base_BottomTolerance = 0.791
+shader_parameter/noise_Offset = Vector2(0, 0)
+shader_parameter/noise_Scale = Vector2(50, 5)
+shader_parameter/noise_Invert = false
+shader_parameter/noise_Offset_YTimeMultiplier = 0.0
+shader_parameter/noise_TimeMultiplier = 0.0
+shader_parameter/color_FollowInterpolation = 0.0
+shader_parameter/color_Main_Texture = SubResource("GradientTexture2D_y12in")
+shader_parameter/useOutline = false
+
+[sub_resource type="Gradient" id="Gradient_40ce4"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.5, 0.5, 0.25, 1, 0.75, 0.5, 0.333, 1, 0.5, 1, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ffgsm"]
+render_priority = 0
+shader = ExtResource("2_23ali")
+shader_parameter/useVertexColor = true
+shader_parameter/R_Interpolation = 0.0
+shader_parameter/G_Threshold = 0.729
+shader_parameter/B_Width = 0.25
+shader_parameter/overall_Tolerance = 0.01
+shader_parameter/base_TopTolerance = 0.1
+shader_parameter/base_BottomTolerance = 0.1
+shader_parameter/noise_Offset = Vector2(0, 0)
+shader_parameter/noise_Scale = Vector2(100, 1)
+shader_parameter/noise_Invert = true
+shader_parameter/noise_Offset_YTimeMultiplier = 0.0
+shader_parameter/noise_TimeMultiplier = 0.0
+shader_parameter/color_FollowInterpolation = 0.0
+shader_parameter/useOutline = false
+
+[sub_resource type="Gradient" id="Gradient_0d0mn"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.447826, 1)
+colors = PackedColorArray(0.75, 0.75, 0.25, 1, 0, 0.75, 1, 1, 0, 1, 0.25, 1)
+
+[node name="Jump_VFX" type="Node3D"]
+script = ExtResource("1_fybgm")
+VFX_SpeedScale = 2.0
+
+[node name="Jump_Particle" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0.5, 0)
+material_override = SubResource("ShaderMaterial_bni7j")
+emitting = false
+amount = 1
+one_shot = true
+speed_scale = 2.0
+local_coords = true
+mesh = ExtResource("3_3718q")
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Gradient_40ce4")
+
+[node name="Jump_Particle2" type="CPUParticles3D" parent="."]
+transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_ffgsm")
+emitting = false
+amount = 1
+one_shot = true
+speed_scale = 2.0
+local_coords = true
+mesh = ExtResource("4_ysj21")
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Gradient_0d0mn")

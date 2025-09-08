@@ -42,6 +42,7 @@ signal break_interaction
 @export var ledge_grab_offset : float = -1.2
 
 @export_group("Combat")
+@export var damage_amount_from_hazards : int = 1
 @export var combo_reset : float = 1.5
 @export var knockback_of_attack : float = 0.75
 @export var max_combo : int = 3
@@ -64,15 +65,25 @@ signal break_interaction
 
 @export_group("Nodes")
 @export var mesh : Marker3D
-@export var VFX_anim_player : AnimationPlayer
-@export var Hit_VFX : Node3D
+
+@export var Jump1_VFX: VFXElement
+@export var Jump2_VFX: VFXElement
+@export var Land_VFX: VFXElement
+@export var WallJump1_VFX : VFXElement
+@export var WallJump2_VFX : VFXElement
+@export var Dash_VFX: VFXElement
+@export var HoriAttack1_VFX: VFXElement
+@export var HoriAttack2_VFX: VFXElement
+@export var DownAttack_VFX: VFXElement
+@export var UpAttack_VFX: VFXElement
+
 @export var left_right : GUIDEAction
 @export var up_down : GUIDEAction
 @export var jump_action : GUIDEAction
 @export var dash_action : GUIDEAction
 @export var throw_action : GUIDEAction
 @export var attack_action : GUIDEAction
-@export var camera_3d: Camera3D  
+ 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var wall_jump: ShapeCast3D = $MeshParent/WallJump
 @onready var ledge_grab: RayCast3D = $MeshParent/LedgeGrab
@@ -134,8 +145,10 @@ var oneshot_animation : AnimationNode
 @onready var queue_timer: Timer = create_timer()
 @onready var landing_timer: Timer = create_timer()
 @onready var down_timer : Timer = create_timer(0.2)
+@onready var anim_player: AnimationPlayer = find_child("AnimationPlayer")
 @onready var alice: CharacterBody3D = instantiate_child("res://entities/player/alice.tscn")
 
+#region onready_functions
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
@@ -152,14 +165,40 @@ func instantiate_child(scene_path: String) -> Node:
 	$MeshParent/ChildContainer.add_child(instance)
 	return instance
 
+func set_animations_loop(animation_names: Array) -> void:
+	for anim_name in animation_names:
+		var animation = anim_player.get_animation(anim_name)
+		if animation:
+			animation.loop = true
+		else:
+			push_warning("Animation not found: " + anim_name)
+			
+func set_material_override_recursive(num: int, material: Material) -> void: 
+	for child in Skeleton.get_children(): 
+		if child is MeshInstance3D: 
+			child.set_surface_override_material(num, material)
+#endregion
+
+const SURFACE_0 = preload("res://materials/shader_materials/surface0.tres")
+const SURFACE_1 = preload("res://materials/shader_materials/surface1.tres")
+const SURFACE_2 = preload("res://materials/shader_materials/surface2.tres")
+
+@onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
+ 
 func _ready() -> void:
-#region Setting up combat
-	animation_tree.tree_root = animation_tree.tree_root.duplicate(true)
+	set_material_override_recursive(0, SURFACE_0)
+	set_material_override_recursive(1, SURFACE_1)
+	set_material_override_recursive(2, SURFACE_2)
+	create_sun_envio()
+	
+	add_to_group("player")
+	$MeshParent/Myck2.rotation = Vector3(0, -90, 0)
+	$MeshParent/Myck2.position = Vector3(0, -0.985, 0)
+	axis_lock_linear_z = true
+ 
 	hit_box.area_entered.connect(on_hit_box_entered)
 	#add_call_method_to_animation()
-		
-#endregion
-	
+
 	jump_action.triggered.connect(queue_jump)
 	attack_action.triggered.connect(queue_attack)
 	throw_action.triggered.connect(queue_throw)
@@ -167,7 +206,7 @@ func _ready() -> void:
 
 	checkpoint = global_position
 	checkpoint_box.area_entered.connect(store_checkpoint)
-	spike_hurtbox.body_entered.connect(take_damage_and_respawn)
+	spike_hurtbox.area_entered.connect(take_damage_and_respawn)
 	SignalbusPlayer.child_picked_up.connect(pick_up_child)
 	SignalbusPlayer.start_grapple.connect(start_grapple)
 	SignalbusPlayer.end_retracting.connect(end_retracting)
@@ -205,6 +244,7 @@ func store_checkpoint(body : Node3D = null, _position : Vector3 = Vector3.ZERO):
 		checkpoint = body.global_position
 	if _position != Vector3.ZERO:
 		checkpoint = _position
+	print_debug("current checkpoint", checkpoint)
 
 func pick_up_child(_body : Node3D = null):
 	if carrying_child:
@@ -222,7 +262,7 @@ func _physics_process(delta: float) -> void:
 		Engine.time_scale = 0.25
 	if queue_timer.is_stopped():
 		input_queued = inputs.NONE
-	#position_camera(delta)
+ 
 	handle_gravity(delta)
 	run_state_machine(delta)
 	action_state_machine(delta)
@@ -233,27 +273,6 @@ func attach_camera() -> void:
 		dampened_y_array.append(global_position.y)
 		averaged_y = global_position.y
  
-func position_camera(delta: float) -> void:
-	current_y = (current_y + 1) % dampened_y_array.size()
-	dampened_y_array[current_y] = global_position.y
-	var running_sum : float = 0.0
-	for i : float in dampened_y_array:
-		running_sum += i
-	averaged_y = running_sum/dampened_y_array.size()
-	var target_position : Vector3
-	var target_z : float
-	if alice.captured:
-		target_position = Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z)
-		target_z = camera_zoom_min
-	else:
-		target_position = (Vector3(global_position.x + velocity.x/7.5, averaged_y, global_position.z) + alice.global_position)/2
-		target_z = clamp(alice.global_position.distance_to(global_position)/3.0, camera_zoom_min, camera_zoom_max)
-	target_position = Vector3(target_position.x, target_position.y, target_z)
-	if is_on_floor():
-		lerp_power = lerp(lerp_power, 5.0, delta * 10)
-	else:
-		lerp_power = lerp(lerp_power, velocity.length() / 4.0, delta * 10)
-
 func manage_action_inputs() -> void:
 	return
 	if jump_action.is_triggered():
@@ -346,6 +365,7 @@ func handle_gravity(delta: float) -> void:
 		second_jump = false
 		dash_spent = false
 		if airborne:
+			Land_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_Land")
 			landing_timer.start(landing_time)
 			velocity.x *= 0.9
@@ -403,11 +423,18 @@ func jump() -> void:
 		second_jump = true
 	SignalbusPlayer.jumped.emit()
 	coyote_timer.stop()
-	
+	if(!Jump1_VFX.VFX_Playing):
+		Jump1_VFX.VFX_Playing = true;
+	else:
+		Jump2_VFX.VFX_Playing = true;
+		
 	set_oneshot_animation("Myck_Jump")
 
 func do_wall_jump() -> void:
-	
+	if(!WallJump1_VFX.VFX_Playing):
+		WallJump1_VFX.VFX_Playing = true;
+	else:
+		WallJump2_VFX.VFX_Playing = true;
 	set_oneshot_animation("Myck_WallJump")
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.WALKING
@@ -431,6 +458,7 @@ func dash(horizontal_direction : float, vertical_direction : float) -> void:
 	current_run_state = run_state.RUNNING
 	running_time = acceleration
 	dash_reset_timer.start(dash_duration)
+	Dash_VFX.VFX_Playing = true
 	set_oneshot_animation("Myck_Dash")
 	SignalbusPlayer.dashed.emit()
 
@@ -659,24 +687,38 @@ func attack(_x : float, _y : float) -> void:
 	_x = looking
 	if abs(_y) < 0.5:
 		_y = 0
-		set_oneshot_animation("Myck_HoriAttack")
+		if(HoriAttack1_VFX.VFX_Playing):
+			set_oneshot_animation("Myck_HoriAttack2")
+			HoriAttack1_VFX.VFX_Playing = false
+			HoriAttack2_VFX.VFX_Playing = true
+			Music.play_sfx($AudioStreamPlayer3D, "attack1")
+		else:
+			set_oneshot_animation("Myck_HoriAttack1")
+			Music.play_sfx($AudioStreamPlayer3D, "attack2")
+			HoriAttack1_VFX.VFX_Playing = true
+			HoriAttack2_VFX.VFX_Playing = false
+			
+		
 		hit_box.rotation = Vector3.ZERO
 	else:
 		_y = sign(_y)
 		centered = 0
 		if _y > 0:
 			hit_box.rotation = Vector3(0,0,PI/2)
+			UpAttack_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_UpAttack")
+			Music.play_sfx($AudioStreamPlayer3D, "attack3-uppercut")
 		else :
 			hit_box.rotation = Vector3(0,0,-PI/2)
+			DownAttack_VFX.VFX_Playing = true
 			set_oneshot_animation("Myck_DownAttack")
+			Music.play_sfx($AudioStreamPlayer3D, "attack4-slam")
 			
 	hit_box.position = hitbox_start_position + Vector3(hitbox_horizontal_offset * centered * _x,\
 	 _y * hitbox_vertical_offset, 0)
 	attack_direction = Vector2(_x,_y)
 	enable_hit_box(.15)
 	hit_box.show()
-	VFX_anim_player.play("slash1")
 	await get_tree().create_timer(.15).timeout
 	hit_box.hide()
 
@@ -691,11 +733,12 @@ func take_damage(amount : float, knockback : float = 0.0, _position : Vector3 = 
 		GlobalsPlayer.current_hp -= amount
 		SignalbusPlayer.took_damage.emit(amount, knockback)
 
-func take_damage_and_respawn(amount : int = 0) -> void:
+func take_damage_and_respawn(_body) -> void:
 	await Ui.fade_to_black(0.25)
 	current_action_state = action_state.BLOCKED
 	current_run_state = run_state.IDLE
-	GlobalsPlayer.current_hp -= amount
+	velocity = Vector3.ZERO
+	GlobalsPlayer.current_hp -= damage_amount_from_hazards
 	global_position = checkpoint
 	await Ui.fade_to_clear(0.25)
 	current_action_state = action_state.IDLE_ACTION
@@ -716,13 +759,13 @@ func on_hit_box_entered(area: Area3D) -> void:
 	current_run_state = run_state.STAGGERING
 	staggering_towards = -Vector3(attack_direction.x, attack_direction.y, 0)
 	staggering_distance = self_stagger_distance
-	Hit_VFX.show()
+	#Hit_VFX.show()
 	var parent: Node3D = area.get_parent()
 	print_debug(parent)
 	if parent && parent.has_method("take_damage") && parent.is_in_group("enemy"):
 		parent.take_damage(_damage, knockback_of_attack, global_position)
 	await get_tree().create_timer(0.25).timeout
-	Hit_VFX.hide()
+	#Hit_VFX.hide()
 
 func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = true
@@ -730,7 +773,7 @@ func enable_hit_box(time_sec: float = 0.2) -> void:
 	hit_box.monitoring = false
 
 func add_call_method_to_animation(animation_name : String, method_name : String, time_sec : float = 0.0, args : Array = [], relative_path : String = "none") -> float:
-	var animation : Animation = find_child("AnimationPlayer").get_animation(animation_name)
+	var animation : Animation = anim_player.get_animation(animation_name)
 	if animation == null:
 		push_error("Animation % not found!" % animation_name)
 		return 0.0
@@ -741,89 +784,34 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("g"):
-		set_oneshot_animation("Robot_Punch")
-		await get_tree().create_timer(0.25).timeout
-		enable_hit_box(0.2)
 #endregion 
-#region camera_moves
-var shake_active: bool
-var slowmo_active: bool
-var title_active: bool
-var zoom_active: bool
-@onready var default_rotation : Vector3 = rotation_degrees
-@onready var default_fov : float = 90
  
-func _camera_shake(duration: float = 0.3) -> void:
-	if shake_active:
-		return
-	else:
-		shake_active = true
-		handle_camera_shake(duration)
 
-func _camera_slowmo(duration: float = 0.5) -> void:
-	if slowmo_active:
-		return 
-	else:
-		slowmo_active = true
-		await handle_cam_slowmo(duration)
-		slowmo_active = false
- 
-func _camera_tilt(duration: float = 0.15) -> void:
-	if title_active:
-		return
-	else:
-		title_active = true
-		await handle_camera_tilt(duration)
-		title_active = false
-		
-func _camera_zoom(duration: float = 0.15) -> void:
-	if zoom_active:
-		return
-	else:
-		zoom_active = true
-		await handle_camera_zoom(duration)
-		zoom_active = false 
-
-func handle_camera_shake(duration : float) -> void:
-	var period : float = duration
-	var magnitude : float = 0.4
-	var initial_transform = camera_3d.transform
-	var elapsed_time : float = 0.0
-	while elapsed_time < period:
-		var offset : Vector3 = Vector3(
-			randf_range(-magnitude, magnitude),
-			randf_range(-magnitude, magnitude),
-			0.0
-		)
-		camera_3d.transform.origin = initial_transform.origin + offset
-		elapsed_time += get_process_delta_time()
-		#await get_tree().process_frame
-	camera_3d.transform = initial_transform
-	shake_active = false
- 
-func handle_cam_slowmo(duration : float) -> Signal:
-	var _tween: Tween = get_tree().create_tween()
-	_tween.tween_property(Engine, "time_scale", 0.05, 0.5)
-	_tween.tween_property(Engine, "time_scale", 1.0, duration/2)
-	return _tween.finished
-
-func handle_camera_tilt(duration : float) -> Signal:
-	var tilt_degrees : float = 5.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var target_rotation = default_rotation
-	target_rotation.z += randf_range(-tilt_degrees, tilt_degrees)
-	tween.tween_property(camera_3d, "rotation_degrees", target_rotation, duration)
-	tween.tween_property(camera_3d, "rotation_degrees", default_rotation, duration)
-	return tween.finished
-
-func handle_camera_zoom(duration: float) -> Signal:
-	var zoom_amount : float = 10.0
-	var tween: Tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var target_fov : float = clamp(default_fov - zoom_amount, 10, default_fov) 
-	tween.tween_property(camera_3d, "fov", target_fov, duration)
-	tween.tween_property(camera_3d, "fov", default_fov, duration)
-	return tween.finished 
-
-#endregion  
+func create_sun_envio():
+	var sun : DirectionalLight3D = DirectionalLight3D.new()
+	sun.light_color = Color(1.0, 0.95, 0.8)  
+	sun.light_energy = 0.8
+	sun.light_indirect_energy = 0.5 
+	sun.shadow_enabled = true
+	sun.shadow_bias = 0.05 
+	sun.shadow_normal_bias = 0.8
+	sun.shadow_blur = 2.0 
+	sun.rotation_degrees = Vector3(-45, 30, 0)
+	add_child(sun)
+	var environment : Environment = Environment.new()
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color(0.6, 0.8, 1.0)  
+	environment.ambient_light_color = Color(0.3, 0.35, 0.4)
+	environment.ambient_light_energy = 0.8
+	environment.ambient_light_sky_contribution = 0.5
+	environment.fog_enabled = true
+	environment.fog_light_color = Color(0.6, 0.8, 1.0)
+	environment.fog_depth_begin = 10.0
+	environment.fog_depth_end = 50.0
+	var world_env : WorldEnvironment = WorldEnvironment.new()
+	world_env.environment = environment
+	add_child(world_env)
+	environment.tonemap_mode = Environment.TONE_MAPPER_ACES
+	environment.glow_enabled = true
+	environment.glow_intensity = 0.3
+	environment.glow_strength = 0.5

@@ -8,20 +8,19 @@ var tilt_tween: Tween
 var zoom_tween: Tween
 
 @onready var default_fov : float = fov 
-@onready var player : Node3D = get_tree().get_first_node_in_group("player")
-@onready var timer = create_timer(0.5)
+@onready var player : Node3D = get_parent()
+@onready var second_timer = create_timer(7.0)
+@onready var small_area: Area3D = create_area_with_collision(Vector3(3, 3, 3,)) 
+@onready var big_area: Area3D = create_area_with_collision(Vector3(8, 8, 8,))
 @onready var camera_static_position: Vector3 = global_transform.origin 
-@export var small_area: Area3D 
-@export var big_area: Area3D 
 @export var camera_mode := "Celeste" 
 @export var static_control : float = 8.0
+
 var in_small_area : bool = true:
 	set(value):
-		timer.start()
-		await timer.timeout
 		camera_static_position = _desired_pos
 		in_small_area = value
-var in_big_area : bool = true
+var in_big_area : bool = true 
 var lerp_speed_slow := 0.5 
 var lerp_speed_fast := 2.5 
 var y_dampening_factor := 0.1 
@@ -35,9 +34,26 @@ func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	timer.one_shot = one_shot
 	add_child(timer)
 	return timer
+	
+func create_area_with_collision(size: Vector3) -> Area3D:
+	var area : Area3D = Area3D.new()
+	var collision_shape : CollisionShape3D = CollisionShape3D.new()
+	var box_shape : BoxShape3D = BoxShape3D.new()
+	box_shape.extents = size / 2
+	collision_shape.shape = box_shape
+	area.add_child(collision_shape)
+	area.collision_layer = 0
+	area.collision_mask = 1 << 2
+	area.monitorable = false
+	add_child(area)
+	return area
  
 func _ready() -> void:
 	position = vertical_offset + side_offset
+	big_area.global_transform.origin =  player.global_transform.origin
+	small_area.global_transform.origin = player.global_transform.origin
+	second_timer.start()
+	second_timer.timeout.connect(on_second_timer_timeout)
 	small_area.body_entered.connect(func(body: Node3D): if body == player && in_small_area == false: in_small_area = true)
 	small_area.body_exited.connect(func(body: Node3D): if body == player && in_small_area == true: in_small_area = false)
 	big_area.body_entered.connect(func(body: Node3D): if body == player && in_big_area == false: in_big_area = true)
@@ -56,32 +72,38 @@ func _physics_process(delta):
 	match camera_mode:
 		"Celeste":
 			if in_small_area:
-				target_pos = camera_static_position
+				target_pos = target_pos.lerp(camera_static_position, lerp_speed_fast * delta)
 			elif in_big_area and not in_small_area:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
 				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if target_pos.distance_to(desired_pos) < 0.01:
+					target_pos = desired_pos
 			else:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_fast * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_fast * delta)
 				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if target_pos.distance_to(desired_pos) < 0.01:
+					target_pos = desired_pos
+ 
 		"HollowKnight":
 			if in_big_area:
-				target_pos = camera_static_position
+				target_pos = target_pos.lerp(camera_static_position, lerp_speed_fast * delta)
 			else:
 				target_pos.x = lerp(global_transform.origin.x, desired_pos.x, lerp_speed_slow * delta)
 				target_pos.z = lerp(global_transform.origin.z, desired_pos.z, lerp_speed_slow * delta)
 				target_pos.y = lerp(global_transform.origin.y, desired_pos.y, y_dampening_factor * delta)
+				if target_pos.distance_to(desired_pos) < 0.01:
+					target_pos = desired_pos
 				if in_small_area:
 					camera_static_position = target_pos
-					
+
 	global_transform.origin = target_pos
  
 func switch_player(parent: Node3D) -> void:
 	reparent(parent)
 	player = parent
- 
-#region cam_signals
+  
 func on_cam_shake(duration: float = 0.3) -> void:
 	if shake_active:
 		return
@@ -148,5 +170,10 @@ func on_cam_pan(direction: float, amount: float) -> void:
 	var right : Vector3 = global_transform.basis.x.normalized()
 	global_translate(right * direction * amount)
  
-#endregion 
- 
+func on_second_timer_timeout () -> void:
+	small_area.monitoring = false
+	big_area.monitoring = false
+	await get_tree().create_timer(0.1).timeout
+	small_area.monitoring = true
+	big_area.monitoring = true
+	second_timer.start()

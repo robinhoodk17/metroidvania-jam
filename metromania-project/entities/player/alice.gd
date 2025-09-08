@@ -90,7 +90,7 @@ var airborne : bool = false
 
 """animation"""
 var run_animation : AnimationNodeStateMachinePlayback
-var action_animation : AnimationNodeStateMachinePlayback
+#var action_animation : AnimationNodeStateMachinePlayback
 var oneshot_animation : AnimationNode
 
 @onready var coyote_timer: Timer = create_timer()
@@ -98,6 +98,7 @@ var oneshot_animation : AnimationNode
 @onready var combo_reset_timer: Timer = create_timer()
 @onready var queue_timer: Timer = create_timer()
 
+#region onready_functions
 func create_timer(wait_time: float = 1.0, one_shot: bool = true) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
@@ -144,7 +145,28 @@ func turn_on() -> void:
 	set_physics_process(true)
 	top_level = true
 
+func set_material_override_recursive(num: int, material: Material) -> void: 
+	for child in Skeleton.get_children():
+		if child is MeshInstance3D:
+			child.set_surface_override_material(num, material)
+			
+func set_animations_loop(animation_names: Array) -> void:
+	for anim_name in animation_names:
+		var animation = anim_player.get_animation(anim_name)
+		if animation:
+			animation.loop = true
+		else:
+			push_warning("Animation not found: " + anim_name)
+#endregion
+
+@onready var anim_player: AnimationPlayer = find_child("AnimationPlayer")
+const SURFACE_3 = preload("res://materials/shader_materials/surface3.tres")
+@onready var Skeleton : Skeleton3D = find_child("Skeleton3D") 
+ 
 func _ready() -> void:
+	set_material_override_recursive(0, SURFACE_3)
+	set_animations_loop(["Mounted_Idle", "Amelia_WallSlide", "Amelia_Walk", "Amelia_Run", "Amelia_Idle"])
+	
 	SignalbusPlayer.child_captured.connect(func capture(): captured = true)
 	SignalbusPlayer.child_released.connect(func release(): captured = false)
 	
@@ -153,12 +175,11 @@ func _ready() -> void:
 	hurt_box.body_entered.connect(check_body)
 	hit_box.area_entered.connect(on_hit_box_entered)
 	run_animation = animation_tree.get("parameters/StateMachine_running/playback")
-	action_animation = animation_tree.get("parameters/StateMachine_action/playback")
+	#action_animation = animation_tree.get("parameters/StateMachine_action/playback")
 	oneshot_animation = animation_tree.get_tree_root().get_node("OneShotAnimation")
 	dash_reset_timer.timeout.connect(change_action_state)
 	call_deferred("turn_off")
- 
-
+  
 func _physics_process(delta: float) -> void:
 	if off:
 		return
@@ -179,7 +200,7 @@ func run_state_machine(delta: float) -> void:
 
 	if current_action_state == action_state.FLYINGTOGRAPPLE:
 		velocity = (hookshot_position - global_position).normalized() * movement_to_grapple_speed
-		run_animation.travel("idle")
+		run_animation.travel("Amelia_Idle")
 		flown_distance += velocity.length() * delta
 		var collisions : KinematicCollision3D = move_and_collide(velocity * delta, true)
 		if collisions or flown_distance >= throw_range:
@@ -188,7 +209,7 @@ func run_state_machine(delta: float) -> void:
 
 	if current_action_state == action_state.HOOKED:
 		velocity = Vector3.ZERO
-		run_animation.travel("idle")
+		run_animation.travel("Amelia_Idle")
 		return
 		
 	var run_direction = left_right.value_axis_1d
@@ -226,7 +247,7 @@ func run_state_machine(delta: float) -> void:
 			if is_on_floor():
 				running_time = move_toward(running_time, 0.0, delta * 2.0)
 			if !animating:
-				run_animation.travel("idle")
+				run_animation.travel("Amelia_Idle")
 			if run_direction != 0.0:
 				if abs(velocity.x) > speed:
 					current_run_state = run_state.RUNNING
@@ -244,7 +265,7 @@ func run_state_machine(delta: float) -> void:
 			else:
 				velocity.x = abs(velocity.x) * run_direction
 			if !animating:
-				run_animation.travel("walk")
+				run_animation.travel("Amelia_Walk")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				current_run_state = run_state.IDLE
 				running_time = 0.0
@@ -255,7 +276,7 @@ func run_state_machine(delta: float) -> void:
 			if !is_on_floor():
 				current_run_state = run_state.WALKING
 			if !animating:
-				run_animation.travel("run")
+				run_animation.travel("Amelia_Run")
 			if run_direction * direction_x <= 0.0 and is_on_floor():
 				running_time = 0.0
 				braking_time = 0.0
@@ -267,7 +288,7 @@ func run_state_machine(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, sign(velocity.x) * speed, delta * 5.0)
 
 		run_state.BRAKING:
-			run_animation.travel("walk")
+			run_animation.travel("Amelia_Walk")
 			velocity.x = sign(velocity.x) * speed * deceleration_curve.sample(braking_time/deceleration)
 			braking_time += delta
 			if braking_time >= deceleration:
@@ -275,11 +296,12 @@ func run_state_machine(delta: float) -> void:
 				running_time = deceleration
 
 		run_state.WALL_SLIDING:
+			run_animation.travel("Amelia_WallSlide")
 			if !wall_jump.is_colliding() or is_on_floor():
 				current_run_state = run_state.WALKING
 		
 		run_state.LEDGE_GRABBING:
-			run_animation.travel("Ledge_Grab")
+			run_animation.travel("Amelia_LedgeGrab")
 			coyote_timer.start(coyote_time)
 			if current_action_state != action_state.IDLE_ACTION:
 				current_run_state = run_state.IDLE
@@ -350,7 +372,7 @@ func jump() -> void:
 	else:
 		return
 	current_action_state = action_state.JUMPING
-	set_oneshot_animation("Robot_Jump")
+	set_oneshot_animation("Amelia_Jump")
 	jumping_time = 0.0
 	velocity.y = jump_velocity
 	velocity += get_platform_velocity()/4.0
@@ -404,10 +426,13 @@ func handle_gravity(delta: float) -> void:
 		if jump_action.value_bool:
 			velocity.y = jump_velocity
 	if is_on_floor():
+		
 		second_jump = false
 		dash_spent = false
 		if airborne:
+			set_oneshot_animation("Amelia_Landing")
 			velocity.x *= .8
+			
 		airborne = false
 		coyote_timer.start(coyote_time)
 	else:
@@ -477,8 +502,5 @@ func add_call_method_to_animation(animation_name : String, method_name : String,
 	animation.track_set_path(track_index, relative_path)
 	animation.track_insert_key(track_index, time_sec, {"method":method_name, "args": args})
 	return animation.length
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("g"):
-		pass
+ 
 #endregion 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://gbaybbokp4yw"]
 
-[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/slash_mesh.res" id="1_d0rvx"]
+[ext_resource type="ArrayMesh" uid="uid://cko80rnpv5lqe" path="res://meshes/vfx/vfx_slash_mesh.res" id="1_d0rvx"]
 [ext_resource type="Material" uid="uid://qwwjdbl082b6" path="res://materials/shader_materials/vfx.tres" id="2_tfg2h"]
 
 [sub_resource type="Animation" id="Animation_liwsv"]
